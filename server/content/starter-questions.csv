@@ -1,0 +1,79 @@
+﻿ext_id,checkpoint,skill,type,difficulty,question,code,option_a,option_b,option_c,option_d,correct,hint,explanation,tags,status
+c1-1a,C1,K1,Order the steps,1,Withdrawing cash: which order of steps works?,,Card → PIN → Amount → Cash,PIN → Card → Amount → Cash,Card → Amount → Cash → PIN,Amount → Card → PIN → Cash,A,You can't type a PIN before the machine knows who you are.,"The card identifies you, the PIN proves it, then you choose an amount and collect cash. Order matters in every algorithm.",starter,published
+c1-1b,C1,K1,Concept,1,An algorithm is best described as…,,A step-by-step set of instructions to solve a problem,A programming language,A part of the computer's hardware,A maths formula only,A,Think of a recipe.,"An algorithm is a clear sequence of steps. It can be written in English, as a flowchart or in code.",starter,published
+c1-2a,C1,K1,Pick the best,2,Which instruction is precise enough for a robot to follow?,,Walk a bit forward,Move forward 3 steps,Go near the door,Turn somewhat left,B,A robot can't guess what 'a bit' means.,Computers need exact instructions. '3 steps' is measurable; 'a bit' and 'near' are not.,starter,published
+c1-2b,C1,K1,Odd one out,2,Which one is NOT an algorithm?,,A recipe for dosa,Directions from home to college,Steps to reset a phone,A photo of a sunset,D,Which one has no steps to follow?,The other three are step-by-step instructions. A photo has no steps.,starter,published
+c1-3a,C1,K2,Analogy,3,A variable in programming is most like…,,A labelled box that stores a value,A number that can never change,A printer,A spelling mistake,A,"It has a name, and something goes inside it.","A variable is a named place in memory that holds a value, which you can read or replace.",starter,published
+c1-3b,C1,K2,Pick the best,3,Which is the best name for a variable that stores a student's age?,,student_age,2age,student age,age!,A,"Names can't start with a digit, contain spaces or use symbols like !",student_age is clear and follows naming rules. The others break a rule each.,starter,published
+c1-4a,C1,K2,Trace it,4,A box called score holds 10. You put 15 into it. What does score hold now?,,10,15,25,10 and 15,B,A box holds one value at a time.,"Assigning a new value replaces the old one, so score is now 15.",starter,published
+c1-4b,C1,K2,Think it through,4,"Which of these should be stored as text, not as a number?",,A phone number,Your age,Marks out of 100,Room temperature,A,Would you ever add or average it?,"You never do maths on a phone number, and it can start with 0 or +91, so it's stored as text.",starter,published
+c1-5a,C1,K3,Mental maths,5,What is the remainder when 17 is divided by 5?,,3,2,12,3.4,B,5 goes into 17 three times. What's left over?,"5 × 3 = 15, and 17 − 15 = 2. In Python this is 17 % 5.",starter,published
+c1-5b,C1,K3,Mental maths,5,Integer division keeps only the whole part. What is 17 integer-divided by 5?,,3,3.4,2,4,A,How many whole 5s fit into 17?,"17 ÷ 5 = 3.4, and keeping the whole part gives 3. In Python this is 17 // 5.",starter,published
+c1-6a,C1,K3,Order of operations,6,What is 2 + 3 × 4?,,20,14,24,9,B,Multiplication happens before addition.,"3 × 4 = 12 first, then 2 + 12 = 14. Programming languages follow the same rule.",starter,published
+c1-6b,C1,K3,Order of operations,6,"If x is 6, what is x × 2 − 4 ÷ 2?",,4,10,8,2,B,"Do × and ÷ first, then −.","6 × 2 = 12 and 4 ÷ 2 = 2, so 12 − 2 = 10.",starter,published
+c1-7a,C1,K4,Decision,7,"Rule: if it is raining, take an umbrella; otherwise wear sunglasses. It's sunny. What do you do?",,Take an umbrella,Wear sunglasses,Do both,Do neither,B,The condition 'raining' is false.,"When the condition is false, the 'otherwise' (else) branch runs.",starter,published
+c1-7b,C1,K4,Logic,7,A gate opens only if you have a ticket AND an ID. Riya has a ticket but no ID. Does the gate open?,,Yes,No,Only halfway,Depends on the time,B,AND needs both parts to be true.,"With AND, one false part makes the whole condition false.",starter,published
+c1-8a,C1,K4,Logic,8,Entry is free if age < 5 OR age ≥ 60. Who has to pay?,,Age 3,Age 65,Age 30,Age 60,C,"With OR, one true part is enough to be free.","30 is not below 5 and not 60 or above, so both parts are false and they pay. 60 counts because of ≥.",starter,published
+c1-8b,C1,K4,Trace it,8,"Checks run top to bottom: marks ≥ 90 → A, marks ≥ 75 → B, else C. Marks are 90. What grade?",,A,B,C,A and B,A,The first true check wins and the rest are skipped.,"90 ≥ 90 is true, so it's an A and the checks stop there. This is how if / elif works.",starter,published
+c1-9a,C1,K5,Trace it,9,'Repeat 4 times: clap twice.' How many claps in total?,,4,6,8,2,C,Each repeat has 2 claps.,4 repeats × 2 claps = 8. A loop multiplies whatever is inside it.,starter,published
+c1-9b,C1,K5,Trace it,9,"Count from 1 to 10 going up by 3 each time (1, 4, …). How many numbers do you say?",,3,4,10,5,B,"Write them out: 1, 4, …","1, 4, 7, 10 makes 4 numbers. The next one, 13, is past 10.",starter,published
+c1-10a,C1,K5,Trace it,10,Repeat 3 times: [repeat 2 times: draw a star]. Then draw a dot. What do you end up with?,,6 stars and 1 dot,6 stars and 3 dots,5 stars and 1 dot,3 stars and 2 dots,A,The dot is outside both repeats.,"The inner repeat runs 2 times for each of the 3 outer repeats, giving 6 stars. The dot comes once, after the loops.",starter,published
+c1-10b,C1,K5,Trace it,10,Start at 1 and keep doubling until the number is more than 20. Where do you stop?,,16,20,32,64,C,"1, 2, 4, 8, … keep going.","1 → 2 → 4 → 8 → 16 → 32. 16 is not more than 20, so you double once more to 32.",starter,published
+c2-1a,C2,P1,Predict the output,1,What does this print?,"name = ""Asha""
+print(""Hi"", name)",Hi Asha,Hi name,"Hi,Asha",HiAsha,A,print puts a space between the things you give it.,"name holds ""Asha"", and print separates its items with a space.",starter,published
+c2-1b,C2,P1,Predict the output,1,What does this print?,"x = 5
+x = x + 2
+print(x)",5,7,x,Error,B,"The right side is worked out first, then stored back in x.","x + 2 is 7, and that replaces the old value of x.",starter,published
+c2-2a,C2,P1,Spot the bug,2,Which line causes an error?,"age = 18
+print(""Age:"", age)
+print(""Next year:"", Age + 1)",Line 1,Line 2,Line 3,No error,C,Check the spelling of every name very carefully.,"Python is case-sensitive. Age with a capital A was never created, so line 3 raises a NameError.",starter,published
+c2-2b,C2,P1,Fill the blank,2,What goes in the blank so this prints 10?,"a = 4
+b = 6
+print(____)",a + b,"""a + b""","a, b",ab,A,Quotes turn things into text.,"a + b adds the two values to give 10. ""a + b"" would print the text itself.",starter,published
+c2-3a,C2,P2,Predict the output,3,What does this print?,"print(type(""12""))",<class 'int'>,<class 'str'>,<class 'float'>,<class 'number'>,B,Look at the quotes.,"Anything inside quotes is a string, even if it looks like a number.",starter,published
+c2-3b,C2,P2,Predict the output,3,What does this print?,"print(int(""7"") + 3)",73,10,Error,7.3,B,int() turns the text into a number first.,"int(""7"") is the number 7, and 7 + 3 = 10.",starter,published
+c2-4a,C2,P2,What happens?,4,The user types 18. What happens?,"age = input()
+print(age + 1)",It prints 19,It prints 181,TypeError,It prints 18,C,What type of value does input() always give back?,"input() returns a string, and Python can't add a string and a number. You need int(input()).",starter,published
+c2-4b,C2,P2,Predict the output,4,What does this print?,print(3 + 2.0),5,5.0,3 + 2.0,Error,B,Mixing an int with a float gives a float.,"When one number is a float, the result is a float: 5.0.",starter,published
+c2-5a,C2,P3,Predict the output,5,What does this print?,"print(17 % 5, 17 // 5)",2 3,3 2,3.4 2,2 3.4,A,"% is the remainder, // is the whole part.",17 % 5 is 2 and 17 // 5 is 3.,starter,published
+c2-5b,C2,P3,Predict the output,5,What does this print?,print(2 + 3 * 4 ** 2),50,80,400,146,A,"** first, then *, then +.","4 ** 2 = 16, then 3 × 16 = 48, then 2 + 48 = 50.",starter,published
+c2-6a,C2,P4,Predict the output,6,What does this print?,"s = ""python""
+print(s[1:4])",pyt,yth,ytho,tho,B,"Indexes start at 0, and the end index is not included.","Indexes 1, 2 and 3 are y, t and h.",starter,published
+c2-6b,C2,P4,Predict the output,6,What does this print?,"print(""ha"" * 3 + ""!"")",hahaha!,ha3!,ha ha ha!,Error,A,"* repeats a string, + joins strings.","""ha"" × 3 is ""hahaha"", then + adds ""!"".",starter,published
+c2-7a,C2,P5,Predict the output,7,What does this print?,"x = 7
+if x > 5 and x % 2 == 0:
+    print(""A"")
+elif x > 5:
+    print(""B"")
+else:
+    print(""C"")",A,B,C,A and B,B,Is 7 even?,"7 > 5 is true but 7 % 2 == 0 is false, so the first branch fails and elif runs.",starter,published
+c2-7b,C2,P5,Fill the blank,7,"Which operator completes this so it prints ""Even"" for even numbers?","if n ____ 2 == 0:
+    print(""Even"")",%,/,//,**,A,You want the remainder after dividing by 2.,n % 2 is 0 only for even numbers.,starter,published
+c2-8a,C2,P5,Spot the bug,8,Which line has the error?,"marks = 85
+if marks >= 50
+    print(""Pass"")",Line 1,Line 2,Line 3,No error,B,Every if line ends with a special character.,Line 2 is missing the colon. It should be: if marks >= 50:,starter,published
+c2-8b,C2,P5,Predict the output,8,What does this print?,"temp = 30
+if temp > 35:
+    print(""Hot"")
+elif temp > 25:
+    print(""Warm"")
+elif temp > 15:
+    print(""Mild"")",Hot,Warm,Mild,Warm and Mild,B,Only the first true branch runs.,"30 > 35 is false, 30 > 25 is true, so it prints Warm and skips the rest.",starter,published
+c2-9a,C2,P6,Predict the output,9,What does this print?,"total = 0
+for i in range(1, 5):
+    total += i
+print(total)",10,15,4,6,A,"range(1, 5) stops before 5.",1 + 2 + 3 + 4 = 10.,starter,published
+c2-9b,C2,P6,Predict the output,9,What does this print?,"count = 0
+for ch in ""banana"":
+    if ch == ""a"":
+        count += 1
+print(count)",2,3,6,1,B,Count the a's.,banana has three a's.,starter,published
+c2-10a,C2,P6,Predict the output,10,What does this print?,"x = 10
+while x > 0:
+    x -= 3
+print(x)",1,0,'-2,'-3,C,"Write x after each pass: 10, 7, …",10 → 7 → 4 → 1 → −2. The loop stops only when x is no longer above 0.,starter,published
+c2-10b,C2,P6,Predict the output,10,What does this print?,"count = 0
+for i in range(1, 4):
+    for j in range(i):
+        count += 1
+print(count)",3,6,9,4,B,The inner loop runs i times.,1 + 2 + 3 = 6.,starter,published

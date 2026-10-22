@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>KBC Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&amp;family=JetBrains+Mono:wght@500;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+/* KBC admin console: the game's studio identity (deep violet + gold) turned into a calm working tool.
+   Violet control-room sidebar, light worksurface (dark when the OS asks), gold reserved for the primary action and the current page. */
+:root{
+  --bg:#F4F2FA;--panel:#FFFFFF;--panel2:#FBFAFE;--well:#F7F5FC;--line:#E4E0F0;--line2:#CEC7E4;
+  --muted:#77709A;--soft:#4F4870;--text:#1B1433;
+  --accent:#7B4DFF;--accent-ink:#FFFFFF;--accent-soft:#EFE9FF;
+  --gold:#FFC83D;--gold-2:#FF9F1C;--gold-ink:#241500;--gold-edge:#C47D10;--gold-txt:#A86300;
+  --bad:#D92D4F;--bad-soft:#FDECEF;--good:#16884A;--good-soft:#E6F6EC;--info:#2B6FD6;--info-soft:#E8F0FD;--violet:#7B4DFF;--warn-soft:#FFF5DB;
+  --side:#160B38;--side-2:#22134F;--side-line:rgba(255,255,255,.1);--side-text:#E6DEFF;--side-muted:#9C90C9;
+  --hover:#F1EDFB;--shadow:0 1px 2px rgba(27,20,51,.06),0 8px 24px -16px rgba(27,20,51,.25);
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0D0820;--panel:#160E31;--panel2:#1C1340;--well:#0F0926;--line:#2A2052;--line2:#3B2F6E;
+  --muted:#9187BD;--soft:#C3B9EA;--text:#F3EFFF;
+  --accent:#A98BFF;--accent-ink:#140A33;--accent-soft:#2A1D5C;--gold-txt:#FFD66B;
+  --bad:#FF7A92;--bad-soft:#3A1226;--good:#4ADE80;--good-soft:#0F2E22;--info:#8EC5FF;--info-soft:#132A4A;--violet:#B79CFF;--warn-soft:#33260A;
+  --side:#0A0518;--side-2:#1A0F40;--hover:#1F1646;--shadow:0 10px 30px -18px rgba(0,0,0,.8);color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f-body);font-size:14px;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:14px;color:inherit}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+a{color:var(--accent);font-weight:700}
+code{font-family:var(--f-mono);font-size:.92em}
+[hidden]{display:none !important}
+.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+.side{background:linear-gradient(180deg,var(--side-2),var(--side) 55%);color:var(--side-text);padding:20px 14px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:12px;padding:2px 6px;font-family:var(--f-display);font-weight:800;font-size:15px;line-height:1.1;color:#fff}
+.brand::before{content:"{₹}";flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--gold-ink);
+  background:radial-gradient(circle at 35% 30%,#FFF1B8,var(--gold) 45%,#C9770C);box-shadow:0 0 0 4px rgba(255,200,61,.16)}
+.brand span{color:var(--gold)}
+.brand small{display:block;font-family:var(--f-body);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--side-muted);margin-top:4px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:38px;padding:0 12px;border:0;border-radius:10px;background:transparent;color:var(--side-text);font-weight:600;text-align:left}
+.nav button:hover{background:rgba(255,255,255,.07)}
+.nav button[aria-current="page"]{background:linear-gradient(120deg,var(--gold),var(--gold-2));color:var(--gold-ink);font-weight:800;box-shadow:0 3px 0 var(--gold-edge)}
+.nav .sep{height:1px;background:var(--side-line);margin:8px 6px}
+.nav .grp{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--side-muted);padding:12px 12px 4px}
+.nav .grp:first-child{padding-top:0}
+.badge{min-width:22px;height:20px;padding:0 6px;border-radius:999px;background:#FF5A7A;color:#fff;font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.side > a.btn{border-color:var(--side-line);color:var(--side-text);background:rgba(255,255,255,.04)}
+.side > a.btn:hover{border-color:var(--gold);color:var(--gold)}
+.me{margin-top:auto;display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--side-line)}
+.me b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff}
+.me span{color:var(--side-muted);font-size:12px;overflow-wrap:anywhere}
+.me .btn{color:var(--side-text);border-color:var(--side-line)}
+main{padding:28px 36px 60px;min-width:0}
+h1{margin:0;font-family:var(--f-display);font-size:26px;font-weight:800;letter-spacing:-.01em;text-wrap:balance}
+h2{margin:0 0 14px;font-size:15px;font-weight:800}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.head p{margin:8px 0 0;color:var(--soft);max-width:760px;line-height:1.55}
+.kicker{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:var(--panel);border-radius:16px;padding:18px 20px;border:1px solid var(--line);box-shadow:var(--shadow)}
+.stat{position:relative;overflow:hidden}
+.stat .k{color:var(--muted);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.stat .v{font-family:var(--f-display);font-weight:800;font-size:32px;line-height:1.2;margin-top:6px;font-variant-numeric:tabular-nums}
+.stat .s{color:var(--muted);font-size:12px;margin-top:2px}
+.g4 .stat:first-child{background:linear-gradient(140deg,var(--side-2),var(--side));border-color:transparent;color:#fff}
+.g4 .stat:first-child .k,.g4 .stat:first-child .s{color:var(--side-muted)}
+.g4 .stat:first-child .v{color:var(--gold)}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.toolbar .grow{flex-grow:1}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=datetime-local],input[type=search],select,textarea{
+  min-height:40px;padding:0 12px;border:1.5px solid var(--line2);border-radius:10px;background:var(--panel);color:var(--text);outline:none}
+textarea{padding:10px 12px;min-height:80px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+input[type=search]{min-width:280px}
+input[type=number]{width:110px}
+input[type=checkbox]{accent-color:var(--accent)}
+.btn{min-height:40px;padding:0 16px;border-radius:10px;border:1.5px solid var(--line2);background:var(--panel);color:var(--text);font-weight:700;white-space:nowrap}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.pri{background:linear-gradient(120deg,var(--gold),var(--gold-2));border-color:transparent;color:var(--gold-ink);font-weight:800;box-shadow:0 3px 0 var(--gold-edge)}
+.btn.pri:hover{filter:brightness(1.05);color:var(--gold-ink)}
+.btn.pri:active{transform:translateY(2px);box-shadow:0 1px 0 var(--gold-edge)}
+.btn.bad{border-color:var(--bad);color:var(--bad)}
+.btn.sm{min-height:32px;padding:0 10px;font-size:13px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.chips{display:inline-flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chips button{min-height:32px;padding:0 12px;border-radius:999px;border:1.5px solid var(--line2);background:var(--panel);color:var(--soft);font-weight:700;font-size:13px;white-space:nowrap;cursor:pointer}
+.chips button:hover{border-color:var(--accent);color:var(--accent)}
+.chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:800;padding:10px;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0;background:var(--panel2);z-index:1}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+tr.click{cursor:pointer}
+tr.click:hover td{background:var(--hover)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.mono{font-family:var(--f-mono);font-size:13px;font-weight:500;font-variant-numeric:tabular-nums}
+.tablewrap{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:auto;max-height:calc(100vh - 260px);box-shadow:var(--shadow)}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:800;background:var(--well);color:var(--soft);white-space:nowrap}
+.pill.ok{background:var(--good-soft);color:var(--good)}
+.pill.warn{background:var(--warn-soft);color:var(--gold-txt)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.info{background:var(--info-soft);color:var(--info)}
+.pill.violet{background:var(--accent-soft);color:var(--violet)}
+.muted{color:var(--muted)}
+.soft{color:var(--soft)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12px;font-weight:800;color:var(--soft)}
+.field small{color:var(--muted);font-size:12px}
+.note{padding:12px 14px;border-radius:12px;background:var(--well);border:1px solid var(--line);color:var(--soft);line-height:1.55}
+.note.warn{background:var(--warn-soft);border-color:transparent;color:var(--gold-txt)}
+.note.bad{background:var(--bad-soft);border-color:transparent;color:var(--bad)}
+.note.ok{background:var(--good-soft);border-color:transparent;color:var(--good)}
+pre.code{margin:0;padding:12px 14px;background:#140A33;color:#E9E3FF;border-radius:10px;white-space:pre-wrap;font-family:var(--f-mono);font-size:13px;line-height:1.5;max-height:360px;overflow:auto}
+.drawer-back{position:fixed;inset:0;background:rgba(13,8,32,.55);backdrop-filter:blur(2px);z-index:50;display:flex;justify-content:flex-end}
+.drawer{width:min(980px,100%);height:100%;overflow-y:auto;background:var(--bg);border-left:1px solid var(--line);padding:24px 26px 60px;display:flex;flex-direction:column;gap:16px;box-shadow:-20px 0 60px -30px rgba(0,0,0,.5)}
+.toast{position:fixed;right:20px;bottom:20px;z-index:80;max-width:520px;padding:12px 16px;border-radius:12px;background:var(--side);color:#fff;border-left:4px solid var(--good);font-weight:700;box-shadow:0 18px 40px -12px rgba(0,0,0,.5)}
+.toast.err{border-left-color:#FF5A7A}
+.center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;background:radial-gradient(120% 80% at 50% 0%,#3A1A86 0%,#1A0D3D 45%,#0B0620 100%)}
+.auth{width:100%;max-width:420px;display:flex;flex-direction:column;gap:18px}
+.auth > div:first-child .brand{font-size:22px!important;padding:0!important}
+.auth > div:first-child .brand::before{width:52px;height:52px;font-size:14px}
+.auth > div:first-child .kicker{color:#C9B8FF}
+.auth .card{display:flex;flex-direction:column;gap:14px;padding:24px;box-shadow:0 30px 60px -24px rgba(0,0,0,.6)}
+.auth > p.muted{color:#C9B8FF}
+.auth > p.muted a{color:var(--gold)}
+.auth input{width:100%}
+.qr{background:#fff;border-radius:12px;padding:10px;width:200px;height:200px}
+.qr svg{width:100%;height:100%;display:block}
+.secret{font-family:var(--f-mono);font-size:18px;font-weight:700;letter-spacing:2px;word-break:break-all;color:var(--accent)}
+.opt{display:flex;gap:10px;align-items:center;padding:6px 10px;border-radius:8px;border:1px solid var(--line)}
+.opt.correct{border-color:var(--good);background:var(--good-soft)}
+.opt.picked{background:var(--warn-soft)}
+.opt.wrong{border-color:var(--bad)}
+.pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:12px}
+.bulk{position:sticky;bottom:16px;z-index:5;margin-top:12px;padding:10px 14px;border-radius:14px;background:var(--side);color:#fff;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 18px 40px -12px rgba(0,0,0,.5)}
+.bulk .btn:not(.pri){background:transparent;color:#fff;border-color:rgba(255,255,255,.25)}
+.cols{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
+.form{display:flex;flex-direction:column;gap:12px}
+.optin{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:center}
+.optin input[type=radio]{width:20px;height:20px;accent-color:var(--good)}
+.dist{display:flex;gap:3px;align-items:flex-end;height:30px;width:88px}
+.dist span{flex:1;border-radius:2px 2px 0 0;background:var(--line2);min-height:2px}
+.dist span.c{background:var(--good)}
+/* Live preview in the game's look (play.html) */
+.kbc{border-radius:20px;padding:20px;background:radial-gradient(120% 100% at 50% 0%,#2A1460 0%,#140A33 60%,#0B0620 100%);border:1px solid #3B2A7A;font-family:var(--f-body);position:sticky;top:0}
+.kbc .meta{display:flex;justify-content:space-between;color:#C9B8FF;font-size:12px;font-weight:700;margin-bottom:10px;gap:8px;flex-wrap:wrap}
+.kbc .qcard{background:linear-gradient(180deg,#24124F,#1A0D3D);border:2px solid #FFC83D;border-radius:16px;padding:16px 18px;color:#fff;font-weight:700;font-size:16px;line-height:1.45;white-space:pre-wrap}
+.kbc pre{margin:12px 0 0;padding:12px;border-radius:10px;background:#0B0620;color:#E9E3FF;font-family:var(--f-mono);font-size:13px;white-space:pre-wrap;line-height:1.5}
+.kbc .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.kbc .o{display:flex;gap:10px;align-items:center;padding:11px 14px;border-radius:999px;border:2px solid #4B3A8F;background:#1B0E40;color:#fff;font-weight:600;font-size:14px;min-height:46px}
+.kbc .o b{color:#FFC83D;font-weight:800}
+.kbc .o.right{border-color:#4ADE80;background:#0F3B26}
+.kbc .x{margin-top:12px;font-size:13px;color:#C9B8FF;line-height:1.5}
+.kbc .x b{color:#FFC83D}
+@media (max-width:1100px){.cols{grid-template-columns:1fr}.kbc{position:static}}
+@media (max-width:900px){.shell{grid-template-columns:1fr}.side{position:static;height:auto}.g4,.g3{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:20px 16px}input[type=search]{min-width:0;width:100%}.kbc .opts{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  'use strict';
+  // ------------------------------------------------------------------ helpers (from saturday-sprint admin.html)
+  var root = document.getElementById('root');
+  var ME = null, VIEW = (location.hash || '#overview').slice(1), CACHE = {};
+  var LADDER = null;   // the money board, loaded once per boot (Ladder & pools refreshes it)
+
+  function chips(options, value, pick, label) {
+    var g = h('div', { class: 'chips' }, options.map(function (o) {
+      var b = h('button', { type: 'button', onclick: function () { pick(o[0]); } }, o[1]);
+      b.setAttribute('aria-pressed', String(o[0]) === String(value) ? 'true' : 'false');
+      return b;
+    }));
+    g.setAttribute('role', 'group'); g.setAttribute('aria-label', label || 'Filter');
+    return g;
+  }
+  function h(tag, props) {
+    var el = document.createElement(tag);
+    props = props || {};
+    Object.keys(props).forEach(function (k) {
+      var v = props[k];
+      if (v == null || v === false) return;
+      if (k === 'class') el.className = v;
+      else if (k === 'style') el.setAttribute('style', v);
+      else if (k.slice(0, 2) === 'on') el.addEventListener(k.slice(2).toLowerCase(), v);
+      else if (k === 'value') el.value = v;
+      else if (k === 'checked') el.checked = !!v;
+      else if (k === 'html') el.innerHTML = v; // only used for server-generated SVG
+      else el.setAttribute(k, v === true ? '' : v);
+    });
+    for (var i = 2; i < arguments.length; i++) add(el, arguments[i]);
+    return el;
+  }
+  // Replaces el's children; like h(), it flattens arrays and skips null/false.
+  function put(el) { el.replaceChildren(); for (var i = 1; i < arguments.length; i++) add(el, arguments[i]); return el; }
+  function add(el, kid) {
+    if (kid == null || kid === false) return;
+    if (Array.isArray(kid)) return kid.forEach(function (k) { add(el, k); });
+    el.appendChild(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  }
+  function api(method, url, body) {
+    var init = { method: method, credentials: 'same-origin', headers: {} };
+    if (body !== undefined) { init.headers['content-type'] = 'application/json'; init.body = JSON.stringify(body); }
+    return fetch(url, init).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (d) {
+        if (r.status === 401 && url.indexOf('/api/admin/login') !== 0) { ME = null; loginScreen(); throw Object.assign(new Error('Session expired. Log in again.'), { silent: true }); }
+        if (!r.ok) throw Object.assign(new Error(d.message || 'Request failed (' + r.status + ')'), d);
+        return d;
+      });
+    }, function () { throw new Error('No connection to the server.'); });
+  }
+  var toastT;
+  function toast(msg, err) {
+    var old = document.querySelector('.toast'); if (old) old.remove();
+    var t = h('div', { class: 'toast' + (err ? ' err' : ''), role: err ? 'alert' : 'status' }, msg);
+    document.body.appendChild(t);
+    clearTimeout(toastT); toastT = setTimeout(function () { t.remove(); }, err ? 7000 : 3500);
+  }
+  function fail(e) { if (!e.silent) toast(e.message, true); }
+  var pad = function (n) { return String(n).padStart(2, '0'); };
+  var dt = function (ms) { if (!ms) return '–'; var d = new Date(ms); return d.toLocaleDateString(undefined, { day: '2-digit', month: 'short' }) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+  var secs = function (s) { if (s == null) return '–'; s = Math.round(s); return Math.floor(s / 60) + ':' + pad(s % 60); };
+  var rupees = function (n) { return '₹' + Number(n || 0).toLocaleString('en-IN'); };
+  var isSuper = function () { return ME && ME.role === 'super_admin'; };
+  function pill(text, kind) { return h('span', { class: 'pill ' + (kind || '') }, text); }
+  function debounce(fn, ms) { var t; return function () { var a = arguments, s = this; clearTimeout(t); t = setTimeout(function () { fn.apply(s, a); }, ms); }; }
+  function download(url) { var a = h('a', { href: url, download: '' }); document.body.appendChild(a); a.click(); a.remove(); }
+  function localInput(ms) { var d = new Date(ms); if (isNaN(d)) return ''; return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function th(list) { return h('thead', null, h('tr', null, list.map(function (t) { return Array.isArray(t) ? h('th', { class: t[1] }, t[0]) : h('th', null, t); }))); }
+  function stat(k, v, sub) { return h('div', { class: 'card stat' }, h('div', { class: 'k' }, k), h('div', { class: 'v' }, v), sub ? h('div', { class: 's' }, sub) : null); }
+  function pager(d, onPage) {
+    var pages = Math.max(1, Math.ceil(d.total / d.size));
+    return h('div', { class: 'pager' }, h('span', { class: 'muted' }, d.total.toLocaleString('en-IN') + ' total · page ' + d.page + ' of ' + pages),
+      h('button', { class: 'btn sm', disabled: d.page <= 1, onclick: function () { onPage(d.page - 1); } }, '← Prev'),
+      h('button', { class: 'btn sm', disabled: d.page >= pages, onclick: function () { onPage(d.page + 1); } }, 'Next →'));
+  }
+  // A file the admin picked → { csv } or { xlsxBase64 } for the import APIs.
+  function readFile(file) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onerror = function () { reject(new Error('Could not read the file.')); };
+      if (/\.xlsx$/i.test(file.name)) { r.onload = function () { resolve({ xlsxBase64: String(r.result).split(',')[1], filename: file.name }); }; r.readAsDataURL(file); }
+      else { r.onload = function () { resolve({ csv: String(r.result), filename: file.name }); }; r.readAsText(file); }
+    });
+  }
+  var STATUS_KIND = { draft: '', review: 'info', published: 'ok', retired: 'bad' };
+  var skillName = function (id) { var n = ''; (LADDER ? LADDER.checkpoints : []).forEach(function (c) { c.skills.forEach(function (s) { if (s[0] === id) n = s[1]; }); }); return n; };
+
+  // ------------------------------------------------------------------ auth screens (from saturday-sprint)
+  function authShell(title, sub, body) {
+    root.replaceChildren(h('div', { class: 'center' }, h('div', { class: 'auth' },
+      h('div', null, h('div', { class: 'kicker' }, 'Admin console · secure login'), h('div', { class: 'brand' }, h('div', null, 'Kaun Banega ', h('span', null, 'Coder')))),
+      h('div', { class: 'card' }, h('h1', { style: 'font-size:20px' }, title), sub ? h('p', { class: 'soft', style: 'margin:0;line-height:1.5' }, sub) : null, body),
+      h('p', { class: 'muted', style: 'font-size:12px;line-height:1.5;margin:0' }, 'Admin access only. Players log in at ', h('a', { href: '/login' }, '/login'), '.'))));
+  }
+  function errBox() { return h('div', { class: 'note bad', hidden: true }); }
+  function showErr(box, e) { box.textContent = e.message; box.hidden = false; }
+  function loginScreen() {
+    var email = h('input', { type: 'email', autocomplete: 'username', placeholder: 'you@nxtwave.co.in', required: true });
+    var pw = h('input', { type: 'password', autocomplete: 'current-password', placeholder: 'Password', required: true });
+    var err = errBox(), btn = h('button', { class: 'btn pri', type: 'submit' }, 'Continue');
+    var f = h('form', { style: 'display:flex;flex-direction:column;gap:12px', onsubmit: function (e) {
+      e.preventDefault(); err.hidden = true; btn.disabled = true;
+      api('POST', '/api/admin/login', { email: email.value, password: pw.value }).then(function (r) {
+        if (r.next === 'totp') totpScreen(); else if (r.next === 'setup') setupScreen(); else boot();
+      }, function (e) { showErr(err, e); btn.disabled = false; });
+    } }, h('div', { class: 'field' }, h('label', null, 'Email'), email), h('div', { class: 'field' }, h('label', null, 'Password'), pw), btn, err);
+    authShell('Admin login', null, f);
+    email.focus();
+  }
+  function codeInput() { return h('input', { type: 'text', inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: 6, placeholder: '123456', class: 'mono', style: 'font-size:28px;letter-spacing:8px;text-align:center' }); }
+  function totpScreen() {
+    var code = codeInput(), err = errBox(), btn = h('button', { class: 'btn pri', type: 'submit' }, 'Verify');
+    var f = h('form', { style: 'display:flex;flex-direction:column;gap:12px', onsubmit: function (e) {
+      e.preventDefault(); err.hidden = true; btn.disabled = true;
+      api('POST', '/api/admin/login/totp', { code: code.value }).then(boot, function (e) { showErr(err, e); btn.disabled = false; code.select(); });
+    } }, code, btn, err, h('button', { type: 'button', class: 'btn', onclick: loginScreen }, 'Back'));
+    authShell('Authenticator code', 'Enter the 6-digit code from your authenticator app.', f);
+    code.focus();
+  }
+  function setupScreen() {
+    var sub = 'Admins must use an authenticator app (Google Authenticator, Microsoft Authenticator, Authy…).';
+    authShell('Set up two-step verification', sub, h('div', { class: 'muted' }, 'Loading…'));
+    api('GET', '/api/admin/totp/setup').then(function (s) {
+      var code = codeInput(), err = errBox(), btn = h('button', { class: 'btn pri', type: 'submit' }, 'Turn on and continue');
+      var f = h('form', { style: 'display:flex;flex-direction:column;gap:12px', onsubmit: function (e) {
+        e.preventDefault(); err.hidden = true; btn.disabled = true;
+        api('POST', '/api/admin/totp/enable', { code: code.value }).then(boot, function (e) { showErr(err, e); btn.disabled = false; code.select(); });
+      } },
+        h('ol', { style: 'margin:0;padding-left:20px;line-height:1.7' }, h('li', null, 'Open your authenticator app and scan this code.'), h('li', null, 'Or enter the setup key manually.'), h('li', null, 'Type the 6-digit code it shows.')),
+        h('div', { class: 'qr', html: s.qrSvg }),
+        h('div', null, h('div', { class: 'muted', style: 'font-size:12px;font-weight:800' }, 'Setup key'), h('div', { class: 'secret' }, s.secret.replace(/(.{4})/g, '$1 ').trim())),
+        code, btn, err);
+      authShell('Set up two-step verification', sub, f);
+      code.focus();
+    }, function (e) { if (!e.silent) { toast(e.message, true); loginScreen(); } });
+  }
+  function passwordForm(forced) {
+    var cur = h('input', { type: 'password', autocomplete: 'current-password' });
+    var nx = h('input', { type: 'password', autocomplete: 'new-password' });
+    var nx2 = h('input', { type: 'password', autocomplete: 'new-password' });
+    var err = errBox(), btn = h('button', { class: 'btn pri', type: 'submit' }, 'Change password');
+    return h('form', { style: 'display:flex;flex-direction:column;gap:12px;max-width:420px', onsubmit: function (e) {
+      e.preventDefault(); err.hidden = true;
+      if (nx.value !== nx2.value) return showErr(err, new Error('The new passwords do not match.'));
+      btn.disabled = true;
+      api('POST', '/api/admin/password', { current: cur.value, next: nx.value }).then(function () {
+        toast('Password changed.'); if (forced) boot(); else { cur.value = nx.value = nx2.value = ''; btn.disabled = false; }
+      }, function (e) { showErr(err, e); btn.disabled = false; });
+    } },
+      h('div', { class: 'field' }, h('label', null, forced ? 'Temporary password' : 'Current password'), cur),
+      h('div', { class: 'field' }, h('label', null, 'New password (12+ characters, letters and a number)'), nx),
+      h('div', { class: 'field' }, h('label', null, 'Repeat new password'), nx2), btn, err);
+  }
+  function boot() {
+    api('GET', '/api/admin/me').then(function (me) {
+      ME = me;
+      if (me.mustChangePw) return authShell('Choose your password', 'You signed in with a temporary password. Set your own to continue.', passwordForm(true));
+      return api('GET', '/api/admin/ladder').then(function (d) { LADDER = d.ladder; go(VIEW); });
+    }, function (e) { if (!e.silent) loginScreen(); });
+  }
+
+  // ------------------------------------------------------------------ layout
+  var NAV = [
+    'Content', ['overview', 'Overview'], ['questions', 'Question bank'], ['import', 'Import'], ['analytics', 'Question analytics'], ['fff', 'Fastest finger'],
+    'Game', ['ladder', 'Ladder & pools'], ['events', 'Events'], ['games', 'Games'], ['leaderboard', 'Leaderboard'], ['players', 'Players & roster'],
+    'Control room', ['settings', 'Settings', true], ['admins', 'Admins', true], ['bin', 'Recycle bin'], ['audit', 'Audit log'], ['account', 'My account']
+  ];
+  function layout(content) {
+    var nav = h('div', { class: 'nav' }, NAV.map(function (n) {
+      if (typeof n === 'string') return h('div', { class: 'grp' }, n);
+      if (n[2] && !isSuper()) return null;
+      return h('button', { 'aria-current': VIEW === n[0] ? 'page' : null, onclick: function () { go(n[0]); } }, n[1],
+        n[0] === 'questions' && CACHE.review ? h('span', { class: 'badge', title: 'Questions waiting for review' }, CACHE.review) : null);
+    }));
+    return h('div', { class: 'shell' },
+      h('aside', { class: 'side' },
+        h('div', { class: 'brand' }, h('div', null, 'Kaun Banega', h('br'), h('span', null, 'Coder'), h('small', null, 'Admin console'))),
+        nav,
+        h('a', { class: 'btn', href: '/', target: '_blank', rel: 'noopener', style: 'display:flex;align-items:center;justify-content:center;text-decoration:none' }, 'Open the game ↗'),
+        h('div', { class: 'me' }, h('b', { title: ME.email }, ME.name || ME.email), h('span', null, (ME.role === 'super_admin' ? 'Super admin' : 'Admin') + ' · ' + ME.email),
+          h('button', { class: 'btn sm', onclick: function () { api('POST', '/api/admin/logout').then(loginScreen, loginScreen); } }, 'Log out'))),
+      h('main', null, content));
+  }
+  function header(kicker, title, sub, actions) {
+    // kicker is a path like '~/admin/questions'; show the nav group it belongs to
+    var view = kicker.split('/')[2] || 'overview', group = '', found = 'Admin';
+    NAV.forEach(function (n) { if (typeof n === 'string') group = n; else if (n[0] === view) found = group; });
+    kicker = found;
+    return h('div', { class: 'head' }, h('div', null, h('div', { class: 'kicker' }, kicker), h('h1', null, title), sub ? h('p', null, sub) : null), actions ? h('div', { class: 'row' }, actions) : null);
+  }
+  function go(view) {
+    VIEW = VIEWS[view] ? view : 'overview';
+    if ((VIEW === 'admins' || VIEW === 'settings') && !isSuper()) VIEW = 'overview';
+    try { history.replaceState(null, '', '#' + VIEW); } catch (e) {}
+    var holder = h('div', { class: 'muted' }, 'Loading…');
+    root.replaceChildren(layout(holder));
+    Promise.resolve().then(function () { return VIEWS[VIEW](); }).then(function (node) {
+      if (node) root.replaceChildren(layout(node));
+    }, function (e) { fail(e); holder.textContent = e.message; });
+  }
+  function refresh() { go(VIEW); }
+  function drawer(content) {
+    var back = h('div', { class: 'drawer-back', onclick: function (e) { if (e.target === back) close(); } });
+    var close = function () { back.remove(); document.removeEventListener('keydown', esc); };
+    var esc = function (e) { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', esc);
+    var panel = h('div', { class: 'drawer', role: 'dialog', 'aria-modal': 'true' });
+    back.appendChild(panel); document.body.appendChild(back);
+    var set = function (node) { panel.replaceChildren(h('div', { class: 'row', style: 'justify-content:flex-end' }, h('button', { class: 'btn sm', onclick: close }, 'Close ✕')), node); };
+    set(content || h('div', { class: 'muted' }, 'Loading…'));
+    return { set: set, close: close };
+  }
+  // ---------- charts (from saturday-sprint)
+  function bars(rows, opts) { // horizontal bars: [{label, value, text, color}]
+    var max = opts && opts.max || Math.max(1, Math.max.apply(null, rows.map(function (r) { return r.value || 0; })));
+    return h('div', { style: 'display:flex;flex-direction:column;gap:8px' }, rows.map(function (r) {
+      return h('div', { style: 'display:grid;grid-template-columns:' + (opts && opts.labelW || '140px') + ' minmax(0,1fr) 80px;gap:10px;align-items:center;font-size:13px' },
+        h('span', { style: 'font-weight:600;line-height:1.3;overflow-wrap:anywhere', title: r.label }, r.label),
+        h('span', { style: 'height:12px;border-radius:6px;background:var(--well);overflow:hidden' }, h('span', { style: 'display:block;height:100%;width:' + Math.min(100, Math.round((r.value || 0) / max * 100)) + '%;background:' + (r.color || 'var(--accent)') })),
+        h('span', { class: 'mono', style: 'text-align:right' }, r.text));
+    }));
+  }
+  function dayChart(daily, key) {
+    var max = Math.max(1, Math.max.apply(null, daily.map(function (x) { return x[key]; })));
+    return h('div', null,
+      h('div', { style: 'display:flex;align-items:flex-end;gap:4px;height:120px;border-bottom:1px solid var(--line)' }, daily.map(function (x) {
+        return h('div', { title: x.day + ': ' + x[key], style: 'flex:1;min-width:2px;height:' + Math.max(x[key] ? 3 : 0, Math.round(x[key] / max * 100)) + '%;background:var(--accent);border-radius:3px 3px 0 0;opacity:' + (x[key] ? 1 : .2) });
+      })),
+      h('div', { class: 'row muted', style: 'justify-content:space-between;font-size:12px;margin-top:4px' }, h('span', null, daily[0].day), h('span', null, 'peak ' + max), h('span', null, daily[daily.length - 1].day)));
+  }
+  function colChart(rows, opts) {
+    var max = opts && opts.max || Math.max(1, Math.max.apply(null, rows.map(function (r) { return r.value || 0; })));
+    return h('div', null,
+      h('div', { style: 'display:flex;align-items:flex-end;gap:10px;height:150px;border-bottom:1px solid var(--line);padding-top:20px' }, rows.map(function (r) {
+        return h('div', { title: r.label + ': ' + r.text, style: 'flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px' },
+          h('span', { class: 'mono', style: 'font-size:14px' }, r.text),
+          h('div', { style: 'width:100%;max-width:56px;border-radius:4px 4px 0 0;height:' + Math.max(r.value ? 2 : 0, Math.round(r.value / max * 100)) + '%;background:' + (r.color || 'var(--accent)') }));
+      })),
+      h('div', { style: 'display:flex;gap:10px;margin-top:6px' }, rows.map(function (r) {
+        return h('div', { class: 'muted', style: 'flex:1;min-width:0;text-align:center;font-size:11px;line-height:1.3;overflow-wrap:anywhere' }, r.label);
+      })));
+  }
+  function dist(picks, correct) { // tiny A–D answer spread, the right option in green
+    var max = Math.max(1, Math.max.apply(null, picks));
+    return h('span', { class: 'dist', title: picks.map(function (p, i) { return 'ABCD'[i] + ': ' + p; }).join('  ') },
+      picks.map(function (p, i) { return h('span', { class: i === correct ? 'c' : '', style: 'height:' + Math.max(6, Math.round(p / max * 100)) + '%' }); }));
+  }
+
+  // ------------------------------------------------------------------ views
+  var VIEWS = {};
+
+  // ---------- overview
+  VIEWS.overview = function () {
+    return api('GET', '/api/admin/overview').then(function (o) {
+      CACHE.review = o.bank.byStatus.review || 0;
+      var open = o.pools.filter(function (p) { return p.open; });
+      var thin = open.filter(function (p) { return p.size < 15; });
+      var cps = (LADDER.checkpoints || []).map(function (c) { return c.id; });
+      return h('div', { style: 'display:flex;flex-direction:column;gap:16px' },
+        header('~/admin', 'Overview', 'The question bank, how the game is being played, and what needs attention.'),
+        thin.length ? h('div', { class: 'note warn' }, 'Thin pools: ' + thin.map(function (p) { return 'rung ' + p.rung + ' (' + p.size + ')'; }).join(', ') +
+          '. With fewer than 15 published questions per open rung, regular players start seeing repeats. Add or publish questions for those rungs, or widen their rules in Ladder & pools.') : null,
+        h('div', { class: 'grid g4' },
+          stat('Published questions', (o.bank.byStatus.published || 0).toLocaleString('en-IN'), o.bank.total.toLocaleString('en-IN') + ' in the bank · ' + (o.bank.byStatus.review || 0) + ' waiting for review'),
+          stat('Games today', o.today.games, o.today.players + ' players today'),
+          stat('Games played', o.totals.games.toLocaleString('en-IN'), o.totals.players + ' players in total'),
+          stat('Roster', o.totals.roster.toLocaleString('en-IN'), o.totals.accounts + ' have logged in')),
+        h('div', { class: 'grid g2' },
+          h('div', { class: 'card' }, h('h2', null, 'Games per day · last 14 days'), dayChart(o.daily, 'games')),
+          h('div', { class: 'card' }, h('h2', null, 'How far players get · last 14 days'),
+            colChart(o.funnel.map(function (f) { return { label: 'Q' + f.rung + (f.checkpoint ? ' · ' + f.checkpoint : ''), value: f.cleared, text: String(f.cleared) }; })),
+            h('div', { class: 'muted', style: 'font-size:12px;margin-top:8px' }, 'Ranked games that cleared each rung.'))),
+        h('div', { class: 'grid g2' },
+          h('div', { class: 'card' }, h('h2', null, 'Pools per rung'),
+            h('table', null, th(['Rung', 'Prize', 'Draws from', ['Published', 'num']]), h('tbody', null, o.pools.map(function (p) {
+              return h('tr', { style: p.open ? '' : 'opacity:.5' }, h('td', null, 'Q' + p.rung), h('td', { class: 'mono' }, rupees(p.amount)),
+                h('td', null, p.rule.checkpoint + ' · difficulty ' + p.rule.diffMin + '–' + p.rule.diffMax + (p.rule.skills.length ? ' · ' + p.rule.skills.join(', ') : '') + (p.open ? '' : ' (not open yet)')),
+                h('td', { class: 'num' }, pill(String(p.size), p.size === 0 ? 'bad' : p.size < 15 ? 'warn' : 'ok')));
+            })))),
+          h('div', { style: 'display:flex;flex-direction:column;gap:16px' },
+            h('div', { class: 'card' }, h('h2', null, 'Bank by checkpoint'),
+              h('table', null, th(['', ['Published', 'num'], ['Review', 'num'], ['Draft', 'num'], ['Retired', 'num']]), h('tbody', null, cps.map(function (c) {
+                var b = o.bank.byCheckpoint[c] || {};
+                return h('tr', { class: 'click', onclick: function () { CACHE.q = Object.assign(qFilters(), { checkpoint: c }); go('questions'); } }, h('td', null, h('b', null, c)),
+                  ['published', 'review', 'draft', 'retired'].map(function (s) { return h('td', { class: 'num' }, b[s] || 0); }));
+              })))),
+            h('div', { class: 'card' }, h('h2', null, 'Accuracy by skill · last 30 days'),
+              o.skills.length ? bars(o.skills.map(function (s) { return { label: s.skill + ' ' + skillName(s.skill), value: s.pct, text: s.pct + '% · ' + s.n }; }), { max: 100, labelW: '170px' }) : h('div', { class: 'muted' }, 'No answers yet.')),
+            o.events.length ? h('div', { class: 'card' }, h('h2', null, 'Live and upcoming events'), o.events.map(function (e) {
+              return h('div', { class: 'row', style: 'justify-content:space-between;padding:6px 0' }, h('span', null, h('b', null, e.title), ' ', h('span', { class: 'muted' }, dt(e.openAt) + ' → ' + dt(e.closeAt))),
+                pill(e.phase, e.phase === 'live' ? 'warn' : 'info'));
+            })) : null)));
+    });
+  };
+
+  // ---------- question bank
+  function qFilters() { return CACHE.q || (CACHE.q = { q: '', status: '', checkpoint: '', skill: '', diff: '', sort: 'recent', page: 1 }); }
+  VIEWS.questions = function () {
+    var F = qFilters(), sel = CACHE.sel || (CACHE.sel = new Set());
+    var qs = ['q', 'status', 'checkpoint', 'skill', 'diff', 'sort', 'page'].map(function (k) { return k + '=' + encodeURIComponent(F[k] || ''); }).join('&');
+    return api('GET', '/api/admin/questions?' + qs + '&size=50').then(function (d) {
+      var set = function (k, v) { F[k] = v; if (k !== 'page') F.page = 1; refresh(); };
+      var search = h('input', { type: 'search', placeholder: 'Search text, code, ID or tag…', value: F.q, oninput: debounce(function () { set('q', search.value); }, 350) });
+      var cpSel = h('select', { onchange: function () { F.skill = ''; set('checkpoint', cpSel.value); } }, h('option', { value: '' }, 'All checkpoints'),
+        LADDER.checkpoints.map(function (c) { return h('option', { value: c.id, selected: F.checkpoint === c.id }, c.id + ' · ' + c.title); }));
+      var skSel = h('select', { onchange: function () { set('skill', skSel.value); } }, h('option', { value: '' }, 'All skills'),
+        LADDER.checkpoints.filter(function (c) { return !F.checkpoint || c.id === F.checkpoint; }).map(function (c) {
+          return c.skills.map(function (s) { return h('option', { value: s[0], selected: F.skill === s[0] }, s[0] + ' · ' + s[1]); });
+        }));
+      var dSel = h('select', { onchange: function () { set('diff', dSel.value); } }, [['', 'Any difficulty'], ['1-3', 'Easy (1–3)'], ['4-6', 'Medium (4–6)'], ['7-10', 'Hard (7–10)']]
+        .concat([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) { return [String(n), 'Difficulty ' + n]; })).map(function (o) { return h('option', { value: o[0], selected: F.diff === o[0] }, o[1]); }));
+      var sSel = h('select', { onchange: function () { set('sort', sSel.value); } }, [['recent', 'Recently changed'], ['diff', 'Checkpoint, difficulty'], ['played', 'Most played'], ['id', 'Oldest first']]
+        .map(function (o) { return h('option', { value: o[0], selected: F.sort === o[0] }, o[1]); }));
+      var allBox = h('input', { type: 'checkbox', checked: d.rows.length && d.rows.every(function (r) { return sel.has(r.id); }), onchange: function () {
+        d.rows.forEach(function (r) { if (allBox.checked) sel.add(r.id); else sel.delete(r.id); }); refresh();
+      } });
+      var bulk = function (status) {
+        var ids = Array.from(sel);
+        api('POST', '/api/admin/questions/bulk-status', { ids: ids, status: status }).then(function (r) { toast(r.changed + ' question(s) moved to ' + status + '.'); sel.clear(); refresh(); }, fail);
+      };
+      return h('div', null,
+        header('~/admin/questions', 'Question bank', 'Every question in every state. Only published questions are played. Editing a published question saves a new version; games already played keep the version they were dealt.',
+          [h('button', { class: 'btn', onclick: function () { download('/api/admin/export/bank.csv'); } }, 'Export CSV'), h('button', { class: 'btn pri', onclick: function () { editQuestion(null); } }, '+ New question')]),
+        h('div', { class: 'toolbar' }, search, cpSel, skSel, dSel, sSel),
+        h('div', { class: 'toolbar' }, chips([['', 'All'], ['draft', 'Draft'], ['review', 'Review'], ['published', 'Published'], ['retired', 'Retired']], F.status, function (v) { set('status', v); }, 'Status')),
+        h('div', { class: 'tablewrap' }, h('table', null,
+          th([h('span', null, allBox), 'ID', 'CP', 'Skill', ['Diff', 'num'], 'Question', 'Status', ['Played', 'num'], ['Right', 'num'], 'Updated']),
+          h('tbody', null, d.rows.length ? d.rows.map(function (q) {
+            var box = h('input', { type: 'checkbox', checked: sel.has(q.id), onclick: function (e) { e.stopPropagation(); }, onchange: function () { if (box.checked) sel.add(q.id); else sel.delete(q.id); refresh(); } });
+            var n = q.stats ? q.stats.n : 0;
+            return h('tr', { class: 'click', onclick: function () { editQuestion(q.id); } },
+              h('td', null, box), h('td', { class: 'mono', style: 'white-space:nowrap' }, q.extId, h('div', { class: 'muted', style: 'font-size:14px' }, '#' + q.id)), h('td', null, q.checkpoint), h('td', { title: skillName(q.skill) }, q.skill || '–'),
+              h('td', { class: 'num' }, q.difficulty), h('td', { style: 'max-width:440px' }, q.q.length > 110 ? q.q.slice(0, 110) + '…' : q.q, q.code ? h('span', { class: 'muted' }, '  </>') : null),
+              h('td', null, pill(q.status, STATUS_KIND[q.status]), q.version > 1 ? h('span', { class: 'muted', style: 'font-size:12px' }, ' v' + q.version) : null),
+              h('td', { class: 'num' }, n || '–'), h('td', { class: 'num' }, n ? Math.round(q.stats.ok * 100 / n) + '%' : '–'), h('td', { class: 'muted', style: 'white-space:nowrap' }, dt(q.updatedAt)));
+          }) : h('tr', null, h('td', { colspan: 10, class: 'muted' }, 'No questions match. Import a sheet or add one.'))))),
+        pager(d, function (p) { set('page', p); }),
+        sel.size ? h('div', { class: 'bulk' }, h('b', null, sel.size + ' selected'),
+          h('button', { class: 'btn sm pri', onclick: function () { bulk('published'); } }, 'Publish'),
+          h('button', { class: 'btn sm', onclick: function () { bulk('review'); } }, 'Send to review'),
+          h('button', { class: 'btn sm', onclick: function () { bulk('draft'); } }, 'Back to draft'),
+          h('button', { class: 'btn sm bad', onclick: function () { bulk('retired'); } }, 'Retire'),
+          h('button', { class: 'btn sm', onclick: function () { sel.clear(); refresh(); } }, 'Clear')) : null);
+    });
+  };
+
+  // The KBC question card, as players see it (with the right answer marked for the editor).
+  function preview(v) {
+    var opts = v.options || ['', '', '', ''];
+    return h('div', { class: 'kbc' },
+      h('div', { class: 'meta' }, h('span', null, (v.checkpoint || 'C?') + ' · ' + (v.skill ? v.skill + ' ' + skillName(v.skill) : 'no skill') + (v.type ? ' · ' + v.type : '')), h('span', null, 'difficulty ' + (v.difficulty || '?') + '/10')),
+      h('div', { class: 'qcard' }, v.q || h('span', { style: 'opacity:.5' }, 'The question appears here…'), v.code ? h('pre', null, v.code) : null),
+      h('div', { class: 'opts' }, opts.map(function (o, i) { return h('div', { class: 'o' + (i === Number(v.correct) ? ' right' : '') }, h('b', null, 'ABCD'[i] + ':'), o || h('span', { style: 'opacity:.4' }, 'Option ' + 'ABCD'[i])); })),
+      v.hint ? h('div', { class: 'x' }, h('b', null, 'Ask the expert: '), v.hint) : null,
+      v.why ? h('div', { class: 'x' }, h('b', null, 'After answering: '), v.why) : null);
+  }
+
+  function editQuestion(id) {
+    var dr = drawer();
+    var load = id ? api('GET', '/api/admin/questions/' + id) : Promise.resolve({ question: { extId: '', status: 'draft', checkpoint: qFilters().checkpoint || 'C1', skill: '', type: '', difficulty: 1, q: '', code: '', options: ['', '', '', ''], correct: 0, hint: '', why: '', tags: [] }, versions: [] });
+    load.then(function (d) {
+      var q = d.question;
+      var f = {
+        ext_id: h('input', { type: 'text', value: q.extId, placeholder: 'e.g. C2-P6-014 (blank = automatic)' }),
+        checkpoint: h('select', null, LADDER.checkpoints.map(function (c) { return h('option', { value: c.id, selected: q.checkpoint === c.id }, c.id + ' · ' + c.title); })),
+        skill: h('select'),
+        type: h('input', { type: 'text', value: q.type, placeholder: 'Concept, Predict the output, Spot the bug…', list: 'qtypes' }),
+        difficulty: h('input', { type: 'number', min: 1, max: 10, value: q.difficulty }),
+        q: h('textarea', { rows: 3 }), code: h('textarea', { rows: 5, style: 'font-family:JetBrains Mono,monospace' }),
+        options: [0, 1, 2, 3].map(function (i) { return h('input', { type: 'text', value: q.options[i] || '' }); }),
+        radios: [0, 1, 2, 3].map(function (i) { return h('input', { type: 'radio', name: 'correct', checked: q.correct === i, title: 'Mark ' + 'ABCD'[i] + ' as correct' }); }),
+        hint: h('textarea', { rows: 2 }), why: h('textarea', { rows: 3 }), tags: h('input', { type: 'text', value: (q.tags || []).join(', '), placeholder: 'loops, range' }),
+        status: h('select', null, ['draft', 'review', 'published', 'retired'].map(function (s) { return h('option', { value: s, selected: q.status === s }, s); }))
+      };
+      f.q.value = q.q; f.code.value = q.code; f.hint.value = q.hint; f.why.value = q.why;
+      var fillSkills = function () {
+        var cp = LADDER.checkpoints.filter(function (c) { return c.id === f.checkpoint.value; })[0];
+        put(f.skill, h('option', { value: '' }, '–'), (cp ? cp.skills : []).map(function (s) { return h('option', { value: s[0], selected: q.skill === s[0] }, s[0] + ' · ' + s[1]); }));
+      };
+      fillSkills();
+      var value = function () {
+        return { ext_id: f.ext_id.value.trim(), checkpoint: f.checkpoint.value, skill: f.skill.value, type: f.type.value, difficulty: Number(f.difficulty.value),
+          q: f.q.value, code: f.code.value, options: f.options.map(function (o) { return o.value; }), correct: f.radios.findIndex(function (r) { return r.checked; }),
+          hint: f.hint.value, why: f.why.value, tags: f.tags.value, status: f.status.value };
+      };
+      var prevBox = h('div');
+      var paint = function () { prevBox.replaceChildren(preview(value())); };
+      var err = errBox();
+      var save = function () {
+        err.hidden = true;
+        var v = value();
+        var go1 = id ? api('PUT', '/api/admin/questions/' + id, v) : api('POST', '/api/admin/questions', v);
+        go1.then(function (r) {
+          toast(id ? (r.result === 'unchanged' ? 'Nothing changed.' : 'Saved.') : 'Question added.');
+          if (r.duplicateOf) toast('Saved, but it looks like a duplicate of ' + r.duplicateOf.extId + '.', true);
+          dr.close(); refresh();
+        }, function (e) { showErr(err, e); });
+      };
+      var field = function (label, el, hint) { return h('div', { class: 'field' }, h('label', null, label), el, hint ? h('small', null, hint) : null); };
+      var form = h('form', { class: 'form', oninput: paint, onchange: paint, onsubmit: function (e) { e.preventDefault(); save(); } },
+        h('datalist', { id: 'qtypes' }, ['Concept', 'Predict the output', 'Spot the bug', 'Fill the blank', 'Order the steps', 'Pick the best', 'Odd one out', 'Analogy', 'What happens?'].map(function (t) { return h('option', { value: t }); })),
+        h('div', { class: 'grid g2' }, field('ID', f.ext_id), field('Status', f.status, id ? null : 'New questions start as draft; publish when reviewed.')),
+        h('div', { class: 'grid g3' }, field('Checkpoint', f.checkpoint), field('Skill', f.skill), field('Difficulty (1–10)', f.difficulty)),
+        field('Type', f.type),
+        field('Question', f.q), field('Code (optional)', f.code, 'Shown in a code block under the question. Indentation is kept.'),
+        h('div', { class: 'field' }, h('label', null, 'Options · mark the correct one'), [0, 1, 2, 3].map(function (i) { return h('label', { class: 'optin' }, f.radios[i], h('span', { class: 'row', style: 'flex-wrap:nowrap' }, h('b', { style: 'width:18px' }, 'ABCD'[i]), f.options[i])); }),
+          h('small', null, 'Players see the options in a different order each game.')),
+        field('Expert hint (Ask the expert lifeline)', f.hint, 'A nudge, not the answer.'),
+        field('Explanation (shown after answering)', f.why),
+        field('Tags', f.tags, 'Comma-separated.'),
+        err,
+        h('div', { class: 'row' }, h('button', { class: 'btn pri', type: 'submit' }, id ? 'Save' : 'Add question'),
+          id ? h('button', { class: 'btn bad', type: 'button', onclick: function () {
+            if (!confirm('Delete ' + q.extId + '? It moves to the Recycle bin. Games already played keep their copy.')) return;
+            api('DELETE', '/api/admin/questions/' + id).then(function () { toast('Deleted.'); dr.close(); refresh(); }, fail);
+          } }, 'Delete') : null));
+      f.checkpoint.addEventListener('change', function () { q.skill = ''; fillSkills(); });
+      paint();
+      var stats = q.stats && q.stats.n ? h('div', { class: 'note' }, 'Played ' + q.stats.n + ' times · ' + Math.round(q.stats.ok * 100 / q.stats.n) + '% right. Full spread in Question analytics.') : null;
+      var hist = d.versions.length > 1 ? h('div', { class: 'card' }, h('h2', null, 'Versions'), d.versions.map(function (v) {
+        return h('details', { style: 'border-top:1px solid var(--line);padding:8px 0' }, h('summary', { style: 'cursor:pointer' }, 'v' + v.version + ' · ' + dt(v.at) + ' · ' + (v.by || '')),
+          h('div', { style: 'margin-top:8px' }, preview(v.data)));
+      })) : null;
+      dr.set(h('div', { style: 'display:flex;flex-direction:column;gap:16px' },
+        header('~/admin/questions', id ? 'Edit ' + q.extId : 'New question', id ? '#' + q.id + ' · version ' + q.version + ' · last changed ' + dt(q.updatedAt) + (q.updatedBy ? ' by ' + q.updatedBy : '') : null),
+        h('div', { class: 'cols' }, form, h('div', { style: 'display:flex;flex-direction:column;gap:12px' }, h('div', { class: 'kicker' }, 'Live preview'), prevBox, stats)), hist));
+    }, function (e) { fail(e); dr.close(); });
+  }
+
+  // ---------- import
+  VIEWS['import'] = function () {
+    return api('GET', '/api/admin/imports').then(function (past) {
+      var file = h('input', { type: 'file', accept: '.csv,.xlsx,text/csv' });
+      var asDraft = h('input', { type: 'checkbox', checked: !isSuper() });
+      var out = h('div', { style: 'display:flex;flex-direction:column;gap:14px' });
+      var payload = null;
+      var check = function () {
+        if (!file.files[0]) return toast('Choose a file first.', true);
+        out.replaceChildren(h('div', { class: 'muted' }, 'Checking every row…'));
+        readFile(file.files[0]).then(function (p) {
+          payload = p;
+          return api('POST', '/api/admin/import/questions', Object.assign({}, p, { dry: true, asDraft: asDraft.checked }));
+        }).then(show, function (e) { out.replaceChildren(h('div', { class: 'note bad' }, e.message)); });
+      };
+      var commit = function () {
+        out.replaceChildren(h('div', { class: 'muted' }, 'Importing…'));
+        api('POST', '/api/admin/import/questions', Object.assign({}, payload, { dry: false, asDraft: asDraft.checked })).then(function (r) {
+          toast('Imported: ' + r.add + ' added, ' + r.update + ' updated.'); refresh();
+        }, function (e) { out.replaceChildren(h('div', { class: 'note bad' }, e.message)); });
+      };
+      function show(r) {
+        if (!r.ok) return out.replaceChildren(h('div', { class: 'note bad' }, r.error));
+        var good = r.add + r.update;
+        put(out,
+          h('div', { class: 'grid g4' }, stat('Rows', r.rows), stat('New', r.add, asDraft.checked ? 'as drafts' : 'status from the sheet, else published'), stat('Updated', r.update, 'new version saved'), stat('With errors', r.errors.length, r.errors.length ? 'skipped on import' : 'none')),
+          r.errors.length ? h('div', { class: 'card' }, h('h2', null, 'Rows with errors · fix them in the sheet and check again'),
+            h('div', { class: 'tablewrap', style: 'max-height:340px' }, h('table', null, th(['Row', 'ID', 'Column', 'Problem']), h('tbody', null, r.errors.slice(0, 500).map(function (e) {
+              return h('tr', null, h('td', { class: 'mono' }, e.row), h('td', { class: 'mono' }, e.extId || '–'), h('td', null, e.field), h('td', null, e.msg));
+            }))))) : null,
+          r.warnings.length ? h('div', { class: 'note warn' }, r.warnings.length + ' possible duplicate(s): ', r.warnings.slice(0, 8).map(function (w) { return 'row ' + w.row + ' (' + w.msg + ')'; }).join('; ')) : null,
+          r.preview.length ? h('div', { class: 'card' }, h('h2', null, 'What will change (first ' + r.preview.length + ')'),
+            h('table', null, th(['Row', '', 'ID', 'CP', ['Diff', 'num'], 'Question', 'Status']), h('tbody', null, r.preview.map(function (p) {
+              return h('tr', null, h('td', { class: 'mono' }, p.row), h('td', null, pill(p.action, p.action === 'add' ? 'ok' : 'info')), h('td', { class: 'mono' }, p.extId), h('td', null, p.checkpoint), h('td', { class: 'num' }, p.difficulty), h('td', null, p.q), h('td', null, pill(p.status, STATUS_KIND[p.status])));
+            })))) : null,
+          h('div', { class: 'row' }, good ? h('button', { class: 'btn pri', onclick: commit }, 'Import ' + good + ' question' + (good === 1 ? '' : 's')) : h('div', { class: 'note' }, r.unchanged + ' rows are already in the bank exactly as in the sheet. Nothing to import.'),
+            h('span', { class: 'muted' }, r.unchanged ? r.unchanged + ' unchanged rows are skipped.' : '')));
+      }
+      return h('div', { style: 'display:flex;flex-direction:column;gap:16px' },
+        header('~/admin/import', 'Import questions', 'Upload the content team\'s sheet (CSV or Excel). Every row is checked first; nothing is saved until you press Import. Rows are matched on ext_id, so re-uploading an edited sheet updates those questions instead of duplicating them.'),
+        h('div', { class: 'card', style: 'display:flex;flex-direction:column;gap:12px' },
+          h('div', { class: 'row' }, h('b', null, '1.'), h('button', { class: 'btn', onclick: function () { download('/api/admin/import/template.csv'); } }, 'Download the template'),
+            h('span', { class: 'muted' }, 'Columns: ext_id, checkpoint, skill, type, difficulty, question, code, option_a–d, correct (A–D), hint, explanation, tags, status.')),
+          h('div', { class: 'row' }, h('b', null, '2.'), file, h('label', { class: 'row', style: 'gap:6px' }, asDraft, 'Import new questions as drafts (review before they are played)'),
+            h('button', { class: 'btn pri', onclick: check }, 'Check file')),
+          !isSuper() ? h('div', { class: 'note' }, 'Only super admins can import straight to published (unless allowed in Settings).') : null),
+        out,
+        h('div', { class: 'card' }, h('h2', null, 'Past imports'), past.rows.length ? h('table', null, th(['When', 'File', ['Rows', 'num'], ['Added', 'num'], ['Updated', 'num'], ['Unchanged', 'num'], ['Errors', 'num'], 'By']),
+          h('tbody', null, past.rows.map(function (r) { return h('tr', null, h('td', { class: 'muted' }, dt(r.at)), h('td', null, r.filename || '–'), [r.rows, r.added, r.updated, r.unchanged, r.errors].map(function (n) { return h('td', { class: 'num' }, n); }), h('td', { class: 'muted' }, r.by || '')); })))
+          : h('div', { class: 'muted' }, 'None yet.')));
+    });
+  };
+
+  // ---------- question analytics
+  VIEWS.analytics = function () {
+    var F = CACHE.an || (CACHE.an = { flag: '', sort: 'n', checkpoint: '', page: 1 });
+    return api('GET', '/api/admin/stats/questions?flag=' + F.flag + '&sort=' + F.sort + '&checkpoint=' + F.checkpoint + '&page=' + F.page + '&size=50').then(function (d) {
+      var set = function (k, v) { F[k] = v; if (k !== 'page') F.page = 1; refresh(); };
+      var flagChips = [['', 'All played']].concat(Object.keys(d.labels).map(function (k) { return [k, d.labels[k] + (d.flagCounts[k] ? ' · ' + d.flagCounts[k] : '')]; }));
+      return h('div', null,
+        header('~/admin/analytics', 'Question analytics', 'How each question plays. Flags appear once a question has ' + d.minSample + '+ answers. Use them to move a question\'s difficulty, rewrite a weak option, or retire it.',
+          [h('button', { class: 'btn', onclick: function () { download('/api/admin/export/questions-stats.csv'); } }, 'Export CSV')]),
+        h('div', { class: 'toolbar' }, chips(flagChips, F.flag, function (v) { set('flag', v); }, 'Flag')),
+        h('div', { class: 'toolbar' }, chips([['n', 'Most played'], ['hardest', 'Hardest'], ['easiest', 'Easiest'], ['slowest', 'Slowest'], ['flipped', 'Most flipped']], F.sort, function (v) { set('sort', v); }, 'Sort'),
+          chips([['', 'All']].concat(LADDER.checkpoints.map(function (c) { return [c.id, c.id]; })), F.checkpoint, function (v) { set('checkpoint', v); }, 'Checkpoint')),
+        h('div', { class: 'tablewrap' }, h('table', null, th(['ID', 'CP', ['Diff', 'num'], 'Question', ['Answers', 'num'], ['Right', 'num'], 'A–D spread', ['Avg time', 'num'], ['50:50 / Poll / Expert / Flip', 'num'], 'Flags']),
+          h('tbody', null, d.rows.length ? d.rows.map(function (s) {
+            return h('tr', { class: 'click', onclick: function () { editQuestion(s.id); } }, h('td', { class: 'mono' }, s.extId), h('td', null, s.checkpoint), h('td', { class: 'num' }, s.difficulty),
+              h('td', { style: 'max-width:360px' }, s.q), h('td', { class: 'num' }, s.n), h('td', { class: 'num' }, pill(s.pct + '%', s.pct >= 95 || s.pct <= 15 ? 'warn' : '')),
+              h('td', null, dist(s.picks, s.correct)), h('td', { class: 'num' }, s.avgSec + 's'),
+              h('td', { class: 'num mono' }, [s.lifelines.fifty, s.lifelines.poll, s.lifelines.expert, s.lifelines.flip].join(' / ')),
+              h('td', null, s.flags.map(function (f) { return pill(f.replace(/_/g, ' '), 'warn'); })));
+          }) : h('tr', null, h('td', { colspan: 10, class: 'muted' }, 'Nothing here yet. Questions appear once they have been answered.'))))),
+        pager(d, function (p) { set('page', p); }));
+    });
+  };
+
+  // ---------- fastest finger first
+  VIEWS.fff = function () {
+    return api('GET', '/api/admin/fff').then(function (d) {
+      return h('div', null,
+        header('~/admin/fff', 'Fastest finger first', 'Players put 4 lines in order within 30 seconds to win the hot seat. Finishing within 15 seconds earns a ₹2,000 bonus.', [h('button', { class: 'btn pri', onclick: function () { editFff(null); } }, '+ New puzzle')]),
+        h('div', { class: 'tablewrap' }, h('table', null, th(['#', 'Task', 'Right order', 'Status', 'Updated']), h('tbody', null, d.rows.map(function (p) {
+          return h('tr', { class: 'click', onclick: function () { editFff(p); } }, h('td', { class: 'mono' }, p.id), h('td', null, p.task),
+            h('td', null, p.answer.split('').map(function (c) { return p.lines[c.charCodeAt(0) - 65]; }).join(' → ')), h('td', null, pill(p.status, STATUS_KIND[p.status])), h('td', { class: 'muted' }, dt(p.updatedAt)));
+        })))));
+    });
+  };
+  function editFff(p) {
+    p = p || { task: '', lines: ['', '', '', ''], answer: '', status: 'published' };
+    var task = h('input', { type: 'text', value: p.task, style: 'width:100%' });
+    var lines = [0, 1, 2, 3].map(function (i) { return h('input', { type: 'text', value: p.lines[i] || '', style: 'flex:1' }); });
+    var answer = h('input', { type: 'text', value: p.answer, maxlength: 4, placeholder: 'BDCA', class: 'mono', style: 'width:120px;text-transform:uppercase' });
+    var status = h('select', null, ['published', 'draft'].map(function (s) { return h('option', { value: s, selected: p.status === s }, s); }));
+    var err = errBox(), dr = drawer();
+    dr.set(h('form', { class: 'form', onsubmit: function (e) {
+      e.preventDefault();
+      var body = { task: task.value, lines: lines.map(function (l) { return l.value; }), answer: answer.value, status: status.value };
+      (p.id ? api('PUT', '/api/admin/fff/' + p.id, body) : api('POST', '/api/admin/fff', body)).then(function () { toast('Saved.'); dr.close(); refresh(); }, function (e) { showErr(err, e); });
+    } },
+      header('~/admin/fff', p.id ? 'Edit puzzle #' + p.id : 'New puzzle'),
+      h('div', { class: 'field' }, h('label', null, 'Task'), task),
+      h('div', { class: 'field' }, h('label', null, 'Lines (players see them shuffled)'), lines.map(function (l, i) { return h('div', { class: 'row' }, h('b', { style: 'width:18px' }, 'ABCD'[i]), l); })),
+      h('div', { class: 'grid g2' }, h('div', { class: 'field' }, h('label', null, 'Right order'), answer, h('small', null, 'Letters in order, each once. E.g. BDCA = B first, then D, C, A.')), h('div', { class: 'field' }, h('label', null, 'Status'), status)),
+      err, h('div', { class: 'row' }, h('button', { class: 'btn pri', type: 'submit' }, 'Save'),
+        p.id ? h('button', { class: 'btn bad', type: 'button', onclick: function () { if (confirm('Delete this puzzle? It moves to the Recycle bin.')) api('DELETE', '/api/admin/fff/' + p.id).then(function () { dr.close(); refresh(); }, fail); } }, 'Delete') : null)));
+  }
+
+  // ---------- ladder & pools
+  VIEWS.ladder = function () {
+    return api('GET', '/api/admin/ladder').then(function (d) {
+      LADDER = d.ladder;
+      var L = JSON.parse(JSON.stringify(d.ladder)), sizes = d.poolSizes, ro = !isSuper();
+      var open = h('input', { type: 'number', min: 1, max: L.rungs.length, value: L.openRungs, disabled: ro });
+      var ll = Object.keys(d.lifelines).map(function (k) { return h('label', { class: 'row', style: 'gap:6px' }, h('input', { type: 'checkbox', value: k, checked: L.lifelines.indexOf(k) >= 0, disabled: ro }), d.lifelines[k]); });
+      var cpOpts = function (v, blank) { return (blank ? [h('option', { value: '' }, '–')] : []).concat(L.checkpoints.map(function (c) { return h('option', { value: c.id, selected: v === c.id }, c.id); })); };
+      var rows = L.rungs.map(function (r, i) {
+        return { amount: h('input', { type: 'number', value: r.amount, disabled: ro, style: 'width:130px' }), time: h('input', { type: 'number', value: r.timeSec, disabled: ro, style: 'width:80px' }),
+          check: h('select', { disabled: ro }, cpOpts(r.checkpoint, true)), cp: h('select', { disabled: ro }, cpOpts(r.rule.checkpoint)),
+          min: h('input', { type: 'number', min: 1, max: 10, value: r.rule.diffMin, disabled: ro, style: 'width:70px' }), max: h('input', { type: 'number', min: 1, max: 10, value: r.rule.diffMax, disabled: ro, style: 'width:70px' }),
+          skills: h('input', { type: 'text', value: r.rule.skills.join(', '), placeholder: 'any', disabled: ro, style: 'width:120px' }) };
+      });
+      var cps = L.checkpoints.map(function (c) {
+        return { id: c.id, title: h('input', { type: 'text', value: c.title, disabled: ro }), tag: h('input', { type: 'text', value: c.tag, disabled: ro, style: 'width:100%' }),
+          skills: h('input', { type: 'text', value: c.skills.map(function (s) { return s[0] + ': ' + s[1]; }).join(', '), disabled: ro, style: 'width:100%' }) };
+      });
+      var save = function () {
+        var body = { openRungs: Number(open.value), lifelines: ll.map(function (l) { return l.firstChild; }).filter(function (c) { return c.checked; }).map(function (c) { return c.value; }),
+          rungs: rows.map(function (r) { return { amount: Number(r.amount.value), timeSec: Number(r.time.value), checkpoint: r.check.value,
+            rule: { checkpoint: r.cp.value, diffMin: Number(r.min.value), diffMax: Number(r.max.value), skills: r.skills.value.split(',').map(function (s) { return s.trim().toUpperCase(); }).filter(Boolean) } }; }),
+          checkpoints: cps.map(function (c) { return { id: c.id, title: c.title.value, tag: c.tag.value, skills: c.skills.value.split(',').map(function (s) { var p = s.split(':'); return [p[0].trim(), (p[1] || '').trim()]; }).filter(function (s) { return s[0]; }) }; }) };
+        api('PUT', '/api/admin/ladder', { ladder: body }).then(function () { toast('Ladder saved. New games use it now.'); refresh(); }, fail);
+      };
+      return h('div', { style: 'display:flex;flex-direction:column;gap:16px' },
+        header('~/admin/ladder', 'Ladder & pools', 'The money board and where each rung\'s question comes from. A rung draws from published questions of one checkpoint within a difficulty range (optionally only some skills). Changes apply to new games.',
+          ro ? null : [h('button', { class: 'btn pri', onclick: save }, 'Save ladder')]),
+        ro ? h('div', { class: 'note' }, 'Only super admins can change the ladder.') : null,
+        h('div', { class: 'card row' }, h('b', null, 'Open rungs'), open, h('span', { class: 'muted' }, 'Players can climb this far (the rest show as "coming soon").'), h('span', { style: 'flex:1' }), h('b', null, 'Lifelines'), ll),
+        h('div', { class: 'tablewrap', style: 'max-height:none' }, h('table', null, th(['Rung', 'Prize ₹', 'Timer (s)', 'Safe point', 'Draws from', 'Difficulty', 'Skills only', ['Pool', 'num']]),
+          h('tbody', null, rows.map(function (r, i) {
+            return h('tr', { style: i < L.openRungs ? '' : 'opacity:.55' }, h('td', null, h('b', null, 'Q' + (i + 1))), h('td', null, r.amount), h('td', null, r.time), h('td', null, r.check), h('td', null, r.cp),
+              h('td', null, h('div', { class: 'row', style: 'flex-wrap:nowrap;gap:4px' }, r.min, '–', r.max)), h('td', null, r.skills),
+              h('td', { class: 'num' }, pill(String(sizes[i]), sizes[i] === 0 ? 'bad' : sizes[i] < 15 ? 'warn' : 'ok')));
+          })))),
+        h('div', { class: 'card' }, h('h2', null, 'Checkpoints & skills'), h('div', { class: 'soft', style: 'margin-bottom:10px' }, 'Skill codes are what the sheet\'s skill column uses. Format: K1: Algorithms & steps, K2: …'),
+          h('table', null, th(['', 'Title', 'Tagline', 'Skills']), h('tbody', null, cps.map(function (c) { return h('tr', null, h('td', null, h('b', null, c.id)), h('td', null, c.title), h('td', null, c.tag), h('td', null, c.skills)); })))));
+    });
+  };
+
+  // ---------- events
+  VIEWS.events = function () {
+    return api('GET', '/api/admin/events').then(function (d) {
+      return h('div', null,
+        header('~/admin/events', 'Events', 'A timed contest with its own leaderboard, like the Saturday Sprint. "Rules" deals from the ladder pools; "Fixed" freezes the questions so everyone is ranked on the same set.',
+          isSuper() ? [h('button', { class: 'btn pri', onclick: function () { editEvent(null); } }, '+ New event')] : null),
+        h('div', { class: 'tablewrap' }, h('table', null, th(['Event', 'Window', 'Mode', 'Attempts', 'Phase', ['Players', 'num'], ['Games', 'num']]), h('tbody', null, d.rows.length ? d.rows.map(function (e) {
+          return h('tr', { class: 'click', onclick: function () { eventDetail(e.id); } }, h('td', null, h('b', null, e.title), h('div', { class: 'muted mono' }, e.id)),
+            h('td', null, dt(e.openAt) + ' → ' + dt(e.closeAt)), h('td', null, pill(e.mode, e.mode === 'fixed' ? 'violet' : 'info')), h('td', null, e.attemptsAllowed || 'unlimited'),
+            h('td', null, pill(e.phase, e.phase === 'live' ? 'warn' : e.phase === 'upcoming' ? 'info' : '')), h('td', { class: 'num' }, e.players), h('td', { class: 'num' }, e.games));
+        }) : h('tr', null, h('td', { colspan: 7, class: 'muted' }, 'No events yet.'))))));
+    });
+  };
+  function eventDetail(id) {
+    var dr = drawer();
+    api('GET', '/api/admin/events/' + encodeURIComponent(id)).then(function (d) {
+      var e = d.event;
+      dr.set(h('div', { style: 'display:flex;flex-direction:column;gap:16px' },
+        header('~/admin/events/' + e.id, e.title, dt(e.openAt) + ' → ' + dt(e.closeAt) + ' · ' + e.mode + ' · ' + (e.attemptsAllowed || 'unlimited') + ' attempt(s) · leaderboard ' + (e.leaderboardVisible ? 'visible' : 'hidden'),
+          [h('button', { class: 'btn', onclick: function () { download('/api/admin/export/leaderboard.csv?event=' + encodeURIComponent(e.id)); } }, 'Export results'),
+            isSuper() ? h('button', { class: 'btn', onclick: function () { dr.close(); editEvent(e); } }, 'Edit') : null,
+            isSuper() && e.phase === 'live' ? h('button', { class: 'btn bad', onclick: function () { if (confirm('End ' + e.title + ' now? Players still playing finish their game; nobody can start a new one.')) api('POST', '/api/admin/events/' + e.id + '/end').then(function () { toast('Event ended.'); dr.close(); refresh(); }, fail); } }, 'End now') : null,
+            isSuper() && !e.games ? h('button', { class: 'btn bad', onclick: function () { if (confirm('Delete this event?')) api('DELETE', '/api/admin/events/' + e.id).then(function () { dr.close(); refresh(); }, fail); } }, 'Delete') : null]),
+        e.mode === 'fixed' ? h('div', { class: 'note' }, 'Fixed set: ', e.fixed.map(function (r, i) { return 'Q' + (i + 1) + ' → ' + r.join(', '); }).join(' · ')) : null,
+        boardTable(d.board)));
+    }, function (er) { fail(er); dr.close(); });
+  }
+  function boardTable(rows) {
+    return h('div', { class: 'tablewrap' }, h('table', null, th([['#', 'num'], 'Player', 'University', ['Prize', 'num'], ['Reached', 'num'], ['Time', 'num'], 'Finished']), h('tbody', null, rows.length ? rows.map(function (r) {
+      return h('tr', null, h('td', { class: 'num mono' }, r.rank), h('td', null, r.name, h('div', { class: 'muted mono' }, r.rollNo)), h('td', { class: 'muted' }, r.university || '–'),
+        h('td', { class: 'num mono' }, rupees(r.amount)), h('td', { class: 'num' }, 'Q' + r.reached), h('td', { class: 'num' }, secs(r.secs)), h('td', { class: 'muted' }, dt(r.at)));
+    }) : h('tr', null, h('td', { colspan: 7, class: 'muted' }, 'No finished games yet.')))));
+  }
+  function editEvent(e) {
+    var dr = drawer(), isNew = !e;
+    var today = new Date(); today.setDate(today.getDate() + ((6 - today.getDay() + 7) % 7)); today.setHours(11, 0, 0, 0);   // next Saturday 11:00
+    e = e || { id: 'sprint-' + today.toISOString().slice(0, 10), title: 'Saturday Sprint · ' + today.toLocaleDateString(undefined, { day: 'numeric', month: 'short' }), openAt: today.getTime(), closeAt: today.getTime() + 12 * 3600000, mode: 'rules', fixed: [], attemptsAllowed: 1, leaderboardVisible: true };
+    var f = { id: h('input', { type: 'text', value: e.id, disabled: !isNew }), title: h('input', { type: 'text', value: e.title, style: 'width:100%' }),
+      open: h('input', { type: 'datetime-local', value: localInput(e.openAt) }), close: h('input', { type: 'datetime-local', value: localInput(e.closeAt) }),
+      attempts: h('input', { type: 'number', min: 0, max: 100, value: e.attemptsAllowed }), visible: h('input', { type: 'checkbox', checked: e.leaderboardVisible }) };
+    var mode = e.mode;
+    var fixedInputs = LADDER.rungs.slice(0, LADDER.openRungs).map(function (r, i) { return h('input', { type: 'text', value: (e.fixed[i] || []).join(', '), placeholder: 'question IDs, e.g. 12, 57', style: 'flex:1' }); });
+    var fillRandom = function () {
+      // Pick 3 published questions per rung at random from that rung's pool: one is dealt per player, the others power Flip.
+      Promise.all(LADDER.rungs.slice(0, LADDER.openRungs).map(function (r, i) {
+        var rule = r.rule;
+        return api('GET', '/api/admin/questions?status=published&checkpoint=' + rule.checkpoint + '&diff=' + rule.diffMin + '-' + rule.diffMax + (rule.skills.length === 1 ? '&skill=' + rule.skills[0] : '') + '&size=200').then(function (q) {
+          fixedInputs[i].value = q.rows.map(function (x) { return x.id; }).sort(function () { return Math.random() - .5; }).slice(0, 3).join(', ');
+        });
+      })).then(function () { toast('Picked 3 per rung: each player is dealt one of them, the others power Flip. Change any of them.'); }, fail);
+    };
+    var fixedBox = h('div', { class: 'card', style: 'display:flex;flex-direction:column;gap:8px' }, h('div', { class: 'row', style: 'justify-content:space-between' }, h('h2', { style: 'margin:0' }, 'Fixed questions per rung'),
+      h('button', { class: 'btn sm', type: 'button', onclick: fillRandom }, 'Pick from the pools')),
+      h('div', { class: 'soft' }, 'One ID = everyone gets that question. Several = one is drawn per player and the rest power Flip. Use the # numbers shown in the Question bank.'),
+      fixedInputs.map(function (inp, i) { return h('div', { class: 'row' }, h('b', { style: 'width:40px' }, 'Q' + (i + 1)), inp); }));
+    var modeChips = h('div');
+    var paintMode = function () { modeChips.replaceChildren(chips([['rules', 'Rules (ladder pools)'], ['fixed', 'Fixed set']], mode, function (v) { mode = v; paintMode(); }, 'Mode')); fixedBox.hidden = mode !== 'fixed'; };
+    paintMode();
+    var err = errBox();
+    dr.set(h('form', { class: 'form', onsubmit: function (ev) {
+      ev.preventDefault(); err.hidden = true;
+      var body = { id: f.id.value, title: f.title.value, openAt: new Date(f.open.value).getTime(), closeAt: new Date(f.close.value).getTime(), mode: mode,
+        fixed: fixedInputs.map(function (i) { return i.value.split(/[\s,]+/).filter(Boolean).map(Number); }), attemptsAllowed: Number(f.attempts.value), leaderboardVisible: f.visible.checked };
+      (isNew ? api('POST', '/api/admin/events', body) : api('PUT', '/api/admin/events/' + e.id, body)).then(function () { toast('Event saved.'); dr.close(); refresh(); }, function (x) { showErr(err, x); });
+    } },
+      header('~/admin/events', isNew ? 'New event' : 'Edit ' + e.title, 'Times are in your browser\'s time zone.'),
+      h('div', { class: 'grid g2' }, h('div', { class: 'field' }, h('label', null, 'Event ID'), f.id), h('div', { class: 'field' }, h('label', null, 'Title'), f.title)),
+      h('div', { class: 'grid g2' }, h('div', { class: 'field' }, h('label', null, 'Opens'), f.open), h('div', { class: 'field' }, h('label', null, 'Closes'), f.close)),
+      h('div', { class: 'grid g2' }, h('div', { class: 'field' }, h('label', null, 'Attempts per player'), f.attempts, h('small', null, '1 = one ranked try (Saturday Sprint). 0 = unlimited; the best game counts.')),
+        h('label', { class: 'row', style: 'gap:8px;margin-top:22px' }, f.visible, 'Players can see the leaderboard')),
+      h('div', { class: 'field' }, h('label', null, 'Questions'), modeChips), fixedBox, err,
+      h('button', { class: 'btn pri', type: 'submit' }, isNew ? 'Create event' : 'Save')));
+  }
+
+  // ---------- games
+  VIEWS.games = function () {
+    var F = CACHE.g || (CACHE.g = { q: '', mode: '', page: 1 });
+    return api('GET', '/api/admin/games?event=all&q=' + encodeURIComponent(F.q) + '&mode=' + F.mode + '&page=' + F.page).then(function (d) {
+      var set = function (k, v) { F[k] = v; if (k !== 'page') F.page = 1; refresh(); };
+      var search = h('input', { type: 'search', placeholder: 'NIAT ID or name…', value: F.q, oninput: debounce(function () { set('q', search.value); }, 350) });
+      return h('div', null,
+        header('~/admin/games', 'Games', 'Every game, newest first. Open one to replay each answer.'),
+        h('div', { class: 'toolbar' }, search, chips([['', 'All'], ['classic', 'Classic'], ['event', 'Events'], ['practice', 'Practice']], F.mode, function (v) { set('mode', v); }, 'Mode')),
+        h('div', { class: 'tablewrap' }, h('table', null, th(['Started', 'Player', 'Mode', 'Result', ['Prize', 'num'], ['Reached', 'num'], ['Time', 'num'], 'Lifelines']), h('tbody', null, d.rows.map(function (g) {
+          return h('tr', { class: 'click', onclick: function () { gameDetail(g.id); } }, h('td', { class: 'muted' }, dt(g.started_at)), h('td', null, g.name, h('div', { class: 'muted mono' }, g.roll_no)),
+            h('td', null, g.mode + (g.event_id ? ' · ' + g.event_id : '')), h('td', null, g.state === 'play' ? pill('playing', 'warn') : pill(g.reason, g.reason === 'win' ? 'ok' : g.reason === 'quit' ? 'info' : ''), g.hidden ? pill('hidden', 'bad') : null),
+            h('td', { class: 'num mono' }, rupees(g.amount)), h('td', { class: 'num' }, g.state === 'done' ? 'Q' + g.correct : '–'), h('td', { class: 'num' }, secs(g.secs)), h('td', { class: 'muted' }, g.used.join(', ') || '–'));
+        })))),
+        pager(d, function (p) { set('page', p); }));
+    });
+  };
+  function gameDetail(id) {
+    var dr = drawer();
+    api('GET', '/api/admin/games/' + id).then(function (d) {
+      var g = d.game;
+      dr.set(h('div', { style: 'display:flex;flex-direction:column;gap:14px' },
+        header('~/admin/games/' + g.id, g.name + ' · ' + rupees(g.amount), g.rollNo + ' · ' + g.mode + (g.eventId ? ' ' + g.eventId : '') + ' · ' + (g.reason || g.state) + ' · ' + secs(g.secs) + (g.fffSecs ? ' · FFF ' + g.fffSecs.toFixed(1) + 's' : ''),
+          isSuper() && g.state === 'done' ? [h('button', { class: 'btn' + (g.hidden ? '' : ' bad'), onclick: function () {
+            api('PATCH', '/api/admin/games/' + g.id, { hidden: !g.hidden }).then(function () { toast(g.hidden ? 'Back on the leaderboard.' : 'Hidden from leaderboards.'); dr.close(); refresh(); }, fail);
+          } }, g.hidden ? 'Show on leaderboard' : 'Hide from leaderboard')] : null),
+        d.answers.map(function (a) {
+          return h('div', { class: 'card', style: 'display:flex;flex-direction:column;gap:8px' },
+            h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', null, 'Q' + (a.rung + 1) + ' · #' + a.qid + ' v' + a.version), h('span', null, pill(a.ok ? 'right' : a.pick < 0 ? 'time up' : 'wrong', a.ok ? 'ok' : 'bad'), ' ', h('span', { class: 'muted' }, (a.ms / 1000).toFixed(1) + 's' + (a.lifelines.length ? ' · ' + a.lifelines.join(', ') : '')))),
+            h('div', null, a.q), a.code ? h('pre', { class: 'code' }, a.code) : null,
+            a.options.map(function (o, i) { return h('div', { class: 'opt' + (i === a.correct ? ' correct' : '') + (i === a.pick ? ' picked' + (i !== a.correct ? ' wrong' : '') : '') }, h('b', null, 'ABCD'[i]), o, i === a.pick ? h('span', { class: 'muted' }, ' ← picked') : null); }));
+        })));
+    }, function (e) { fail(e); dr.close(); });
+  }
+
+  // ---------- leaderboard
+  VIEWS.leaderboard = function () {
+    var ev = CACHE.lb || '';
+    return Promise.all([api('GET', '/api/admin/events'), api('GET', '/api/admin/leaderboard?event=' + encodeURIComponent(ev))]).then(function (res) {
+      var sel = h('select', { onchange: function () { CACHE.lb = sel.value; refresh(); } }, h('option', { value: '' }, 'Classic (everyday games)'), res[0].rows.map(function (e) { return h('option', { value: e.id, selected: ev === e.id }, e.title); }));
+      return h('div', null, header('~/admin/leaderboard', 'Leaderboard', 'Each player\'s best game: prize first, then how far they got, then speed. Hide a game from Games if it should not count.',
+        [h('button', { class: 'btn', onclick: function () { download('/api/admin/export/leaderboard.csv?event=' + encodeURIComponent(ev)); } }, 'Export CSV')]),
+        h('div', { class: 'toolbar' }, sel), boardTable(res[1].rows));
+    });
+  };
+
+  // ---------- players & roster
+  VIEWS.players = function () {
+    var F = CACHE.pl || (CACHE.pl = { q: '', page: 1 });
+    return api('GET', '/api/admin/players?q=' + encodeURIComponent(F.q) + '&page=' + F.page).then(function (d) {
+      var search = h('input', { type: 'search', placeholder: 'NIAT ID or name…', value: F.q, oninput: debounce(function () { F.q = search.value; F.page = 1; refresh(); }, 350) });
+      return h('div', { style: 'display:flex;flex-direction:column;gap:16px' },
+        header('~/admin/players', 'Players & roster', 'Who may play (the roster) and how they are doing. Players log in with their NIAT ID and name as listed.'),
+        isSuper() ? rosterCard() : null,
+        h('div', null, h('div', { class: 'toolbar' }, search),
+          h('div', { class: 'tablewrap' }, h('table', null, th(['NIAT ID', 'Name', 'University', ['Coins', 'num'], ['Games', 'num'], ['Best', 'num'], 'Last login', 'Status']), h('tbody', null, d.rows.map(function (p) {
+            return h('tr', { class: p.user_id ? 'click' : '', onclick: p.user_id ? function () { playerDrawer(p); } : null }, h('td', { class: 'mono' }, p.roll_no), h('td', null, p.display_name || p.name, p.display_name ? h('div', { class: 'muted' }, 'roster: ' + p.name) : null),
+              h('td', { class: 'muted' }, p.university || '–'), h('td', { class: 'num mono' }, p.coins.toLocaleString('en-IN')), h('td', { class: 'num' }, p.games || 0), h('td', { class: 'num mono' }, rupees(p.best)),
+              h('td', { class: 'muted' }, p.last_login_at ? dt(p.last_login_at) : 'never'), h('td', null, !p.active ? pill('not on roster', 'bad') : p.status === 'disabled' ? pill('disabled', 'bad') : p.user_id ? pill('active', 'ok') : pill('not joined')));
+          })))), pager(d, function (pg) { F.page = pg; refresh(); })));
+    });
+  };
+  function rosterCard() {
+    var file = h('input', { type: 'file', accept: '.csv,.xlsx' }), out = h('div'), payload = null, mode = 'merge';
+    var modeBox = h('div');
+    var paint = function () { modeBox.replaceChildren(chips([['merge', 'Add & update'], ['replace', 'Replace the whole list']], mode, function (v) { mode = v; paint(); }, 'Mode')); };
+    paint();
+    var run1 = function (dry) {
+      var p = dry ? (file.files[0] ? readFile(file.files[0]) : Promise.reject(new Error('Choose a file first.'))) : Promise.resolve(payload);
+      p.then(function (pl) { payload = pl; return api('POST', '/api/admin/roster/import', Object.assign({}, pl, { dry: dry, mode: mode })); }).then(function (r) {
+        if (r.error) return out.replaceChildren(h('div', { class: 'note bad' }, r.error));
+        if (!dry) { toast('Roster updated.'); return refresh(); }
+        out.replaceChildren(h('div', { class: 'row', style: 'margin-top:10px' }, h('span', null, r.total + ' students · ' + r.added + ' new · ' + r.updated + ' changed' + (mode === 'replace' ? ' · ' + r.deactivated + ' removed' : '') + (r.errors.length ? ' · ' + r.errors.length + ' bad rows (' + r.errors.slice(0, 3).map(function (e) { return 'row ' + e.row + ': ' + e.msg; }).join('; ') + ')' : '')),
+          h('button', { class: 'btn pri sm', onclick: function () { run1(false); } }, 'Apply')));
+      }, function (e) { out.replaceChildren(h('div', { class: 'note bad' }, e.message)); });
+    };
+    return h('div', { class: 'card' }, h('h2', null, 'Upload the roster'), h('div', { class: 'row' }, file, modeBox, h('button', { class: 'btn', onclick: function () { run1(true); } }, 'Check file')),
+      h('div', { class: 'muted', style: 'font-size:12px;margin-top:8px' }, 'CSV or Excel with a "NIAT ID" column; "Student Name", "University" and "Batch" are optional. Replace deactivates students who are not in the file (their history is kept).'), out);
+  }
+  function playerDrawer(p) {
+    var dr = drawer(), name = h('input', { type: 'text', value: p.display_name || '', placeholder: p.name });
+    var patch = function (body, msg) {
+      if (msg && !confirm(msg)) return;
+      api('PATCH', '/api/admin/players/' + p.user_id, body).then(function () { toast('Updated.'); dr.close(); refresh(); }, fail);
+    };
+    dr.set(h('div', { style: 'display:flex;flex-direction:column;gap:14px' }, header('~/admin/players', p.display_name || p.name, p.roll_no + ' · ' + (p.university || '')),
+      h('div', { class: 'grid g3' }, stat('Coins', p.coins.toLocaleString('en-IN')), stat('Games', p.games || 0), stat('Best', rupees(p.best))),
+      h('div', { class: 'card form' }, h('h2', null, 'Leaderboard name'), h('div', { class: 'row' }, name, h('button', { class: 'btn pri', onclick: function () { patch({ displayName: name.value }); } }, 'Save')),
+        h('small', { class: 'muted' }, 'Blank = the roster name. Use it to fix or moderate a name.')),
+      isSuper() ? h('div', { class: 'row' },
+        h('button', { class: 'btn ' + (p.status === 'disabled' ? '' : 'bad'), onclick: function () { patch({ status: p.status === 'disabled' ? 'active' : 'disabled' }, p.status === 'disabled' ? null : 'Disable this player? They are logged out and cannot play.'); } }, p.status === 'disabled' ? 'Enable' : 'Disable'),
+        h('button', { class: 'btn bad', onclick: function () { patch({ resetProfile: true }, 'Reset coins and badges for this player? Their games stay in history.'); } }, 'Reset coins & badges')) : null,
+      h('button', { class: 'btn', onclick: function () { CACHE.g = { q: p.roll_no, mode: '', page: 1 }; dr.close(); go('games'); } }, 'See their games →')));
+  }
+
+  // ---------- settings, admins, bin, audit, account
+  VIEWS.settings = function () {
+    return api('GET', '/api/admin/settings').then(function (s) {
+      var box = h('input', { type: 'checkbox', checked: s.adminsMayPublish, onchange: function () { api('PATCH', '/api/admin/settings', { adminsMayPublish: box.checked }).then(function () { toast('Saved.'); }, fail); } });
+      return h('div', { style: 'display:flex;flex-direction:column;gap:16px' }, header('~/admin/settings', 'Settings'),
+        h('div', { class: 'card' }, h('h2', null, 'Review workflow'), h('label', { class: 'row' }, box, 'Admins (not only super admins) may publish and retire questions, and import straight to published.'),
+          h('div', { class: 'muted', style: 'margin-top:8px' }, 'Off = content admins draft and send to review; a super admin publishes.')));
+    });
+  };
+  VIEWS.admins = function () {
+    return api('GET', '/api/admin/admins').then(function (d) {
+      var email = h('input', { type: 'email', placeholder: 'email' }), name = h('input', { type: 'text', placeholder: 'name' });
+      var role = h('select', null, h('option', { value: 'admin' }, 'Admin'), h('option', { value: 'super_admin' }, 'Super admin'));
+      var showTemp = function (who, pw) {
+        drawer(h('div', { style: 'display:flex;flex-direction:column;gap:14px' }, header('~/admin/admins', 'Temporary password', 'For ' + who + '. Shown once: share it privately.'),
+          h('pre', { class: 'code', style: 'font-size:28px;color:var(--accent)' }, pw), h('div', { class: 'note' }, 'They log in at /admin, set up an authenticator app, then choose their own password.')));
+      };
+      var patch = function (a, body, msg) {
+        if (msg && !confirm(msg)) return;
+        api('PATCH', '/api/admin/admins/' + a.id, body).then(function (r) { if (r.tempPassword) showTemp(a.email, r.tempPassword); else toast('Updated.'); refresh(); }, fail);
+      };
+      return h('div', { style: 'display:flex;flex-direction:column;gap:16px' },
+        header('~/admin/admins', 'Admins', 'Admins manage questions (draft and review), FFF puzzles and players. Super admins also publish, change the ladder, run events, upload the roster and manage admins.'),
+        h('form', { class: 'card row', onsubmit: function (e) {
+          e.preventDefault();
+          api('POST', '/api/admin/admins', { email: email.value, name: name.value, role: role.value }).then(function (r) { showTemp(email.value, r.tempPassword); refresh(); }, fail);
+        } }, h('b', null, 'Add admin'), email, name, role, h('button', { class: 'btn pri', type: 'submit' }, 'Create')),
+        h('div', { class: 'tablewrap' }, h('table', null, th(['Admin', 'Role', 'Status', '2-step', 'Last login', '']), h('tbody', null, d.rows.map(function (a) {
+          var self = Number(a.id) === ME.id, locked = Number(a.locked_until) > Date.now();
+          return h('tr', null, h('td', null, a.name || '–', h('div', { class: 'muted' }, a.email)),
+            h('td', null, a.role === 'super_admin' ? pill('super admin', 'warn') : pill('admin')),
+            h('td', null, a.status === 'active' ? (locked ? pill('locked', 'bad') : pill('active', 'ok')) : pill('disabled', 'bad'), a.must_change_pw ? h('div', null, pill('temp password', 'info')) : null),
+            h('td', null, a.totp_enabled ? pill('on', 'ok') : pill('not set up', 'warn')), h('td', { class: 'muted' }, dt(Number(a.last_login_at))),
+            h('td', null, h('div', { class: 'row' },
+              self ? h('span', { class: 'muted' }, 'you') : [
+                h('button', { class: 'btn sm', onclick: function () { patch(a, { role: a.role === 'super_admin' ? 'admin' : 'super_admin' }); } }, a.role === 'super_admin' ? 'Make admin' : 'Make super'),
+                h('button', { class: 'btn sm ' + (a.status === 'active' ? 'bad' : ''), onclick: function () { patch(a, { status: a.status === 'active' ? 'disabled' : 'active' }, a.status === 'active' ? 'Disable ' + a.email + '?' : null); } }, a.status === 'active' ? 'Disable' : 'Enable')],
+              h('button', { class: 'btn sm', onclick: function () { patch(a, { resetPassword: true }, 'Issue a new temporary password for ' + a.email + '? Their sessions end.'); } }, 'Reset password'),
+              a.totp_enabled ? h('button', { class: 'btn sm', onclick: function () { patch(a, { resetTotp: true }, 'Reset 2-step for ' + a.email + '?'); } }, 'Reset 2-step') : null,
+              locked ? h('button', { class: 'btn sm', onclick: function () { patch(a, { unlock: true }); } }, 'Unlock') : null)));
+        })))));
+    });
+  };
+  VIEWS.bin = function () {
+    return api('GET', '/api/admin/bin').then(function (d) {
+      return h('div', null, header('~/admin/bin', 'Recycle bin', 'Deleted questions, puzzles and events. Restore puts them back exactly as they were.'),
+        h('div', { class: 'tablewrap' }, h('table', null, th(['Deleted', 'Kind', 'What', 'By', '']), h('tbody', null, d.rows.length ? d.rows.map(function (r) {
+          return h('tr', null, h('td', { class: 'muted' }, dt(r.deletedAt)), h('td', null, pill(r.kindLabel)), h('td', null, r.label, h('div', { class: 'muted mono' }, r.ref)), h('td', { class: 'muted' }, r.deletedBy || ''),
+            h('td', null, isSuper() ? h('div', { class: 'row' },
+              h('button', { class: 'btn sm', onclick: function () { api('POST', '/api/admin/bin/' + r.id + '/restore').then(function () { toast(r.kindLabel + ' restored.'); refresh(); }, fail); } }, 'Restore'),
+              h('button', { class: 'btn sm bad', onclick: function () { if (confirm('Delete "' + r.label + '" forever?')) api('DELETE', '/api/admin/bin/' + r.id).then(function () { toast('Deleted forever.'); refresh(); }, fail); } }, 'Delete forever')) : null));
+        }) : h('tr', null, h('td', { colspan: 5, class: 'muted' }, 'Empty.'))))));
+    });
+  };
+  VIEWS.audit = function () {
+    return api('GET', '/api/admin/audit').then(function (d) {
+      return h('div', null, header('~/admin/audit', 'Audit log', 'Every admin change: who, what, when. Latest 500.'),
+        h('div', { class: 'tablewrap' }, h('table', null, th(['When', 'Admin', 'Action', 'Target', 'Details']),
+          h('tbody', null, d.rows.length ? d.rows.map(function (r) {
+            var det = r.detail == null ? '' : JSON.stringify(r.detail);
+            return h('tr', null, h('td', { class: 'muted', style: 'white-space:nowrap' }, dt(r.created_at)), h('td', null, r.admin_email || 'system'), h('td', null, pill(r.action)), h('td', { class: 'mono' }, r.target || '–'),
+              h('td', { class: 'muted', style: 'max-width:480px;word-break:break-word;font-size:12px' }, det.length > 300 ? det.slice(0, 300) + '…' : det));
+          }) : h('tr', null, h('td', { colspan: 5, class: 'muted' }, 'Nothing yet.'))))));
+    });
+  };
+  VIEWS.account = function () {
+    return h('div', { style: 'display:flex;flex-direction:column;gap:16px' },
+      header('~/admin/account', 'My account', ME.email + ' · ' + (ME.role === 'super_admin' ? 'Super admin' : 'Admin')),
+      h('div', { class: 'card' }, h('h2', null, 'Two-step verification'), ME.totpEnabled ? h('div', { class: 'row' }, pill('on', 'ok'), h('span', { class: 'soft' }, 'Lost your phone? Ask a super admin to reset your 2-step, or run "npm run create-admin -- --email ' + ME.email + ' --reset" on the server.'))
+        : h('div', { class: 'note warn' }, 'Two-step verification is off (allowed only because ADMIN_REQUIRE_TOTP is off).')),
+      h('div', { class: 'card' }, h('h2', null, 'Change password'), passwordForm(false)));
+  };
+
+  window.addEventListener('hashchange', function () { var v = location.hash.slice(1); if (ME && v !== VIEW) go(v); });
+  boot();
+})();
+</script>
+</body>
+</html>

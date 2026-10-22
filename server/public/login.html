@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kaun Banega Coder · Log in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<style>
+:root{--gold:#FFC83D;--gold-2:#FF9F1C;--ink:#0A1533;--line:rgba(255,255,255,.16);--soft:#B8CBFF;--bad:#FF8A8A}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#060D20;color:#fff;font-family:"Plus Jakarta Sans",system-ui,sans-serif}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;
+  background:radial-gradient(120% 80% at 50% 0%,#1A3786 0%,#0D1A3D 45%,#060D20 100%)}
+.box{width:100%;max-width:420px;display:flex;flex-direction:column;gap:22px;text-align:center}
+.emb{width:76px;height:76px;margin:0 auto;border-radius:50%;display:grid;place-items:center;font-family:Unbounded,sans-serif;font-weight:900;font-size:22px;color:var(--ink);
+  background:radial-gradient(circle at 35% 30%,#FFF1B8,var(--gold) 45%,#C9770C);box-shadow:0 0 0 6px rgba(255,200,61,.18),0 18px 50px -10px rgba(255,200,61,.6)}
+h1{margin:0;font-family:Unbounded,sans-serif;font-weight:900;font-size:clamp(26px,7vw,36px);line-height:1.05;letter-spacing:-.5px}
+h1 span{display:block;font-size:.55em;font-weight:700;color:var(--soft);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+h1 b{background:linear-gradient(120deg,var(--gold),var(--gold-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.card{background:rgba(10,21,51,.75);border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:14px;text-align:left;backdrop-filter:blur(6px)}
+label{font-size:13px;font-weight:700;color:var(--soft)}
+input{width:100%;min-height:48px;margin-top:6px;padding:0 14px;border-radius:14px;border:2px solid rgba(255,255,255,.18);background:rgba(6,13,32,.8);color:#fff;font:inherit;font-size:16px;outline:none}
+input:focus{border-color:var(--gold)}
+button{min-height:50px;border:0;border-radius:999px;font:inherit;font-weight:800;font-size:16px;cursor:pointer;color:var(--ink);background:linear-gradient(120deg,var(--gold),var(--gold-2));box-shadow:0 4px 0 #B86E0A}
+button:active{transform:translateY(2px);box-shadow:0 2px 0 #B86E0A}
+button[disabled]{opacity:.6;cursor:wait}
+.err{display:none;padding:10px 12px;border-radius:12px;border:1px solid var(--bad);color:var(--bad);font-weight:600;font-size:14px;line-height:1.4}
+.err.on{display:block}
+small{color:var(--soft);font-size:13px;line-height:1.5}
+a{color:var(--gold)}
+.box>*{animation:rise .8s cubic-bezier(.22,1,.36,1) backwards}
+.box>:nth-child(2){animation-delay:.07s}.box>:nth-child(3){animation-delay:.14s}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<main class="box">
+  <div class="emb" aria-hidden="true">{₹}</div>
+  <h1><span>Kaun Banega</span><b>Coder</b></h1>
+  <form class="card" id="f" novalidate>
+    <label>NIAT ID<input id="roll" autocomplete="username" autocapitalize="characters" placeholder="e.g. N26P0001" required></label>
+    <label>Your name, as in the student list<input id="name" autocomplete="name" placeholder="e.g. Asha Kumar" required></label>
+    <div class="err" id="err" role="alert"></div>
+    <button type="submit" id="go">Enter the studio →</button>
+    <small>Not on the list, or your name doesn't match? Ask your mentor.</small>
+  </form>
+</main>
+<script>
+(function () {
+  var f = document.getElementById('f'), err = document.getElementById('err'), go = document.getElementById('go');
+  var roll = document.getElementById('roll'), name = document.getElementById('name');
+  try { roll.value = localStorage.getItem('kbc-roll') || ''; } catch (e) {}
+  (roll.value ? name : roll).focus();
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    err.classList.remove('on');
+    if (!roll.value.trim() || !name.value.trim()) { err.textContent = 'Enter your NIAT ID and your name.'; err.classList.add('on'); return; }
+    go.disabled = true;
+    fetch('/api/auth/name-login', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ rollNo: roll.value, name: name.value }) })
+      .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.message || 'Could not log in.'); return d; }); })
+      .then(function () { try { localStorage.setItem('kbc-roll', roll.value.trim()); } catch (e) {} location.href = '/'; },
+        function (x) { err.textContent = x.message === 'Failed to fetch' ? 'No connection. Check your internet and try again.' : x.message; err.classList.add('on'); go.disabled = false; });
+  });
+})();
+</script>
+</body>
+</html>

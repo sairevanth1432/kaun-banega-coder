@@ -1,0 +1,7 @@
+node_modules/
+.env
+.env.local
+.vercel/
+# Local database, rosters and generated banks never go into git.
+server/data/
+*.xlsx

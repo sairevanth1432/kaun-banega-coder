@@ -1,0 +1,72 @@
+[
+  {
+    "task": "Put the steps in order to withdraw cash from an ATM.",
+    "lines": [
+      "Collect the cash",
+      "Insert your card",
+      "Enter the amount",
+      "Enter your PIN"
+    ],
+    "answer": "BDCA"
+  },
+  {
+    "task": "Put the steps in order to find the bigger of two numbers.",
+    "lines": [
+      "Say the bigger number",
+      "Read the first number",
+      "Compare the two",
+      "Read the second number"
+    ],
+    "answer": "BDCA"
+  },
+  {
+    "task": "Put the steps in order to make a phone call.",
+    "lines": [
+      "Press the call button",
+      "Unlock the phone",
+      "Talk",
+      "Dial the number"
+    ],
+    "answer": "BDAC"
+  },
+  {
+    "task": "Put the lines in order to print the sum of even numbers from 1 to 10.",
+    "lines": [
+      "print(total)",
+      "total = 0",
+      "    if i % 2 == 0: total += i",
+      "for i in range(1, 11):"
+    ],
+    "answer": "BDCA"
+  },
+  {
+    "task": "Put the lines in order to reverse the word \"code\".",
+    "lines": [
+      "print(r)",
+      "for ch in \"code\":",
+      "r = \"\"",
+      "    r = ch + r"
+    ],
+    "answer": "CBDA"
+  },
+  {
+    "task": "Put the lines in order to print 5, 4, 3, 2, 1.",
+    "lines": [
+      "    n -= 1",
+      "while n > 0:",
+      "n = 5",
+      "    print(n)"
+    ],
+    "answer": "CBDA"
+  },
+  {
+    "task": "Put the lines in order to print every name in the list.",
+    "lines": [
+      "    print(name)",
+      "names = [\"Asha\", \"Ravi\"]",
+      "for name in names:",
+      "print(\"Done\")"
+    ],
+    "answer": "BCAD"
+  }
+]
