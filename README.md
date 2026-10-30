@@ -12,8 +12,9 @@ server/
   events.js       Saturday-Sprint-style events (time window, attempts, fixed or rule-based question sets)
   stats.js        question health (too easy/hard, dead options, slow), funnel, skill accuracy
   fff.js          Fastest Finger First puzzles
+  r1.js           the student game's saved progress, Hall of Fame (overall + per university), live player count, feedback
   auth.js, security.js, db.js, kv.js, recycle.js, roster.js   adapted from saturday-sprint
-  public/play.html    the game (the original single-file game, now talking to the server)
+  public/play.html    the student game: skill path, hot seat, maths Fastest Finger First, Hall of Fame, product tour
   public/admin.html   the admin portal, styled to match the game
   public/login.html   player login: NIAT ID + name from the roster
   content/        starter questions (from the original game) and FFF puzzles
@@ -42,6 +43,15 @@ No database or Redis is needed locally: PGlite stores data in `server/data/`. Fo
 - **Answers stay on the server.** Players receive only the question and the options, shuffled differently for each game. The correct option, the hint and the explanation arrive only after locking in an answer or using a lifeline. Timers, lifelines, coins and leaderboards are all worked out on the server.
 - **Fast at scale.** Pools are a cached index of published questions, refreshed when the bank changes. The audience poll reads one row of per-question counters instead of every vote. Leaderboards are cached for 5 seconds.
 - **No repeats.** Each player's last 200 questions are skipped while the pool still has others.
+
+## The student game (play.html)
+
+The question engine and the skill path run in the browser. The server keeps what must outlive a browser or be shared:
+
+- `GET/PUT /api/r1/state`: each student's progress, so it follows them across devices. A shared laptop never mixes two students.
+- `GET /api/r1/fame?scope=all|uni&uni=…`: the Hall of Fame, overall or for one university (from the roster's university column). Wallet numbers sent by the browser are capped at what real games can produce.
+- `POST /api/r1/ping`: the "N live" count (students whose page pinged in the last 75 s).
+- `POST /api/r1/log`: feedback and usage events. Admins read feedback at `GET /api/admin/feedback`.
 
 ## Admin portal
 

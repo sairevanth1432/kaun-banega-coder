@@ -5,40 +5,70 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kaun Banega Coder · Log in</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('kbc-theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
 <style>
-:root{--gold:#FFC83D;--gold-2:#FF9F1C;--ink:#0A1533;--line:rgba(255,255,255,.16);--soft:#B8CBFF;--bad:#FF8A8A}
+/* Same look as the game (play.html "final skin"): night sky, gold { } coin, dark glass card with a cyan hairline. */
+:root{--bg:#04060E;--hud:rgba(9,14,28,.88);--hl:rgba(96,165,250,.28);--cy:#5EEAD4;--au:#FDE68A;--tx:#E2E8F0;--tx2:#94A3B8;--bad:#FB7185;--in:#060B18;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace}
+html[data-theme="light"]{--bg:#EEF2FA;--hud:rgba(255,255,255,.92);--hl:rgba(30,64,175,.2);--cy:#0F766E;--au:#B45309;--tx:#0F172A;--tx2:#475569;--bad:#BE123C;--in:#fff}
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#060D20;color:#fff;font-family:"Plus Jakarta Sans",system-ui,sans-serif}
-body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;
-  background:radial-gradient(120% 80% at 50% 0%,#1A3786 0%,#0D1A3D 45%,#060D20 100%)}
-.box{width:100%;max-width:420px;display:flex;flex-direction:column;gap:22px;text-align:center}
-.emb{width:76px;height:76px;margin:0 auto;border-radius:50%;display:grid;place-items:center;font-family:Unbounded,sans-serif;font-weight:900;font-size:22px;color:var(--ink);
-  background:radial-gradient(circle at 35% 30%,#FFF1B8,var(--gold) 45%,#C9770C);box-shadow:0 0 0 6px rgba(255,200,61,.18),0 18px 50px -10px rgba(255,200,61,.6)}
-h1{margin:0;font-family:Unbounded,sans-serif;font-weight:900;font-size:clamp(26px,7vw,36px);line-height:1.05;letter-spacing:-.5px}
-h1 span{display:block;font-size:.55em;font-weight:700;color:var(--soft);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-h1 b{background:linear-gradient(120deg,var(--gold),var(--gold-2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.card{background:rgba(10,21,51,.75);border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:14px;text-align:left;backdrop-filter:blur(6px)}
-label{font-size:13px;font-weight:700;color:var(--soft)}
-input{width:100%;min-height:48px;margin-top:6px;padding:0 14px;border-radius:14px;border:2px solid rgba(255,255,255,.18);background:rgba(6,13,32,.8);color:#fff;font:inherit;font-size:16px;outline:none}
-input:focus{border-color:var(--gold)}
-button{min-height:50px;border:0;border-radius:999px;font:inherit;font-weight:800;font-size:16px;cursor:pointer;color:var(--ink);background:linear-gradient(120deg,var(--gold),var(--gold-2));box-shadow:0 4px 0 #B86E0A}
-button:active{transform:translateY(2px);box-shadow:0 2px 0 #B86E0A}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--tx);font-family:var(--f-body)}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;overflow-x:hidden;
+  background:radial-gradient(ellipse 60% 45% at 50% 0%,rgba(245,158,11,.16),transparent 70%),radial-gradient(ellipse 50% 40% at 85% 30%,rgba(124,58,237,.18),transparent 70%),radial-gradient(ellipse 50% 40% at 10% 80%,rgba(13,148,136,.16),transparent 70%),var(--bg)}
+html[data-theme="light"] body{background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(245,158,11,.14),transparent 70%),linear-gradient(180deg,#F8FAFF,#E6ECF7)}
+.sky{position:fixed;inset:0;pointer-events:none;z-index:0}
+.sky i{position:absolute;border-radius:50%;background:#fff;animation:tw 3.4s ease-in-out infinite}
+html[data-theme="light"] .sky i{background:#94A3B8}
+@keyframes tw{50%{opacity:.25}}
+.code{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.code span{position:absolute;bottom:-40px;font:700 var(--fs,18px) var(--f-mono);color:var(--c,#5EEAD4);opacity:.22;animation:up var(--d,20s) linear infinite;animation-delay:var(--dl,0s)}
+@keyframes up{to{transform:translateY(-115vh) rotate(8deg)}}
+.box{position:relative;z-index:1;width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center}
+.emb{position:relative;width:96px;height:96px;display:grid;place-items:center;perspective:300px}
+.coin{width:64%;height:64%;border-radius:50%;display:grid;place-items:center;font:800 22px var(--f-mono);letter-spacing:-.06em;color:#3A2100;
+  background:radial-gradient(circle at 34% 30%,#FFF4C2,#FFC83D 45%,#D98A0B 85%);box-shadow:inset 0 -3px 0 #9A5A05,0 0 24px rgba(94,234,212,.5),0 0 40px rgba(255,200,61,.4);animation:spin 6s ease-in-out infinite}
+.ring{position:absolute;inset:0;border-radius:50%;border:2.5px solid #FFC83D;box-shadow:0 0 10px rgba(255,200,61,.6);animation:r1 7s linear infinite}
+.ring.b{inset:-10px;border:1.5px solid #5EEAD4;box-shadow:0 0 10px rgba(94,234,212,.6);animation:r2 9s linear infinite}
+@keyframes r1{from{transform:rotateX(72deg) rotateZ(0)}to{transform:rotateX(72deg) rotateZ(360deg)}}
+@keyframes r2{from{transform:rotateY(72deg) rotateZ(0)}to{transform:rotateY(72deg) rotateZ(360deg)}}
+@keyframes spin{50%{transform:rotateY(24deg)}0%,100%{transform:rotateY(-24deg)}}
+h1{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+h1 span{font:700 clamp(13px,3.4vw,16px)/1 var(--f-display);letter-spacing:.45em;text-transform:uppercase;color:var(--tx2);padding-left:.45em}
+h1 b{display:inline-flex;align-items:flex-end;font:900 clamp(52px,14vw,76px)/.95 var(--f-display);letter-spacing:-.05em;background:linear-gradient(180deg,#FFF4CC,#FFD25A 38%,#FFB21E 70%,#E07E06);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 22px rgba(253,230,138,.35))}
+.caret{display:inline-block;width:.09em;height:.8em;margin:0 0 .08em .06em;border-radius:2px;background:var(--cy);box-shadow:0 0 12px var(--cy);animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.term{font:600 14px var(--f-mono);color:var(--tx2)}.term b{color:var(--cy)}
+.card{position:relative;width:100%;padding:24px;border-radius:20px;background:var(--hud);border:1px solid var(--hl);box-shadow:0 20px 60px -20px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;flex-direction:column;gap:14px;text-align:left}
+.card::after{content:"";position:absolute;inset:6px;pointer-events:none;border-radius:inherit;opacity:.75;background:
+ linear-gradient(var(--cy),var(--cy)) top left/14px 1.5px,linear-gradient(var(--cy),var(--cy)) top left/1.5px 14px,
+ linear-gradient(var(--cy),var(--cy)) bottom right/14px 1.5px,linear-gradient(var(--cy),var(--cy)) bottom right/1.5px 14px;background-repeat:no-repeat}
+label{display:block;font:700 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--cy)}
+input{width:100%;min-height:50px;margin-top:7px;padding:0 14px;border-radius:14px;border:1px solid var(--hl);background:var(--in);color:var(--tx);font:600 16px var(--f-mono);outline:none;transition:border-color .15s,box-shadow .15s}
+input::placeholder{color:#64748B}
+input:focus{border-color:var(--cy);box-shadow:0 0 0 3px rgba(94,234,212,.18)}
+html[data-theme="light"] input{border-color:#94A3B8}
+button{min-height:52px;margin-top:4px;border:0;border-radius:14px;font:800 16.5px var(--f-body);cursor:pointer;color:#1A1205;background:linear-gradient(180deg,#FDE68A,#F59E0B);box-shadow:0 0 24px rgba(245,158,11,.35);transition:transform .12s,filter .15s}
+button:hover{filter:brightness(1.06);transform:translateY(-1px)}
+button:active{transform:translateY(1px)}
 button[disabled]{opacity:.6;cursor:wait}
-.err{display:none;padding:10px 12px;border-radius:12px;border:1px solid var(--bad);color:var(--bad);font-weight:600;font-size:14px;line-height:1.4}
+button:focus-visible,input:focus-visible{outline:2px solid var(--au);outline-offset:3px}
+.err{display:none;padding:10px 12px;border-radius:12px;border:1px solid var(--bad);color:var(--bad);font-weight:600;font-size:14px;line-height:1.4;background:rgba(251,113,133,.08)}
 .err.on{display:block}
-small{color:var(--soft);font-size:13px;line-height:1.5}
-a{color:var(--gold)}
+small{color:var(--tx2);font-size:13px;line-height:1.5}
 .box>*{animation:rise .8s cubic-bezier(.22,1,.36,1) backwards}
-.box>:nth-child(2){animation-delay:.07s}.box>:nth-child(3){animation-delay:.14s}
+.box>:nth-child(2){animation-delay:.07s}.box>:nth-child(3){animation-delay:.14s}.box>:nth-child(4){animation-delay:.21s}
 @keyframes rise{from{opacity:0;transform:translateY(20px)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
 <body>
+<div class="sky" id="sky" aria-hidden="true"></div>
+<div class="code" id="code" aria-hidden="true"></div>
 <main class="box">
-  <div class="emb" aria-hidden="true">{₹}</div>
-  <h1><span>Kaun Banega</span><b>Coder</b></h1>
+  <div class="emb" aria-hidden="true"><i class="ring"></i><i class="ring b"></i><span class="coin">{ }</span></div>
+  <h1><span>Kaun Banega</span><b>Coder<i class="caret" aria-hidden="true"></i></b></h1>
+  <p class="term" aria-hidden="true"><b>&gt;&gt;&gt;</b> login(niat_id, name)</p>
   <form class="card" id="f" novalidate>
     <label>NIAT ID<input id="roll" autocomplete="username" autocapitalize="characters" placeholder="e.g. N26P0001" required></label>
     <label>Your name, as in the student list<input id="name" autocomplete="name" placeholder="e.g. Asha Kumar" required></label>
@@ -49,6 +79,12 @@ a{color:var(--gold)}
 </main>
 <script>
 (function () {
+  var sky = document.getElementById('sky'), code = document.getElementById('code'), h = '', g = ['{ }', '</>', 'def', 'for i in', '==', '[ ]', 'print()', 'True', '+='];
+  for (var i = 0; i < 90; i++) { var z = (Math.random() < .85 ? 1 + Math.random() * 1.3 : 2 + Math.random() * 1.4).toFixed(1); h += '<i style="left:' + (Math.random() * 100).toFixed(2) + '%;top:' + (Math.random() * 100).toFixed(2) + '%;width:' + z + 'px;height:' + z + 'px;opacity:' + (.3 + Math.random() * .6).toFixed(2) + ';animation-delay:' + (Math.random() * 4).toFixed(1) + 's"></i>'; }
+  sky.innerHTML = h; h = '';
+  for (i = 0; i < 14; i++) h += '<span style="left:' + ((i * 37) % 100) + '%;--fs:' + (14 + (i * 7) % 14) + 'px;--d:' + (16 + (i * 5) % 14) + 's;--dl:-' + ((i * 3.1) % 20).toFixed(1) + 's;--c:' + (i % 3 ? '#5EEAD4' : '#FDE68A') + '">' + g[i % g.length].replace(/</g, '&lt;') + '</span>';
+  code.innerHTML = h;
+
   var f = document.getElementById('f'), err = document.getElementById('err'), go = document.getElementById('go');
   var roll = document.getElementById('roll'), name = document.getElementById('name');
   try { roll.value = localStorage.getItem('kbc-roll') || ''; } catch (e) {}

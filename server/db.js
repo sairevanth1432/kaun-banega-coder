@@ -168,6 +168,17 @@ CREATE TABLE IF NOT EXISTS kbc_profiles (
   best_reached INTEGER NOT NULL DEFAULT 0, correct INTEGER NOT NULL DEFAULT 0, answered INTEGER NOT NULL DEFAULT 0,
   badges TEXT NOT NULL DEFAULT '[]', seen TEXT NOT NULL DEFAULT '[]', updated_at BIGINT NOT NULL
 );
+
+-- ---------------------------------------------------------------- student game (play.html): saved progress, Hall of Fame, live count
+CREATE TABLE IF NOT EXISTS kbc_r1_state (
+  user_id BIGINT PRIMARY KEY, data TEXT NOT NULL DEFAULT '{}',   -- the browser's progress object, as JSON
+  coins BIGINT NOT NULL DEFAULT 0, best INTEGER NOT NULL DEFAULT 0, correct INTEGER NOT NULL DEFAULT 0, answered INTEGER NOT NULL DEFAULT 0,
+  runs INTEGER NOT NULL DEFAULT 0, updated_at BIGINT NOT NULL, last_seen BIGINT NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS kbc_r1_state_fame ON kbc_r1_state(coins DESC, best DESC);
+CREATE INDEX IF NOT EXISTS kbc_r1_state_seen ON kbc_r1_state(last_seen);
+CREATE TABLE IF NOT EXISTS kbc_r1_log (id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL, kind TEXT NOT NULL, data TEXT NOT NULL, at BIGINT NOT NULL);
+CREATE INDEX IF NOT EXISTS kbc_r1_log_kind ON kbc_r1_log(kind, at);
 `;
 
 // ---------- backend

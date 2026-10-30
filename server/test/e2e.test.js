@@ -338,3 +338,30 @@ test('analytics and exports respond', async () => {
   const audit = (await admin.get('/api/admin/audit')).json.rows;
   assert.ok(audit.some((a) => a.action === 'import.questions'));
 });
+
+test('student game: saved progress, overall and university boards, live count, feedback', async () => {
+  await admin.post('/api/admin/roster/import', { csv: 'NIAT ID,Student Name,University\nN26T0201,Ravi Teja,Other U', dry: false });
+  const a = client(), b = client();
+  await a.post('/api/auth/name-login', { rollNo: 'N26T0110', name: 'Player 10' });
+  await b.post('/api/auth/name-login', { rollNo: 'N26T0201', name: 'Ravi Teja' });
+  const s0 = await a.get('/api/r1/state');
+  assert.equal(s0.json.me.university, 'Test U');
+  assert.ok(s0.json.live >= 1);
+  assert.equal((await a.put('/api/r1/state', { data: JSON.stringify({ coins: 500, best: 6, correct: 8, answered: 10, t: 1 }) })).status, 200);
+  // a wallet no real game could produce is capped at right answers x (7 crore / 15)
+  await b.put('/api/r1/state', { data: JSON.stringify({ coins: 9e9, best: 2, correct: 1, answered: 2, t: 1 }) });
+  assert.equal(JSON.parse((await a.get('/api/r1/state')).json.state.data).coins, 500);
+  const all = (await a.get('/api/r1/fame?scope=all')).json;
+  assert.deepEqual(all.rows.slice(0, 2).map((r) => [r.name, r.coins]), [['Ravi Teja', Math.ceil(7e7 / 15)], ['Player 10', 500]]);
+  assert.ok(all.universities.includes('Other U') && all.universities.includes('Test U'));
+  const uni = (await a.get('/api/r1/fame?scope=uni')).json;
+  assert.equal(uni.university, 'Test U');
+  assert.deepEqual(uni.rows.map((r) => r.name), ['Player 10']);
+  assert.ok(uni.rows[0].me);
+  assert.equal((await a.put('/api/r1/state', { data: '[1]' })).status, 400);
+  assert.equal((await a.post('/api/r1/log', { events: [{ kind: 'feedback', stars: 5, text: 'Loved it' }, { kind: 'not-a-kind' }] })).json.saved, 1);
+  const fb = (await admin.get('/api/admin/feedback')).json.rows;
+  assert.equal(fb[0].text, 'Loved it');
+  assert.equal(fb[0].university, 'Test U');
+  assert.equal((await client().get('/api/r1/state')).status, 401);
+});

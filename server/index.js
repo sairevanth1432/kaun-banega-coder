@@ -22,6 +22,7 @@ import { questionStats, overview, FLAG_LABELS } from './stats.js';
 import { importRoster } from './roster.js';
 import { BinError, listBin, restoreItem, purgeItem } from './recycle.js';
 import { toCSV } from './sheets.js';
+import { R1Error, getState, saveState, ping, fame, logEvents, feedbackRows } from './r1.js';
 
 const PUBLIC = path.join(ROOT, 'public');
 const app = express();
@@ -125,6 +126,20 @@ api.get('/leaderboard', player, async (req, res) => {
   res.json(await leaderboard(req.user, ''));
 });
 
+// The student game (play.html): saved progress, live count, Hall of Fame, feedback and usage events.
+api.get('/r1/state', player, async (req, res) => {
+  const u = req.user;
+  res.json({ me: { rollNo: u.roll_no, name: u.name, university: u.university || '' }, state: await getState(u.id), ...(await ping(u.id)) });
+});
+api.put('/r1/state', player, async (req, res) => res.json(await saveState(req.user.id, req.body && req.body.data)));
+api.post('/r1/ping', player, async (req, res) => res.json(await ping(req.user.id)));
+api.get('/r1/fame', player, async (req, res) => res.json(await fame(req.user, String(req.query.scope || 'all'), String(req.query.uni || ''))));
+api.post('/r1/log', player, async (req, res) => {
+  const r = await kv.rateLimit('r1log:' + req.user.id, 60, 60000);
+  if (!r.ok) return res.status(429).json({ error: 'RATE_LIMIT', message: 'Slow down a little.' });
+  res.json(await logEvents(req.user.id, req.body && req.body.events));
+});
+
 api.get('/cron/cleanup', async (req, res) => {
   if (config.cronSecret && req.get('authorization') !== 'Bearer ' + config.cronSecret) return res.status(401).json({ error: 'AUTH' });
   await cleanupExpired();
@@ -182,6 +197,7 @@ adm.use(requireAdmin);
 const who = (req) => req.admin.email;
 
 // ---------- overview
+adm.get('/feedback', async (req, res) => res.json({ rows: await feedbackRows() }));
 adm.get('/overview', async (req, res) => {
   const [o, events] = await Promise.all([overview(), listEvents()]);
   res.json({ ...o, events: events.filter((e) => e.phase !== 'ended').slice(0, 5) });
@@ -419,7 +435,7 @@ adm.patch('/admins/:id', requireSuper, async (req, res) => {
 
 // ===================================================================== errors
 api.use((req, res) => res.status(404).json({ error: 'NOT_FOUND', message: 'No such API route.' }));
-const KNOWN = [AuthError, BankError, GameError, EventError, FffError, LadderError, BinError];
+const KNOWN = [AuthError, BankError, GameError, EventError, FffError, LadderError, BinError, R1Error];
 app.use((err, req, res, next) => {
   if (KNOWN.some((K) => err instanceof K)) return res.status(err.status).json({ error: err.code, message: err.message, ...(err.extra || {}) });
   if (err && err.type === 'entity.parse.failed') return res.status(400).json({ error: 'BAD_JSON', message: 'Invalid JSON.' });
