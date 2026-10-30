@@ -1,0 +1,682 @@
+{
+  "levels": {
+    "1": "Recognise",
+    "2": "Reason",
+    "3": "Repair",
+    "4": "Create"
+  },
+  "difficulty": {
+    "1": "R1 Low: this skill only",
+    "2": "R2 Medium: mixes in 1-2 earlier skills",
+    "3": "R3 Hard: mixes in 3 or more earlier skills"
+  },
+  "needs_branches": [
+    "path",
+    "cover"
+  ],
+  "types": [
+    {
+      "key": "mcq",
+      "level": 1,
+      "T": "T1",
+      "name": "Multiple Choice",
+      "ui": "choice",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": true,
+      "description": "Pick one answer from four. Each wrong option is tied to a known mistake.",
+      "payload": {
+        "required": [
+          "options"
+        ],
+        "optional": [
+          "printed",
+          "real",
+          "spec"
+        ]
+      }
+    },
+    {
+      "key": "match",
+      "level": 1,
+      "T": "T2",
+      "name": "Matching",
+      "ui": "match",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Match each piece of code to its result.",
+      "payload": {
+        "required": [
+          "left",
+          "right",
+          "answer"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "key": "predict",
+      "level": 1,
+      "T": "T3",
+      "name": "Predict the Output",
+      "ui": "predict",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Read the code and type exactly what it prints.",
+      "payload": {
+        "required": [
+          "expected"
+        ],
+        "optional": [
+          "wrong"
+        ]
+      }
+    },
+    {
+      "key": "hunt",
+      "level": 1,
+      "T": "T4",
+      "name": "Value Hunt",
+      "ui": "hunt",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Tap every value in the grid that matches the rule.",
+      "payload": {
+        "required": [
+          "values",
+          "answer"
+        ],
+        "optional": [
+          "wrong_sets"
+        ]
+      }
+    },
+    {
+      "key": "path2",
+      "level": 1,
+      "T": "T5",
+      "name": "Tap the Path",
+      "ui": "path2",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Tap the lines in the order the program visits them.",
+      "payload": {
+        "required": [
+          "lines",
+          "answer"
+        ],
+        "optional": [
+          "output",
+          "wrong_paths"
+        ]
+      }
+    },
+    {
+      "key": "timeline",
+      "level": 1,
+      "T": "T6",
+      "name": "Trace Timeline",
+      "ui": "order",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Put the moments of a run in the order they happen.",
+      "payload": {
+        "required": [
+          "items",
+          "answer"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "key": "group",
+      "level": 2,
+      "T": "T1",
+      "name": "Group the Code",
+      "ui": "group",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Twelve pieces hide three groups of four. Group them.",
+      "payload": {
+        "required": [
+          "pieces",
+          "groups"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "key": "explain",
+      "level": 2,
+      "T": "T2",
+      "name": "Explain the Code",
+      "ui": "choice",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": true,
+      "description": "Pick the sentence that explains the code.",
+      "payload": {
+        "required": [
+          "options"
+        ],
+        "optional": [
+          "printed",
+          "real",
+          "spec"
+        ]
+      }
+    },
+    {
+      "key": "happens",
+      "level": 2,
+      "T": "T3",
+      "name": "What Happens?",
+      "ui": "choice",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": true,
+      "description": "Decide if the code prints something, stops with an error, or never stops.",
+      "payload": {
+        "required": [
+          "options"
+        ],
+        "optional": [
+          "printed",
+          "real",
+          "spec"
+        ]
+      }
+    },
+    {
+      "key": "problem",
+      "level": 2,
+      "T": "T4",
+      "name": "Understand the Problem",
+      "ui": "choice",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": true,
+      "description": "No code yet. Show you understood the problem's input and output.",
+      "payload": {
+        "required": [
+          "options"
+        ],
+        "optional": [
+          "printed",
+          "real",
+          "spec"
+        ]
+      }
+    },
+    {
+      "key": "same",
+      "level": 2,
+      "T": "T5",
+      "name": "Same or Different",
+      "ui": "same",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Two programs are shown. Decide if they print exactly the same thing.",
+      "payload": {
+        "required": [
+          "codeA",
+          "codeB",
+          "answer",
+          "outputs"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "key": "gap",
+      "level": 2,
+      "T": "T6",
+      "name": "Gap Trace",
+      "ui": "gap",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "A trace table has some cells filled in. Work out the rest.",
+      "payload": {
+        "required": [
+          "rows"
+        ],
+        "optional": [
+          "ask"
+        ]
+      }
+    },
+    {
+      "key": "path",
+      "level": 2,
+      "T": "T7",
+      "name": "Choose the Path",
+      "ui": "path",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "For each input, pick which branch the program takes.",
+      "payload": {
+        "required": [
+          "branches",
+          "cases"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "key": "sort",
+      "level": 2,
+      "T": "T8",
+      "name": "Sort by Result",
+      "ui": "sort",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Sort pieces of code by their result, smallest first.",
+      "payload": {
+        "required": [
+          "pieces",
+          "answer",
+          "results"
+        ],
+        "optional": [
+          "wrong_pairs"
+        ]
+      }
+    },
+    {
+      "key": "fill",
+      "level": 2,
+      "T": "T9",
+      "name": "Fill the Blank",
+      "ui": "fill",
+      "grading": "run",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Type the missing piece so the code gives the target.",
+      "payload": {
+        "required": [
+          "target",
+          "sample"
+        ],
+        "optional": [
+          "require",
+          "forbid"
+        ]
+      }
+    },
+    {
+      "key": "input",
+      "level": 2,
+      "T": "T10",
+      "name": "Find the Input",
+      "ui": "choice",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": true,
+      "description": "Pick the value that makes the code produce what is asked.",
+      "payload": {
+        "required": [
+          "options"
+        ],
+        "optional": [
+          "printed",
+          "real",
+          "spec"
+        ]
+      }
+    },
+    {
+      "key": "guess",
+      "level": 2,
+      "T": "T11",
+      "name": "Guess the Code",
+      "ui": "guess",
+      "grading": "key",
+      "modes": [
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "The code is hidden. Probe it with inputs, then pick which code it is.",
+      "payload": {
+        "required": [
+          "probe",
+          "max_probes",
+          "options"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "key": "cover",
+      "level": 2,
+      "T": "T12",
+      "name": "Cover the Branches",
+      "ui": "cover",
+      "grading": "run",
+      "modes": [
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Pick inputs so every branch of the code runs exactly once.",
+      "payload": {
+        "required": [
+          "values",
+          "need",
+          "branches",
+          "sample"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "key": "mystery",
+      "level": 2,
+      "T": "T13",
+      "name": "Output to Code",
+      "ui": "code",
+      "grading": "run",
+      "modes": [
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "See the output and write code that makes it.",
+      "payload": {
+        "required": [
+          "target",
+          "sample"
+        ],
+        "optional": [
+          "require",
+          "require_any",
+          "forbid"
+        ]
+      }
+    },
+    {
+      "key": "name",
+      "level": 3,
+      "T": "T1",
+      "name": "Name the Mistake",
+      "ui": "choice",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": true,
+      "description": "Code with a mistake is shown. Pick the name of the mistake.",
+      "payload": {
+        "required": [
+          "options"
+        ],
+        "optional": [
+          "printed",
+          "real",
+          "spec"
+        ]
+      }
+    },
+    {
+      "key": "bug",
+      "level": 3,
+      "T": "T2",
+      "name": "Spot the Bug",
+      "ui": "bug",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "The code runs but does the wrong thing. Tap the wrong line.",
+      "payload": {
+        "required": [
+          "lines",
+          "answer"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "key": "parsons",
+      "level": 3,
+      "T": "T3",
+      "name": "Parsons Problem",
+      "ui": "parsons",
+      "grading": "run",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Put the given lines of code in the right order.",
+      "payload": {
+        "required": [
+          "items",
+          "target",
+          "sample"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "key": "golf",
+      "level": 3,
+      "T": "T4",
+      "name": "Code Golf",
+      "ui": "golf",
+      "grading": "run",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Change as few values as you can so the code gives the target.",
+      "payload": {
+        "required": [
+          "tokens",
+          "target",
+          "par"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "key": "fix",
+      "level": 3,
+      "T": "T5",
+      "name": "Fix the Bug",
+      "ui": "code",
+      "grading": "run",
+      "modes": [
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "The code has a bug. Repair it so it does what is asked.",
+      "payload": {
+        "required": [
+          "target",
+          "sample"
+        ],
+        "optional": [
+          "require",
+          "require_any",
+          "forbid"
+        ]
+      }
+    },
+    {
+      "key": "pseudo",
+      "level": 4,
+      "T": "T1",
+      "name": "Pseudocode Order",
+      "ui": "order",
+      "grading": "key",
+      "modes": [
+        "hotseat",
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Put plain-English steps of a plan in order.",
+      "payload": {
+        "required": [
+          "items",
+          "answer"
+        ],
+        "optional": []
+      }
+    },
+    {
+      "key": "faded",
+      "level": 4,
+      "T": "T2",
+      "name": "Faded Worked Example",
+      "ui": "faded",
+      "grading": "run",
+      "modes": [
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Step 1 is solved. Step 2 has gaps. Step 3 is blank.",
+      "payload": {
+        "required": [
+          "steps",
+          "target",
+          "sample"
+        ],
+        "optional": [
+          "require",
+          "forbid"
+        ]
+      }
+    },
+    {
+      "key": "grow",
+      "level": 4,
+      "T": "T3",
+      "name": "Grow the Program",
+      "ui": "grow",
+      "grading": "run",
+      "modes": [
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "One program grows. Each tier adds one rule to the same code.",
+      "payload": {
+        "required": [
+          "tiers",
+          "sample"
+        ],
+        "optional": [
+          "require",
+          "forbid"
+        ]
+      }
+    },
+    {
+      "key": "write",
+      "level": 4,
+      "T": "T4",
+      "name": "Write the Code",
+      "ui": "code",
+      "grading": "run",
+      "modes": [
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Write a full program from a task.",
+      "payload": {
+        "required": [
+          "target",
+          "sample"
+        ],
+        "optional": [
+          "require",
+          "require_any",
+          "forbid"
+        ]
+      }
+    },
+    {
+      "key": "diverge",
+      "level": 4,
+      "T": "T5",
+      "name": "Same Output, Different Code",
+      "ui": "diverge",
+      "grading": "run",
+      "modes": [
+        "practice"
+      ],
+      "lifeline_5050": false,
+      "description": "Write up to three programs with the same output, as different as possible.",
+      "payload": {
+        "required": [
+          "target",
+          "need",
+          "samples"
+        ],
+        "optional": [
+          "require",
+          "forbid"
+        ]
+      }
+    }
+  ]
+}

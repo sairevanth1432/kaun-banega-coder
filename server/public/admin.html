@@ -336,8 +336,8 @@ pre.code{margin:0;padding:12px 14px;background:#140A33;color:#E9E3FF;border-radi
 
   // ------------------------------------------------------------------ layout
   var NAV = [
-    'Content', ['overview', 'Overview'], ['questions', 'Question bank'], ['import', 'Import'], ['analytics', 'Question analytics'], ['fff', 'Fastest finger'],
-    'Game', ['ladder', 'Ladder & pools'], ['events', 'Events'], ['games', 'Games'], ['leaderboard', 'Leaderboard'], ['players', 'Players & roster'],
+    'Content', ['overview', 'Overview'], ['pathbank', 'Skill-path bank'], ['questions', 'Question bank'], ['import', 'Import'], ['analytics', 'Question analytics'], ['fff', 'Fastest finger'],
+    'Game', ['ladder', 'Ladder & pools'], ['events', 'Events'], ['games', 'Games'], ['leaderboard', 'Leaderboard'], ['feedback', 'Feedback'], ['players', 'Players & roster'],
     'Control room', ['settings', 'Settings', true], ['admins', 'Admins', true], ['bin', 'Recycle bin'], ['audit', 'Audit log'], ['account', 'My account']
   ];
   function layout(content) {
@@ -709,6 +709,106 @@ pre.code{margin:0;padding:12px 14px;background:#140A33;color:#E9E3FF;border-radi
       err, h('div', { class: 'row' }, h('button', { class: 'btn pri', type: 'submit' }, 'Save'),
         p.id ? h('button', { class: 'btn bad', type: 'button', onclick: function () { if (confirm('Delete this puzzle? It moves to the Recycle bin.')) api('DELETE', '/api/admin/fff/' + p.id).then(function () { dr.close(); refresh(); }, fail); } }, 'Delete') : null)));
   }
+
+  // ---------- skill-path bank (question-bank-format bundles; this is what the student game's hot seat plays)
+  VIEWS.pathbank = function () {
+    var F = CACHE.pb || (CACHE.pb = { skill: '', type: '', status: '', q: '', page: 1 });
+    return Promise.all([api('GET', '/api/admin/path/summary'),
+      api('GET', '/api/admin/path/items?skill=' + encodeURIComponent(F.skill) + '&type=' + encodeURIComponent(F.type) + '&status=' + F.status + '&q=' + encodeURIComponent(F.q) + '&page=' + F.page)]).then(function (res) {
+      var sum = res[0], items = res[1], live = {}, retired = {}, total = 0;
+      sum.rows.forEach(function (r) { var m = r.status === 'live' ? live : retired; m[r.skill] = (m[r.skill] || 0) + r.n; if (r.status === 'live') total += r.n; });
+      var acc = {}; sum.stats.forEach(function (s) { acc[s.skill] = s; });
+      var skillOpts = [h('option', { value: '' }, 'All skills')].concat(sum.graph.skills.map(function (s) { return h('option', { value: s.id, selected: F.skill === s.id }, s.id + ' · ' + s.name); }));
+      var typeOpts = [h('option', { value: '' }, 'All types')].concat(sum.types.map(function (t) { return h('option', { value: t.key, selected: F.type === t.key }, 'L' + t.level + ' ' + t.T + ' · ' + t.name + (t.modes.indexOf('hotseat') < 0 ? ' (practice only)' : '')); }));
+      var skillSel = h('select', { onchange: function () { F.skill = skillSel.value; F.page = 1; refresh(); } }, skillOpts);
+      var typeSel = h('select', { onchange: function () { F.type = typeSel.value; F.page = 1; refresh(); } }, typeOpts);
+      var search = h('input', { type: 'search', placeholder: 'Id or text…', value: F.q, oninput: debounce(function () { F.q = search.value; F.page = 1; refresh(); }, 350) });
+      var groups = sum.graph.groups.map(function (g) {
+        return h('div', { class: 'card', style: 'display:flex;flex-direction:column;gap:8px' },
+          h('div', { class: 'row', style: 'justify-content:space-between' }, h('b', null, g.id + ' · ' + g.name), pill(g.checkpoint)),
+          h('div', { style: 'display:flex;flex-wrap:wrap;gap:6px' }, g.skills.map(function (sid) {
+            var s = sum.graph.skills.find(function (x) { return x.id === sid; }) || { name: sid }, n = live[sid] || 0, a = acc[sid];
+            return h('button', { type: 'button', class: 'pill ' + (n ? 'ok' : ''), title: s.name + (a && a.n ? ' · ' + Math.round(a.ok / a.n * 100) + '% right from ' + a.n + ' answers' : ''), style: 'cursor:pointer;border:0',
+              onclick: function () { F.skill = sid; F.page = 1; refresh(); } }, sid + ' · ' + (n ? n.toLocaleString('en-IN') : 'no questions'));
+          })));
+      });
+      return h('div', { style: 'display:flex;flex-direction:column;gap:16px' },
+        header('~/admin/pathbank', 'Skill-path bank', 'The questions the student game plays, by skill (content/skill-graph.json). Upload a bundle such as upload-G1.json: it is checked first, and nothing is saved until you press Save. Items are matched on their id (C1-G1-S1-L1-T1-R1-V1), so uploading an edited bundle updates them.',
+          [pathImportButton()]),
+        h('div', { class: 'grid g4' }, stat('Live questions', total.toLocaleString('en-IN'), Object.keys(live).length + ' of ' + sum.graph.skills.length + ' skills have questions'),
+          stat('Skills without questions', String(sum.graph.skills.length - Object.keys(live).length), 'shown to students as "coming soon"'),
+          stat('Retired', Object.keys(retired).reduce(function (a, k) { return a + retired[k]; }, 0).toLocaleString('en-IN'), 'kept for history, never dealt'),
+          stat('Answers checked', sum.stats.reduce(function (a, s) { return a + s.n; }, 0).toLocaleString('en-IN'), 'graded on the server')),
+        h('div', { class: 'grid', style: 'grid-template-columns:repeat(auto-fill,minmax(320px,1fr))' }, groups),
+        h('div', null, h('div', { class: 'toolbar' }, skillSel, typeSel, chips([['', 'All'], ['live', 'Live'], ['retired', 'Retired']], F.status, function (v) { F.status = v; F.page = 1; refresh(); }, 'Status'), search),
+          h('div', { class: 'tablewrap' }, h('table', null, th(['Id', 'Type', 'Task', ['Shown', 'num'], ['Right', 'num'], 'Status']), h('tbody', null, items.rows.map(function (r) {
+            return h('tr', { class: 'click', onclick: function () { pathItemDrawer(r.id); } }, h('td', { class: 'mono' }, r.id, r.version > 1 ? h('div', { class: 'muted' }, 'v' + r.version) : null),
+              h('td', null, r.type), h('td', null, r.task), h('td', { class: 'num' }, r.shown), h('td', { class: 'num' }, r.n ? Math.round(r.ok / r.n * 100) + '% of ' + r.n : '–'),
+              h('td', null, pill(r.status, r.status === 'live' ? 'ok' : 'bad')));
+          })))), pager(items, function (p) { F.page = p; refresh(); })));
+    });
+  };
+  function pathImportButton() {
+    var file = h('input', { type: 'file', accept: '.json,application/json', hidden: true, onchange: function () {
+      var f = file.files[0]; if (!f) return;
+      var r = new FileReader();
+      r.onload = function () {
+        var bundle; try { bundle = JSON.parse(String(r.result)); } catch (e) { return toast('That file is not valid JSON.', true); }
+        var dr = drawer();
+        api('POST', '/api/admin/path/import', { bundle: bundle, dry: true, filename: f.name }).then(function (d) { dr.set(pathImportReport(bundle, f.name, d, dr)); }, function (e) { dr.close(); fail(e); });
+      };
+      r.readAsText(f); file.value = '';
+    } });
+    return h('span', null, file, h('button', { class: 'btn pri', onclick: function () { file.click(); } }, 'Upload bundle (.json)'));
+  }
+  function pathImportReport(bundle, name, d, dr) {
+    var save = h('button', { class: 'btn pri', disabled: !(d.added + d.updated), onclick: function () {
+      save.disabled = true;
+      api('POST', '/api/admin/path/import', { bundle: bundle, dry: false, filename: name }).then(function (x) { toast('Saved: ' + x.added + ' added, ' + x.updated + ' updated.'); dr.close(); refresh(); }, function (e) { save.disabled = false; fail(e); });
+    } }, 'Save to the live bank');
+    return h('div', { style: 'display:flex;flex-direction:column;gap:14px' },
+      header('~/admin/pathbank', 'Check: ' + name, d.rows.toLocaleString('en-IN') + ' items in the file. Nothing is saved yet.'),
+      h('div', { class: 'grid g4' }, stat('New', String(d.added)), stat('Updated', String(d.updated)), stat('Unchanged', String(d.unchanged)), stat('With errors', String(d.errorCount))),
+      Object.keys(d.bySkill).length ? h('p', { class: 'muted' }, 'Changes by skill: ' + Object.keys(d.bySkill).map(function (k) { return k + ' ' + d.bySkill[k]; }).join(' · ')) : null,
+      d.errors.length ? h('div', { class: 'tablewrap' }, h('table', null, th(['Item', 'Problem']), h('tbody', null, d.errors.map(function (e) {
+        return h('tr', null, h('td', { class: 'mono' }, e.id || 'item ' + e.row), h('td', null, e.errors.join(' ')));
+      })))) : h('div', { class: 'note ok' }, 'Every item passed the checks.'),
+      d.errorCount ? h('div', { class: 'note warn' }, 'Items with errors are skipped. Fix them in the generator and upload again.') : null,
+      h('div', { class: 'row' }, save, h('button', { class: 'btn', onclick: dr.close }, 'Cancel')));
+  }
+  function pathItemDrawer(id) {
+    var dr = drawer();
+    api('GET', '/api/admin/path/items/' + encodeURIComponent(id)).then(function (d) {
+      var q = d.item, st = q._status;
+      dr.set(h('div', { style: 'display:flex;flex-direction:column;gap:14px' },
+        header('~/admin/pathbank', q.id, q.type + ' · level ' + q.level + ' · R' + q.difficulty + ' · variant ' + q.variant + ' · version ' + q.version),
+        h('div', { class: 'card' }, h('b', null, q.task), q.code ? h('pre', { class: 'mono', style: 'white-space:pre-wrap;margin:10px 0 0' }, q.code) : null),
+        h('div', { class: 'card' }, h('div', { class: 'muted', style: 'font-weight:800;font-size:12px;margin-bottom:6px' }, 'Explanation shown after answering'), q.ok || '–', q.hint ? h('div', { class: 'muted', style: 'margin-top:6px' }, 'Hint: ' + q.hint) : null),
+        h('details', null, h('summary', null, 'Full item (answers included)'), h('pre', { class: 'mono', style: 'white-space:pre-wrap;font-size:12px' }, JSON.stringify(q.payload, null, 2))),
+        isSuper() ? h('div', { class: 'row' }, h('button', { class: 'btn ' + (st === 'live' ? 'bad' : 'pri'), onclick: function () {
+          api('POST', '/api/admin/path/items/status', { ids: [q.id], status: st === 'live' ? 'retired' : 'live' }).then(function () { toast(st === 'live' ? 'Retired. It will not be dealt again.' : 'Back in the live bank.'); dr.close(); refresh(); }, fail);
+        } }, st === 'live' ? 'Retire this item' : 'Make it live again')) : null));
+    }, function (e) { dr.close(); fail(e); });
+  }
+
+  // ---------- feedback from the student game (every account, including test accounts)
+  VIEWS.feedback = function () {
+    return api('GET', '/api/admin/feedback').then(function (d) {
+      var rows = d.rows, avg = rows.length ? (rows.reduce(function (a, r) { return a + (Number(r.stars) || 0); }, 0) / rows.length).toFixed(1) : '–';
+      var csv = function () {
+        var q = function (v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+        var text = ['When,NIAT ID,Name,University,Stars,Screen,Feedback'].concat(rows.map(function (r) { return [new Date(r.at).toISOString(), r.rollNo, r.name, r.university, r.stars, r.screen, r.text].map(q).join(','); })).join('\n');
+        var a = h('a', { href: URL.createObjectURL(new Blob([text], { type: 'text/csv' })), download: 'kbc-feedback.csv' }); document.body.appendChild(a); a.click(); a.remove();
+      };
+      return h('div', { style: 'display:flex;flex-direction:column;gap:16px' },
+        header('~/admin/feedback', 'Feedback', 'What students wrote from the Feedback button in the game, newest first. Test accounts and students no longer on the roster are included.', [h('button', { class: 'btn', onclick: csv, disabled: !rows.length }, 'Export CSV')]),
+        h('div', { class: 'grid g4' }, stat('Responses', String(rows.length)), stat('Average rating', avg + (rows.length ? ' ★' : '')), stat('5 stars', String(rows.filter(function (r) { return Number(r.stars) === 5; }).length)), stat('1–2 stars', String(rows.filter(function (r) { return Number(r.stars) <= 2; }).length))),
+        rows.length ? h('div', { class: 'tablewrap' }, h('table', null, th(['When', 'Student', 'University', 'Rating', 'Feedback', 'Screen']), h('tbody', null, rows.map(function (r) {
+          return h('tr', null, h('td', { class: 'muted' }, dt(r.at)), h('td', null, r.name, h('div', { class: 'muted mono' }, r.rollNo || '–')), h('td', { class: 'muted' }, r.university || '–'),
+            h('td', { class: 'mono', style: 'color:var(--gold-txt);white-space:nowrap' }, '★'.repeat(Number(r.stars) || 0) + '☆'.repeat(5 - (Number(r.stars) || 0))), h('td', { style: 'white-space:pre-wrap;min-width:260px' }, r.text || ''), h('td', { class: 'muted' }, r.screen || '–'));
+        })))) : h('div', { class: 'card muted' }, 'No feedback yet.'));
+    });
+  };
 
   // ---------- ladder & pools
   VIEWS.ladder = function () {

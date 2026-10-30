@@ -348,20 +348,135 @@ test('student game: saved progress, overall and university boards, live count, f
   assert.equal(s0.json.me.university, 'Test U');
   assert.ok(s0.json.live >= 1);
   assert.equal((await a.put('/api/r1/state', { data: JSON.stringify({ coins: 500, best: 6, correct: 8, answered: 10, t: 1 }) })).status, 200);
-  // a wallet no real game could produce is capped at right answers x (7 crore / 15)
   await b.put('/api/r1/state', { data: JSON.stringify({ coins: 9e9, best: 2, correct: 1, answered: 2, t: 1 }) });
   assert.equal(JSON.parse((await a.get('/api/r1/state')).json.state.data).coins, 500);
+  // the Hall of Fame ignores what the browser saves: it ranks only server-checked games (see the skill-path test)
   const all = (await a.get('/api/r1/fame?scope=all')).json;
-  assert.deepEqual(all.rows.slice(0, 2).map((r) => [r.name, r.coins]), [['Ravi Teja', Math.ceil(7e7 / 15)], ['Player 10', 500]]);
+  assert.equal(all.rows.length, 0);
   assert.ok(all.universities.includes('Other U') && all.universities.includes('Test U'));
-  const uni = (await a.get('/api/r1/fame?scope=uni')).json;
-  assert.equal(uni.university, 'Test U');
-  assert.deepEqual(uni.rows.map((r) => r.name), ['Player 10']);
-  assert.ok(uni.rows[0].me);
+  assert.equal((await a.get('/api/r1/fame?scope=uni')).json.university, 'Test U');
   assert.equal((await a.put('/api/r1/state', { data: '[1]' })).status, 400);
   assert.equal((await a.post('/api/r1/log', { events: [{ kind: 'feedback', stars: 5, text: 'Loved it' }, { kind: 'not-a-kind' }] })).json.saved, 1);
   const fb = (await admin.get('/api/admin/feedback')).json.rows;
   assert.equal(fb[0].text, 'Loved it');
   assert.equal(fb[0].university, 'Test U');
   assert.equal((await client().get('/api/r1/state')).status, 401);
+});
+
+// ---------------------------------------------------------------- skill path: bank import, server-run hot seat, leaderboard
+const BUNDLE = JSON.parse(fs.readFileSync(new URL('./fixtures/path-bundle.json', import.meta.url), 'utf8'));
+// The right answer to an item, built from its key (what the server must accept). Code golf is found by trying choices.
+async function rightAnswer(q) {
+  const p = q.payload;
+  switch (q.type) {
+    case 'match': return { map: p.answer };
+    case 'predict': return { text: p.expected };
+    case 'hunt': return { picks: p.answer };
+    case 'path2': return { path: p.answer };
+    case 'timeline': case 'pseudo': case 'sort': return { order: p.answer };
+    case 'group': return { groups: p.groups };
+    case 'same': return { pick: p.answer };
+    case 'gap': return { cells: Object.fromEntries(p.rows.map((r, i) => [i, { value: r.value, kind: r.kind }])) };
+    case 'path': return { picks: Object.fromEntries(p.cases.map((c, i) => [i, c.answer])) };
+    case 'bug': return { line: p.answer };
+    case 'fill': return { text: p.sample };
+    case 'parsons': { const used = new Set(); return { order: p.sample.split('\n').map((l) => { const i = p.items.findIndex((x, k) => !used.has(k) && x === l); used.add(i); return i; }) }; }
+    case 'golf': {
+      const { grade } = await import('../pathbank.js');
+      const combos = p.tokens.reduce((acc, t) => acc.flatMap((a) => t.choices.map((c) => a.concat([c]))), [[]]);
+      for (const ch of combos.sort((x, y) => x.filter((c, i) => c !== p.tokens[i].now).length - y.filter((c, i) => c !== p.tokens[i].now).length))
+        if ((await grade(q, { choices: ch })).ok) return { choices: ch };
+      return { choices: [] };
+    }
+    default: return { pick: p.options.findIndex((o) => o.correct) };
+  }
+}
+async function winFff(c) {
+  const f = (await c.post('/api/path/fff/start', { mode: 'cross' })).json, X = f.puzzle;
+  const op = (a, o, b) => (o === '+' ? a + b : o === '−' ? a - b : a * b);
+  for (const x of X.tiles) for (const y of X.tiles) {
+    if (x === y) continue;
+    const w = X.v.slice(); w[X.blanks[0]] = x; w[X.blanks[1]] = y;
+    if (op(w[0], X.o[0], w[1]) === X.R[0] && op(w[2], X.o[1], w[3]) === X.R[1] && op(w[0], X.o[2], w[2]) === X.R[2] && op(w[1], X.o[3], w[3]) === X.R[3]) {
+      const r = (await c.post('/api/path/fff/submit', { id: f.id, answer: { fill: { [X.blanks[0]]: x, [X.blanks[1]]: y } } })).json;
+      assert.ok(r.ok, 'FFF solution accepted');
+      return f.id;
+    }
+  }
+  throw new Error('no FFF solution');
+}
+const itemOf = async (id) => JSON.parse((await db.one('SELECT data FROM kbc_items WHERE id = ?', id)).data);
+
+test('skill path: bundle import, server-checked hot seat, prizes and leaderboard', async () => {
+  const bad = { ...BUNDLE.questions[0], id: 'C1-G1-S4-L1-T1-R1-V99', variant: 98 };
+  const dry = (await admin.post('/api/admin/path/import', { bundle: { questions: [...BUNDLE.questions, bad] }, dry: true })).json;
+  assert.equal(dry.added, BUNDLE.questions.length);
+  assert.equal(dry.errorCount, 1);
+  assert.match(dry.errors[0].errors.join(' '), /variant/);
+  assert.equal(Number((await db.one('SELECT COUNT(*) AS n FROM kbc_items')).n), 0, 'a dry run saves nothing');
+  const saved = (await admin.post('/api/admin/path/import', { bundle: BUNDLE, dry: false, filename: 'fixture.json' })).json;
+  assert.equal(saved.added, BUNDLE.questions.length);
+  assert.equal((await admin.post('/api/admin/path/import', { bundle: BUNDLE, dry: true })).json.unchanged, BUNDLE.questions.length);
+  assert.equal((await admin.get('/api/admin/path/summary')).status, 200);
+
+  const c = client();
+  await c.post('/api/auth/name-login', { rollNo: 'N26T0105', name: 'Player 5' });
+  let path = (await c.get('/api/path')).json;
+  assert.equal(path.active, 'S4', 'the starter skill comes first; S10 has no questions so it does not block');
+  assert.equal(path.skills.find((s) => s.id === 'S10').status, 'soon');
+  assert.equal(path.skills.find((s) => s.id === 'S1').status, 'locked');
+  assert.equal(path.ladder.length, 12);
+
+  assert.equal((await c.post('/api/path/run', { mode: 'hotseat', fffId: 'nope' })).status, 403, 'the hot seat needs a Fastest Finger win');
+  const fffId = await winFff(c);
+  let r = (await c.post('/api/path/run', { mode: 'hotseat', fffId })).json.run;
+  assert.equal((await c.post('/api/path/run', { mode: 'hotseat', fffId })).status, 403, 'one win unlocks one game');
+  assert.equal(r.energy, 100);
+
+  // nothing that gives the answer away is sent before the answer is locked
+  const leak = (q) => { const t = JSON.stringify(q.payload); for (const k of ['"correct"', '"answer"', '"expected"', '"sample"', '"why"', '"results"', '"wrong']) assert.ok(!t.includes(k), `${q.type} leaks ${k}`); };
+  leak(r.question);
+  assert.equal((await c.post(`/api/path/run/${r.id}/answer`, { itemId: r.question.id, given: null })).status, 409, 'cannot time out early');
+
+  // a wrong answer costs 20% energy and the full item comes back for "Reveal solution"
+  const item0 = await itemOf(r.question.id);
+  const wrong = item0.payload.options ? { pick: item0.payload.options.findIndex((o) => !o.correct) } : { text: 'definitely wrong' };
+  let a = (await c.post(`/api/path/run/${r.id}/answer`, { itemId: r.question.id, given: wrong })).json;
+  assert.equal(a.reveal.ok, false);
+  assert.equal(a.run.energy, 80);
+  assert.ok(a.reveal.item.payload);
+  r = (await c.post(`/api/path/run/${r.id}/next`)).json.run;
+
+  // answer right until S4 and S1 are cleared: that clears every playable skill in G1, so its prize is paid
+  let prizes = [], steps = 0;
+  while (r.state === 'play' && r.question && steps++ < 200) {
+    leak(r.question);
+    const item = await itemOf(r.question.id);
+    a = (await c.post(`/api/path/run/${r.id}/answer`, { itemId: r.question.id, given: await rightAnswer(item) })).json;
+    assert.equal(a.reveal.ok, true, `the right answer to ${item.id} (${item.type}) was accepted`);
+    prizes = prizes.concat(a.reveal.prizes);
+    r = (await c.post(`/api/path/run/${r.id}/next`)).json.run;
+  }
+  assert.equal(r.state, 'done');
+  assert.equal(r.reason, 'complete', 'nothing is left to play in the fixture bank');
+  assert.deepEqual(prizes.map((p) => [p.group, p.amount]), [['G1', 100]]);
+  path = (await c.get('/api/path')).json;
+  assert.equal(path.wallet, 100);
+  assert.equal(path.skills.find((s) => s.id === 'S4').status, 'done');
+  assert.equal(path.skills.find((s) => s.id === 'S1').status, 'done');
+
+  // the leaderboard ranks on the server's numbers
+  await new Promise((res) => setTimeout(res, 5200));   // boards are cached for 5 s
+  const fame = (await c.get('/api/r1/fame?scope=all')).json;
+  assert.equal(fame.rows[0].name, 'Player 5');
+  assert.equal(fame.rows[0].coins, 100);
+  assert.ok(fame.rows[0].me);
+  assert.equal((await c.get('/api/r1/fame?scope=uni')).json.rows[0].coins, 100);
+
+  // practice is graded but changes nothing on the path or in the wallet
+  const pr = (await c.post('/api/path/run', { mode: 'practice' })).json.run;
+  assert.ok(pr.question);
+  const pa = (await c.post(`/api/path/run/${pr.id}/answer`, { itemId: pr.question.id, given: await rightAnswer(await itemOf(pr.question.id)) })).json;
+  assert.equal(pa.reveal.ok, true);
+  assert.equal((await c.get('/api/path')).json.wallet, 100);
 });

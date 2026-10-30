@@ -44,14 +44,18 @@ No database or Redis is needed locally: PGlite stores data in `server/data/`. Fo
 - **Fast at scale.** Pools are a cached index of published questions, refreshed when the bank changes. The audience poll reads one row of per-question counters instead of every vote. Leaderboards are cached for 5 seconds.
 - **No repeats.** Each player's last 200 questions are skipped while the pool still has others.
 
-## The student game (play.html)
+## The student game (play.html) and the skill-path bank
 
-The question engine and the skill path run in the browser. The server keeps what must outlive a browser or be shared:
+The hot seat plays questions from the **skill-path bank**: items in the question-bank-format (`C1-G1-S1-L1-T1-R1-V1`),
+mapped to skills by `content/skill-graph.json`. The server does everything that decides an outcome:
 
-- `GET/PUT /api/r1/state`: each student's progress, so it follows them across devices. A shared laptop never mixes two students.
-- `GET /api/r1/fame?scope=all|uni&uni=…`: the Hall of Fame, overall or for one university (from the roster's university column). Wallet numbers sent by the browser are capped at what real games can produce.
-- `POST /api/r1/ping`: the "N live" count (students whose page pinged in the last 75 s).
-- `POST /api/r1/log`: feedback and usage events. Admins read feedback at `GET /api/admin/feedback`.
+- `pathbank.js` checks uploaded bundles (Admin → Skill-path bank, dry run first), stores every item, sends players a copy with the answer stripped out, and grades every answer. Fill the blank, Parsons and Code golf are graded by running the code (`pyrun.js`: Pyodide in a worker thread, safe builtins only, no imports, killed after 2.5 s).
+- `path.js` is the progression engine (the KBC Progression Engine rules): two right in a row moves up a level, a miss gives the next variant, two misses switch the question type. Skills open by checkpoint, starter skills and prerequisites; a skill with no questions yet shows as "coming soon" and blocks nothing. Clearing every playable skill in a group pays its prize (12 groups, 12 prizes up to 7 crore; checkpoints end at G4, G7, G11, G12). Energy, the timer and lifelines run on the server too.
+- `fffmath.js` makes and checks the Fastest Finger First maths puzzles. A win inside the time limit unlocks one hot-seat game.
+- The Hall of Fame (`r1.js`, overall and per university) ranks only those server-checked numbers: prize money, then topics cleared, then right answers.
+- Feedback from the game is at Admin → Feedback (every account, including test accounts).
+
+Load a bundle locally with `npm run seed -- --path-bank ../question-bank-format/G1/upload-G1.json`, and check that the server grades every item in the bank correctly with `node scripts/check-path-bank.js`.
 
 ## Admin portal
 

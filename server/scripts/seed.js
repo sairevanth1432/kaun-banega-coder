@@ -3,6 +3,7 @@
 //   npm run seed                         starter questions + FFF puzzles
 //   npm run seed -- --roster file.csv    also import a student roster (NIAT ID, Name, …)
 //   npm run seed -- --questions file.csv import another question sheet (CSV or .xlsx) as published
+//   npm run seed -- --path-bank G1/upload-G1.json   import a skill-path bundle (question-bank-format) into the live bank
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT } from '../config.js';
@@ -10,6 +11,7 @@ import { ready, one, close } from '../db.js';
 import { importBank } from '../importer.js';
 import { addFff } from '../fff.js';
 import { importRoster } from '../roster.js';
+import { importBundle } from '../pathbank.js';
 
 const args = process.argv.slice(2);
 const val = (n) => { const i = args.indexOf('--' + n); return i >= 0 ? args[i + 1] : undefined; };
@@ -31,6 +33,12 @@ const roster = val('roster');
 if (roster) {
   const s = await importRoster(sheet(roster), { dry: false });
   console.log(s.error ? s.error : `Roster: ${s.added} added, ${s.updated} updated, ${s.errors.length} rows with errors.`);
+}
+const bundle = val('path-bank');
+if (bundle) {
+  const b = await importBundle(JSON.parse(fs.readFileSync(bundle, 'utf8')), { dry: false, by: 'seed', filename: path.basename(bundle) });
+  console.log(`Skill-path bank from ${path.basename(bundle)}: ${b.added} added, ${b.updated} updated, ${b.unchanged} unchanged, ${b.errorCount} with errors.`);
+  for (const e of b.errors.slice(0, 10)) console.log(`  ${e.id || 'row ' + e.row}: ${e.errors.join(' ')}`);
 }
 await close();
 process.exit(0);

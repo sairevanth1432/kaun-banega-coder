@@ -51,13 +51,14 @@ export async function ping(userId) {
 export const liveCount = () => kv.cached('kbc:r1:live', 5, async () =>
   Number((await one('SELECT COUNT(*) AS n FROM kbc_r1_state WHERE last_seen > ?', Date.now() - LIVE_MS)).n));
 
+// Ranked only on what the server checked: prize money from cleared skill groups, then topics cleared, then right answers.
 const FAME_SQL = `
-  SELECT s.user_id, s.coins, s.best, s.correct, s.answered, s.updated_at,
+  SELECT s.user_id, s.coins, s.skills_done AS best, s.correct, s.answered, s.updated_at,
          COALESCE(NULLIF(u.display_name, ''), m.name, u.roll_no) AS name, m.university
-  FROM kbc_r1_state s JOIN users u ON u.id = s.user_id JOIN students_master m ON m.roll_no = u.roll_no
+  FROM kbc_path s JOIN users u ON u.id = s.user_id JOIN students_master m ON m.roll_no = u.roll_no
   WHERE s.answered > 0 AND u.status = 'active'`;
-const ORDER = ' ORDER BY s.coins DESC, s.best DESC, s.correct DESC, s.updated_at ASC';
-const shape = (r, me) => ({ name: r.name, university: r.university || '', coins: Number(r.coins), best: Number(r.best),
+const ORDER = ' ORDER BY s.coins DESC, s.skills_done DESC, s.correct DESC, s.updated_at ASC';
+const shape = (r, me) => ({ name: r.name, university: r.university || '', coins: Number(r.coins), best: Number(r.best), skillsDone: Number(r.best),
   correct: Number(r.correct), answered: Number(r.answered), me: Number(r.user_id) === me });
 
 // scope 'all': everyone; scope 'uni': only players from `uni` (defaults to the viewer's own university).
@@ -93,8 +94,8 @@ export async function logEvents(userId, events) {
 }
 
 export async function feedbackRows(limit = 200) {
-  return (await all(`SELECT l.data, l.at, u.roll_no, COALESCE(NULLIF(u.display_name, ''), m.name, u.roll_no) AS name, m.university
-                     FROM kbc_r1_log l JOIN users u ON u.id = l.user_id JOIN students_master m ON m.roll_no = u.roll_no
+  return (await all(`SELECT l.data, l.at, u.roll_no, COALESCE(NULLIF(u.display_name, ''), m.name, u.roll_no, 'user ' || l.user_id) AS name, m.university
+                     FROM kbc_r1_log l LEFT JOIN users u ON u.id = l.user_id LEFT JOIN students_master m ON m.roll_no = u.roll_no
                      WHERE l.kind = 'feedback' ORDER BY l.at DESC LIMIT ?`, limit))
-    .map((r) => { let d = {}; try { d = JSON.parse(r.data); } catch {} return { name: r.name, rollNo: r.roll_no, university: r.university, stars: d.stars, text: d.text, at: Number(r.at) }; });
+    .map((r) => { let d = {}; try { d = JSON.parse(r.data); } catch {} return { name: r.name, rollNo: r.roll_no || '', university: r.university || '', stars: d.stars, text: d.text, screen: d.screen || '', at: Number(r.at) }; });
 }

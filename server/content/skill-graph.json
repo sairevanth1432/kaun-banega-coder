@@ -1,0 +1,1954 @@
+{
+ "source": "CT Skill Graph artifact Xkq2BMf52YFByc9XzZhYDz, version 1793357864-d65f",
+ "address_rule": "Question ids use the real skill id: C1-G1-S4-L1-T1-R1-V1 is skill S4.",
+ "rules": {
+  "opens": "A skill opens only when its checkpoint has started and every need is met. A checkpoint starts when every skill in the checkpoint before it is done. In Checkpoint 1, the starter skills come first: every other skill also waits for them.",
+  "starters": "Starter skills (S10, S4) have no arrows but come first, because every lesson and question needs them to show a result and keep a value. Questions for any skill may use these basics: print() of one or more values, storing with =, and + and - on numbers.",
+  "rmax": "Highest difficulty round: 1 with no earlier skills, 2 with one or two, 3 with three or more (counting main needs back through the graph), as in the KBC Progression Engine."
+ },
+ "checkpoints": [
+  {
+   "id": "C1",
+   "name": "Basics: values, input and output, maths and decisions",
+   "groups": [
+    "G1",
+    "G2",
+    "G3",
+    "G4"
+   ]
+  },
+  {
+   "id": "C2",
+   "name": "Loops, functions and loop patterns",
+   "groups": [
+    "G5",
+    "G6",
+    "G7"
+   ]
+  },
+  {
+   "id": "C3",
+   "name": "Lists and text",
+   "groups": [
+    "G8",
+    "G9",
+    "G10",
+    "G11"
+   ]
+  },
+  {
+   "id": "C4",
+   "name": "Dictionaries and sets",
+   "groups": [
+    "G12"
+   ]
+  }
+ ],
+ "groups": [
+  {
+   "id": "G1",
+   "checkpoint": "C1",
+   "name": "First steps, values and types",
+   "skills": [
+    "S10",
+    "S4",
+    "S1",
+    "S2",
+    "S5"
+   ]
+  },
+  {
+   "id": "G2",
+   "checkpoint": "C1",
+   "name": "Input",
+   "skills": [
+    "S6",
+    "S60"
+   ]
+  },
+  {
+   "id": "G3",
+   "checkpoint": "C1",
+   "name": "Arithmetic",
+   "skills": [
+    "S13",
+    "S14",
+    "S62"
+   ]
+  },
+  {
+   "id": "G4",
+   "checkpoint": "C1",
+   "name": "Conditions and decisions",
+   "skills": [
+    "S18",
+    "S19",
+    "S20",
+    "S21",
+    "S22",
+    "S23"
+   ]
+  },
+  {
+   "id": "G5",
+   "checkpoint": "C2",
+   "name": "Loops",
+   "skills": [
+    "S26",
+    "S28",
+    "S29",
+    "S30",
+    "S31"
+   ]
+  },
+  {
+   "id": "G6",
+   "checkpoint": "C2",
+   "name": "Functions",
+   "skills": [
+    "S25"
+   ]
+  },
+  {
+   "id": "G7",
+   "checkpoint": "C2",
+   "name": "Loop patterns",
+   "skills": [
+    "S35",
+    "S36",
+    "S37",
+    "S39",
+    "S24",
+    "S40",
+    "S41"
+   ]
+  },
+  {
+   "id": "G8",
+   "checkpoint": "C3",
+   "name": "Lists",
+   "skills": [
+    "S3",
+    "S7",
+    "S8",
+    "S9",
+    "S34",
+    "S32",
+    "S33"
+   ]
+  },
+  {
+   "id": "G9",
+   "checkpoint": "C3",
+   "name": "Text",
+   "skills": [
+    "S49",
+    "S63",
+    "S51"
+   ]
+  },
+  {
+   "id": "G10",
+   "checkpoint": "C3",
+   "name": "More list tools",
+   "skills": [
+    "S42",
+    "S45",
+    "S61",
+    "S64"
+   ]
+  },
+  {
+   "id": "G11",
+   "checkpoint": "C3",
+   "name": "List patterns",
+   "skills": [
+    "S52",
+    "S53"
+   ]
+  },
+  {
+   "id": "G12",
+   "checkpoint": "C4",
+   "name": "Dictionaries and sets",
+   "skills": [
+    "S54",
+    "S55",
+    "S56",
+    "S57",
+    "S58",
+    "S59"
+   ]
+  }
+ ],
+ "skills": [
+  {
+   "id": "S1",
+   "name": "Tell whole numbers, decimals and text apart",
+   "group": "G1",
+   "cp": "C1",
+   "check": "say whether 7, 7.5 and '7' are a whole number, a decimal or text",
+   "req": [],
+   "main": [],
+   "rmax": 1,
+   "foundation": true,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "Python keeps three common kinds of values apart. 7 is a whole number, called an int. 7.5 has a decimal point, so it is a float. '7' is in quotes, so it is text, called a str (string). They behave differently: 7 + 7 is 14, but '7' + '7' joins the text to make '77'. type() tells you which kind a value is.",
+    "typed": "",
+    "example": "print(type(7))\nprint(type(7.5))\nprint(type(\"7\"))\nprint(7 + 7)\nprint(\"7\" + \"7\")",
+    "out": "<class 'int'>\n<class 'float'>\n<class 'str'>\n14\n77",
+    "mistake": "Thinking '7' is a number because it looks like one. Anything in quotes is text, so '7' + 1 gives an error instead of 8.",
+    "try_q": "Predict whether 3, 3.0 and '3.0' are a whole number, a decimal or text, then check with type().",
+    "try_typed": "",
+    "try_code": "print(type(3))\nprint(type(3.0))\nprint(type(\"3.0\"))",
+    "try_out": "<class 'int'>\n<class 'float'>\n<class 'str'>"
+   },
+   "kps": {
+    "int": "Values: a number without a decimal point is a whole number (int), including 0 and negatives",
+    "float": "Values: a decimal point makes a decimal (float), even in 7.0",
+    "str": "Values: anything in quotes is text (str), even digits like \"7\"",
+    "type": "Values: type() names the kind as int, float or str",
+    "printq": "Values: print() shows text without its quotes, so 7 and \"7\" look the same when printed",
+    "plus": "Values: + adds numbers but joins text",
+    "mix": "Values: + cannot mix a number with text; Python stops with a TypeError"
+   },
+   "mistakes": {
+    "quotes": "Digits in quotes are text: \"45\" is text, not a number.",
+    "point": "A decimal point makes a decimal: 45.0 is a float, not a whole number.",
+    "whole": "A number with no decimal point is a whole number (int), even 0 or a negative number.",
+    "printq": "print() hides the quotes: \"45\" and 45 print the same, but they are different kinds.",
+    "join": "+ joins text: \"4\" + \"5\" is \"45\", not 9.",
+    "mix": "A number and text cannot be added: 4 + \"5\" stops with a TypeError.",
+    "names": "type() calls the kinds int, float and str, not 'integer', 'decimal' or 'string'."
+   },
+   "skipped_types": {
+    "path2": "Tap the Path (L1 T5): this skill's code runs straight down, line by line, so there is no path to choose.",
+    "sort": "Sort by Result (L2 T8): the results here are kinds of value (int, float, str), which have no smallest-to-largest order.",
+    "guess": "Guess the Code (L2 T11): probing hidden code needs input or decisions to vary; with values only, one guess gives it away.",
+    "path": "Choose the Path (L2 T7): needs if/else, which comes later (the engine already skips it for this skill).",
+    "cover": "Cover the Branches (L2 T12): needs if/else, which comes later (the engine already skips it for this skill)."
+   }
+  },
+  {
+   "id": "S2",
+   "name": "Know what a string is",
+   "group": "G1",
+   "cp": "C1",
+   "check": "say that 'cat' is text made of 3 characters in a fixed order",
+   "req": [
+    [
+     "S1"
+    ]
+   ],
+   "main": [
+    "S1"
+   ],
+   "rmax": 2,
+   "foundation": true,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "A string is text: characters written inside quotes, like 'cat'. The characters are kept in order, so 'cat' has 3 characters: c at position 0, a at position 1, t at position 2. Python counts positions from 0, not 1. Because order matters, 'cat' and 'act' are different strings, and so are 'cat' and 'Cat'.",
+    "typed": "",
+    "example": "word = \"cat\"\nprint(word)\nprint(type(word))\nprint(\"cat\" == \"act\")\nprint(\"cat\" == \"Cat\")\nprint(\"cat\" == \"cat\")",
+    "out": "cat\n<class 'str'>\nFalse\nFalse\nTrue",
+    "mistake": "Forgetting the quotes, like word = cat. Without quotes Python looks for a variable named cat and gives a NameError.",
+    "try_q": "Predict what 'dog' == 'god' prints, and what 'ab' + 'cd' prints. Then check.",
+    "try_typed": "",
+    "try_code": "print(\"dog\" == \"god\")\nprint(\"ab\" + \"cd\")",
+    "try_out": "False\nabcd"
+   }
+  },
+  {
+   "id": "S3",
+   "name": "Know what a list is",
+   "group": "G8",
+   "cp": "C3",
+   "check": "say that [4, 1, 9] holds 3 values in a fixed order",
+   "req": [
+    [
+     "S1"
+    ]
+   ],
+   "main": [
+    "S1"
+   ],
+   "rmax": 2,
+   "foundation": true,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A list holds several values in one place, written inside square brackets with commas between them. [4, 1, 9] holds 3 values in order: 4 at position 0, 1 at position 1, 9 at position 2. Like a queue, the order is kept, so [4, 1, 9] and [1, 4, 9] are different lists. A list can be empty, written [].",
+    "typed": "",
+    "example": "nums = [4, 1, 9]\nprint(nums)\nprint(type(nums))\nprint([4, 1, 9] == [1, 4, 9])\nprint([])",
+    "out": "[4, 1, 9]\n<class 'list'>\nFalse\n[]",
+    "mistake": "Thinking a list starts at position 1. In [4, 1, 9] the first value, 4, is at position 0, and the last, 9, is at position 2.",
+    "try_q": "Make a list of three marks, 72, 85 and 60, in that order. Print it and its type.",
+    "try_typed": "",
+    "try_code": "marks = [72, 85, 60]\nprint(marks)\nprint(type(marks))",
+    "try_out": "[72, 85, 60]\n<class 'list'>"
+   }
+  },
+  {
+   "id": "S4",
+   "name": "Store and update a value",
+   "group": "G1",
+   "cp": "C1",
+   "check": "keep a value in a named variable and change it later, e.g. price = 40, then price = price - 5",
+   "req": [],
+   "main": [],
+   "rmax": 1,
+   "foundation": false,
+   "starter": true,
+   "opens": "when Checkpoint 1 starts",
+   "lesson": {
+    "idea": "A variable is a name that holds a value, like a labelled box. price = 40 puts 40 in the box called price. Later you can put a new value in, even one worked out from the old value: price = price - 5 takes the old 40, subtracts 5 and stores 35.",
+    "typed": "",
+    "example": "price = 40\nprint(price)\nprice = price - 5\nprint(price)\nprice = price + 10\nprint(price)",
+    "out": "40\n35\n45",
+    "mistake": "Writing just price - 5 on a line. Python works out 35 and throws it away; price is still 40 because nothing was stored.",
+    "try_q": "Start with balance = 100. Add 50 to it, then take away 30, and print the final balance.",
+    "try_typed": "",
+    "try_code": "balance = 100\nbalance = balance + 50\nbalance = balance - 30\nprint(balance)",
+    "try_out": "120"
+   }
+  },
+  {
+   "id": "S5",
+   "name": "Convert between text and numbers",
+   "group": "G1",
+   "cp": "C1",
+   "check": "turn the text '42' into the number 42, and 42 back into '42'",
+   "req": [
+    [
+     "S1"
+    ]
+   ],
+   "main": [
+    "S1"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "Text and numbers look alike on screen, but Python treats them differently. int() turns text like '42' into the whole number 42, and float() turns '4.5' into the decimal 4.5. str() goes the other way and turns a number back into text. You need this because input() always gives text.",
+    "typed": "",
+    "example": "text = \"42\"\nnum = int(text)\nprint(num + 8)\nback = str(num)\nprint(back + \"!\")\nprint(float(\"4.5\") * 2)",
+    "out": "50\n42!\n9.0",
+    "mistake": "Doing maths on the text before converting it, like \"42\" + 8. Python stops with a TypeError, because it cannot add text and a number.",
+    "try_q": "Turn the text '15' into a number, add 5, then turn the answer back into text and print it followed by ' marks'.",
+    "try_typed": "",
+    "try_code": "score = int(\"15\") + 5\nprint(str(score) + \" marks\")",
+    "try_out": "20 marks"
+   }
+  },
+  {
+   "id": "S6",
+   "name": "Read a line of input",
+   "group": "G2",
+   "cp": "C1",
+   "check": "read one line the user types and keep it as text",
+   "req": [
+    [
+     "S2"
+    ]
+   ],
+   "main": [
+    "S2"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "input() waits for the user to type one line and press Enter. It gives you back that line as text (a string), even if the user typed digits. Store it in a variable so you can use it later.",
+    "typed": "25",
+    "example": "age = input()\nprint(age)\nprint(age + age)",
+    "out": "25\n2525",
+    "mistake": "Thinking input() gives a number. If the user types 25, you get the text '25', so age + 1 crashes and age + age gives '2525', not 50.",
+    "try_q": "The user types the city Pune. Read it with input() and print it twice, on two lines.",
+    "try_typed": "Pune",
+    "try_code": "city = input()\nprint(city)\nprint(city)",
+    "try_out": "Pune\nPune"
+   }
+  },
+  {
+   "id": "S7",
+   "name": "Split text into pieces",
+   "group": "G8",
+   "cp": "C3",
+   "check": "turn '10 20 30' into ['10', '20', '30']",
+   "req": [
+    [
+     "S2"
+    ],
+    [
+     "S3"
+    ]
+   ],
+   "main": [
+    "S2",
+    "S3"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "split() cuts one piece of text into a list of smaller pieces. With nothing inside the brackets, it cuts wherever there are spaces. This is how you break a line like '10 20 30' into separate values. Each piece is still text.",
+    "typed": "",
+    "example": "line = \"10 20 30\"\npieces = line.split()\nprint(pieces)\ndate = \"12-08-2025\"\nprint(date.split(\"-\"))",
+    "out": "['10', '20', '30']\n['12', '08', '2025']",
+    "mistake": "Forgetting that the pieces are still text. pieces[0] + pieces[1] gives '1020', not 30, until you turn each piece into a number with int().",
+    "try_q": "Split the text 'red green blue' into a list of three colour words and print the list.",
+    "try_typed": "",
+    "try_code": "colours = \"red green blue\".split()\nprint(colours)",
+    "try_out": "['red', 'green', 'blue']"
+   }
+  },
+  {
+   "id": "S8",
+   "name": "Pick or change an item by position",
+   "group": "G8",
+   "cp": "C3",
+   "check": "get nums[0] and nums[-1], set nums[2] = 0, and say that position 0 is 'day 1'",
+   "req": [
+    [
+     "S3",
+     "S2"
+    ]
+   ],
+   "main": [
+    "S3"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "Every item in a list (and every letter in a string) has a position, counted from 0. nums[0] is the first item and nums[-1] the last. You can also change an item by putting the position on the left of =, like nums[2] = 0.",
+    "typed": "",
+    "example": "nums = [10, 20, 30, 40]\nprint(nums[0])\nprint(nums[-1])\nnums[2] = 0\nprint(nums)",
+    "out": "10\n40\n[10, 20, 0, 40]",
+    "mistake": "Thinking the first item is nums[1]. Positions start at 0, so nums[1] is the second item, and nums[4] in a list of 4 items crashes.",
+    "try_q": "In marks = [56, 78, 91], print the first mark, then change the last mark to 95 and print the list.",
+    "try_typed": "",
+    "try_code": "marks = [56, 78, 91]\nprint(marks[0])\nmarks[-1] = 95\nprint(marks)",
+    "try_out": "56\n[56, 78, 95]",
+    "tips": [
+     {
+      "name": "Convert between 0-based and 1-based positions",
+      "idea": "Python counts positions from 0, but people and questions usually count from 1. So 'day 1' in a question is position 0 in Python. To go from a question's number to Python's, subtract 1. To go from Python's position back to the question's number, add 1.",
+      "typed": "",
+      "example": "temps = [30, 32, 35, 31]\nday = 3\nprint(temps[day - 1])\ni = 0\nprint(\"Python position\", i, \"is day\", i + 1)",
+      "out": "35\nPython position 0 is day 1"
+     }
+    ]
+   }
+  },
+  {
+   "id": "S9",
+   "name": "Find the length",
+   "group": "G8",
+   "cp": "C3",
+   "check": "find how many items a list has, or how many letters a word has",
+   "req": [
+    [
+     "S3",
+     "S2"
+    ]
+   ],
+   "main": [
+    "S3"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "len() tells you how many items a list has, or how many characters a string has. Spaces and punctuation count as characters too.",
+    "typed": "",
+    "example": "marks = [72, 45, 90, 61]\nprint(len(marks))\nprint(len(\"hello\"))\nprint(len(\"hi there\"))",
+    "out": "4\n5\n8",
+    "mistake": "Using len() as the last position. A list of 4 items has positions 0 to 3, so marks[len(marks)] gives an IndexError.",
+    "try_q": "Print how many letters are in the word 'NxtWave' and how many items are in [3, 6, 9], on two lines.",
+    "try_typed": "",
+    "try_code": "print(len(\"NxtWave\"))\nprint(len([3, 6, 9]))",
+    "try_out": "7\n3"
+   }
+  },
+  {
+   "id": "S10",
+   "name": "Print values",
+   "group": "G1",
+   "cp": "C1",
+   "check": "print a value, several values on one line, or a number with 2 decimal places",
+   "req": [],
+   "main": [],
+   "rmax": 1,
+   "foundation": false,
+   "starter": true,
+   "opens": "when Checkpoint 1 starts",
+   "lesson": {
+    "idea": "print() shows a value on the screen. Whatever you put inside the brackets appears on its own line. Text goes inside quotes. Numbers and variables go in without quotes.",
+    "typed": "",
+    "example": "print(\"Welcome\")\nprint(100)\nscore = 75\nprint(score)",
+    "out": "Welcome\n100\n75",
+    "mistake": "Putting a variable name inside quotes, like print(\"score\"). Python prints the word score, not the value stored in it.",
+    "try_q": "Store the result 42 in a variable called answer and print it.",
+    "try_typed": "",
+    "try_code": "answer = 42\nprint(answer)",
+    "try_out": "42",
+    "tips": [
+     {
+      "name": "Print several values on one line",
+      "idea": "print() can take several values separated by commas. It prints them all on one line, with a space between each. If you want something other than a space between them, add sep=, for example sep='-'.",
+      "typed": "",
+      "example": "a = 3\nb = 7\nprint(a, b)\nprint(\"Total:\", a + b)\nprint(a, b, sep=\"-\")",
+      "out": "3 7\nTotal: 10\n3-7"
+     },
+     {
+      "name": "Show a number with fixed decimals",
+      "idea": "Money and percentages are often shown with a fixed number of decimal places, like 2.50. Inside an f-string, write the value followed by :.2f to show exactly 2 decimals. :.1f shows one decimal, :.3f shows three, and the number is rounded to fit.",
+      "typed": "",
+      "example": "price = 2.5\nprint(f\"{price:.2f}\")\navg = 78.4567\nprint(f\"{avg:.2f}\")\nprint(f\"{avg:.1f}\")",
+      "out": "2.50\n78.46\n78.5"
+     }
+    ]
+   }
+  },
+  {
+   "id": "S13",
+   "name": "Calculate with numbers",
+   "group": "G3",
+   "cp": "C1",
+   "check": "work out 4 * 25 - 10, 2 ** 3, abs(3 - 10) and round(7.6)",
+   "req": [
+    [
+     "S1"
+    ]
+   ],
+   "main": [
+    "S1"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "Python works like a calculator. + adds, - subtracts and * multiplies. Just like in school maths, * is done before + and -. Use brackets when you want a different order.",
+    "typed": "",
+    "example": "print(4 * 25 - 10)\nprint(4 * (25 - 10))\ntotal = 3 * 40 + 2 * 15\nprint(total)",
+    "out": "90\n60\n150",
+    "mistake": "Forgetting that * happens before - . 4 * 25 - 10 is 90, but if you meant 'multiply 4 by (25 - 10)' you must write the brackets, or you get the wrong answer with no error.",
+    "try_q": "A pen costs 12 and a notebook costs 45. Work out the cost of 3 pens and 2 notebooks and print it.",
+    "try_typed": "",
+    "try_code": "print(3 * 12 + 2 * 45)",
+    "try_out": "126",
+    "tips": [
+     {
+      "name": "Use powers and square roots",
+      "idea": "** raises a number to a power: 2 ** 10 means 2 multiplied by itself 10 times. For a square root, import the math module and use math.sqrt(). It always gives a decimal answer.",
+      "typed": "",
+      "example": "import math\nprint(2 ** 10)\nprint(5 ** 2)\nprint(math.sqrt(49))",
+      "out": "1024\n25\n7.0"
+     },
+     {
+      "name": "Find the absolute difference",
+      "idea": "The absolute difference tells how far apart two numbers are, without caring which is bigger. 3 - 10 is -7, but the distance between them is 7. abs() removes the minus sign, so abs(a - b) is always the distance, whichever order you write them in.",
+      "typed": "",
+      "example": "a = 3\nb = 10\nprint(a - b)\nprint(abs(a - b))\nprint(abs(b - a))",
+      "out": "-7\n7\n7"
+     },
+     {
+      "name": "Round or cut a decimal to a whole number",
+      "idea": "There are two ways to turn a decimal into a whole number. round() goes to the nearest whole number, so round(7.6) is 8. int() simply cuts off everything after the point, so int(7.6) is 7.",
+      "typed": "",
+      "example": "print(round(7.6))\nprint(int(7.6))\nprint(round(7.4))\nprint(int(7.9))",
+      "out": "8\n7\n7\n7"
+     }
+    ]
+   }
+  },
+  {
+   "id": "S14",
+   "name": "Divide to get a decimal",
+   "group": "G3",
+   "cp": "C1",
+   "check": "say that 17 / 5 is 3.4 and 10 / 2 is 5.0",
+   "req": [
+    [
+     "S1"
+    ]
+   ],
+   "main": [
+    "S1"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "The / sign divides and always gives the exact answer as a decimal: 17 / 5 is 3.4. Even when it divides exactly, the answer is a decimal: 10 / 2 is 5.0, not 5. Use it for averages, prices per item and anything that can have a part after the point.",
+    "typed": "",
+    "example": "print(17 / 5)\nprint(10 / 2)\ntotal = 250\npeople = 4\nprint(total / people)",
+    "out": "3.4\n5.0\n62.5",
+    "mistake": "Expecting 10 / 2 to print 5. It prints 5.0, because / always gives a decimal. If the answer must be a whole number, use // instead.",
+    "try_q": "A 7 km walk took 2 hours. Print the speed in km per hour.",
+    "try_typed": "",
+    "try_code": "print(7 / 2)",
+    "try_out": "3.5"
+   }
+  },
+  {
+   "id": "S18",
+   "name": "Compare two values",
+   "group": "G4",
+   "cp": "C1",
+   "check": "decide whether marks >= 40",
+   "req": [
+    [
+     "S1"
+    ]
+   ],
+   "main": [
+    "S1"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "A comparison asks a yes-or-no question about two values. The answer is True or False. The signs are > (greater), < (less), >= (greater or equal), <= (less or equal), == (equal) and != (not equal). For example, marks >= 40 asks: did the student pass?",
+    "typed": "",
+    "example": "marks = 52\nprint(marks >= 40)\nprint(marks == 100)\nprint(marks != 52)",
+    "out": "True\nFalse\nFalse",
+    "mistake": "Using one = to compare. marks = 40 stores 40 in marks; to ask 'is marks equal to 40?' you need marks == 40.",
+    "try_q": "A shop gives free delivery when the bill is 500 or more. The bill is 480. Print whether delivery is free.",
+    "try_typed": "",
+    "try_code": "bill = 480\nprint(bill >= 500)",
+    "try_out": "False"
+   }
+  },
+  {
+   "id": "S19",
+   "name": "Combine conditions with and, or, not",
+   "group": "G4",
+   "cp": "C1",
+   "check": "check age >= 18 and has_id at the same time, or whether x lies between L and R",
+   "req": [
+    [
+     "S18"
+    ]
+   ],
+   "main": [
+    "S18"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "and, or and not join simple conditions into one. and needs both sides true, or needs at least one, not flips true and false. To check that x lies between L and R with both ends included, write L <= x and x <= R, or the short form L <= x <= R.",
+    "typed": "",
+    "example": "age = 20\nhas_id = True\nprint(age >= 18 and has_id)\nx = 7\nprint(1 <= x <= 5)\nprint(x < 1 or x > 5)",
+    "out": "True\nFalse\nTrue",
+    "mistake": "Writing if x > 1 and < 5. Each side needs its own comparison: x > 1 and x < 5.",
+    "try_q": "For temp = 25, print True if the temperature is from 20 to 30 (both included), otherwise False.",
+    "try_typed": "",
+    "try_code": "temp = 25\nprint(20 <= temp <= 30)",
+    "try_out": "True"
+   }
+  },
+  {
+   "id": "S20",
+   "name": "Check divisibility",
+   "group": "G4",
+   "cp": "C1",
+   "check": "decide whether 84 is divisible by 4",
+   "req": [
+    [
+     "S62"
+    ],
+    [
+     "S18"
+    ]
+   ],
+   "main": [
+    "S62",
+    "S18"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "A number is divisible by another when it splits into equal groups with nothing left over. The % operator gives the remainder, the part left over after dividing. So a % b == 0 means a is divisible by b. For example, 35 % 5 is 0, so 35 is divisible by 5.",
+    "typed": "",
+    "example": "n = 35\nprint(n % 5)\nprint(n % 5 == 0)\nprint(n % 3)\nprint(n % 3 == 0)",
+    "out": "0\nTrue\n2\nFalse",
+    "mistake": "Writing the numbers the wrong way round, like 5 % 35. That gives 5, not 0, because it asks for the remainder of 5 divided by 35.",
+    "try_q": "Decide whether 84 is divisible by 4. Print True or False.",
+    "try_typed": "",
+    "try_code": "print(84 % 4 == 0)",
+    "try_out": "True"
+   }
+  },
+  {
+   "id": "S21",
+   "name": "Choose between two actions",
+   "group": "G4",
+   "cp": "C1",
+   "check": "print Pass if marks >= 40, otherwise Fail",
+   "req": [
+    [
+     "S18"
+    ]
+   ],
+   "main": [
+    "S18"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "if and else let a program pick one of two paths. Python checks the condition after if. If it is True, the lines under if run; otherwise the lines under else run. Exactly one of the two paths runs.",
+    "typed": "",
+    "example": "marks = 35\nif marks >= 40:\n    print(\"Pass\")\nelse:\n    print(\"Fail\")",
+    "out": "Fail",
+    "mistake": "Using = instead of == in the condition, like if n % 2 = 0:. Python stops with a SyntaxError; comparisons need ==.",
+    "try_q": "For age = 16, print Adult if the age is 18 or more, otherwise print Minor.",
+    "try_typed": "",
+    "try_code": "age = 16\nif age >= 18:\n    print(\"Adult\")\nelse:\n    print(\"Minor\")",
+    "try_out": "Minor"
+   }
+  },
+  {
+   "id": "S22",
+   "name": "Choose one of several cases in order",
+   "group": "G4",
+   "cp": "C1",
+   "check": "turn marks into a grade A to F, where the order of the checks decides the answer",
+   "req": [
+    [
+     "S21"
+    ]
+   ],
+   "main": [
+    "S21"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "When there are several cases, use if, then elif for each next case, then else for the rest. Python checks them from top to bottom and runs only the first one that is True. So the order matters: put the strictest case first. For grades, check 90 and above before 75 and above, or a 95 would stop at the wrong grade.",
+    "typed": "",
+    "example": "marks = 82\nif marks >= 90:\n    print(\"A\")\nelif marks >= 75:\n    print(\"B\")\nelif marks >= 50:\n    print(\"C\")\nelse:\n    print(\"F\")",
+    "out": "B",
+    "mistake": "Putting the loosest check first, like if marks >= 50 before marks >= 90. Then 95 matches >= 50 first and gets C, and the A case is never reached.",
+    "try_q": "Turn marks = 95 into a grade: A for 90 and above, B for 75 and above, C for 50 and above, F otherwise.",
+    "try_typed": "",
+    "try_code": "marks = 95\nif marks >= 90:\n    print(\"A\")\nelif marks >= 75:\n    print(\"B\")\nelif marks >= 50:\n    print(\"C\")\nelse:\n    print(\"F\")",
+    "try_out": "A"
+   }
+  },
+  {
+   "id": "S23",
+   "name": "Handle the special case first",
+   "group": "G4",
+   "cp": "C1",
+   "check": "print 'Invalid' for impossible input before doing anything else",
+   "req": [
+    [
+     "S21"
+    ]
+   ],
+   "main": [
+    "S21"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "Some inputs break the normal rule: a quantity below 1, or a count of 0 that you would divide by. Check for these first, and print the special answer like 'Invalid'. Only in the else part do the normal work. This works because the normal rule then only ever sees inputs it can handle, so it can't crash or print nonsense.",
+    "typed": "",
+    "example": "total = 0\ncount = 0\nif count == 0:\n    print(\"No marks\")\nelse:\n    print(total / count)",
+    "out": "No marks",
+    "mistake": "Doing the calculation first and checking afterwards. With count = 0, total / count crashes with ZeroDivisionError before the check is ever reached.",
+    "try_q": "A car travels distance = 120 at speed = -5. Print 'Invalid' if the speed is 0 or less; otherwise print the time, distance / speed.",
+    "try_typed": "",
+    "try_code": "distance = 120\nspeed = -5\nif speed <= 0:\n    print(\"Invalid\")\nelse:\n    print(distance / speed)",
+    "try_out": "Invalid"
+   }
+  },
+  {
+   "id": "S24",
+   "name": "Keep a yes/no flag",
+   "group": "G7",
+   "cp": "C2",
+   "check": "set found = False, and change it to True when the item turns up",
+   "req": [
+    [
+     "S21"
+    ],
+    [
+     "S26",
+     "S32",
+     "S33",
+     "S28"
+    ]
+   ],
+   "main": [
+    "S21",
+    "S26"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A flag is a variable that is either True or False, used to remember whether something happened. Set it to False before the loop, because nothing has been seen yet. Set it to True when it happens, and never set it back. After the loop, the flag tells you if it happened at any point, even though each repeat only saw one value.",
+    "typed": "55\n72\n38\n90",
+    "example": "failed = False\nfor i in range(4):\n    m = int(input())\n    if m < 40:\n        failed = True\nif failed:\n    print(\"Someone failed\")\nelse:\n    print(\"All passed\")",
+    "out": "Someone failed",
+    "mistake": "Adding else: failed = False inside the loop. A later mark that passes switches the flag back, so a fail in the middle is missed.",
+    "try_q": "Check whether any number from 10 to 20 is divisible by 7. Use a flag and print 'Yes' or 'No'.",
+    "try_typed": "",
+    "try_code": "found = False\nfor n in range(10, 21):\n    if n % 7 == 0:\n        found = True\nif found:\n    print(\"Yes\")\nelse:\n    print(\"No\")",
+    "try_out": "Yes"
+   }
+  },
+  {
+   "id": "S25",
+   "name": "Write a function that returns a value",
+   "group": "G6",
+   "cp": "C2",
+   "check": "complete def area(l, b) so it returns l * b",
+   "req": [
+    [
+     "S4"
+    ]
+   ],
+   "main": [
+    "S4"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A function is a named block of code you can use again. You make one with def, give it inputs (called parameters) in brackets, and use return to send the answer back. The caller can then print the answer or store it.",
+    "typed": "",
+    "example": "def area(l, b):\n    return l * b\n\nprint(area(5, 3))\nbig = area(10, 4)\nprint(big)",
+    "out": "15\n40",
+    "mistake": "Using print() inside the function instead of return. The function shows the answer, but gives back None, so big = area(10, 4) stores None.",
+    "try_q": "Complete a function perimeter(l, b) that returns 2 * (l + b). Print perimeter(5, 3).",
+    "try_typed": "",
+    "try_code": "def perimeter(l, b):\n    return 2 * (l + b)\n\nprint(perimeter(5, 3))",
+    "try_out": "16"
+   }
+  },
+  {
+   "id": "S26",
+   "name": "Repeat for every number in a range",
+   "group": "G5",
+   "cp": "C2",
+   "check": "run code once for each number 0 to N - 1, or from A to B with B included using range(A, B + 1)",
+   "req": [
+    [
+     "S4"
+    ]
+   ],
+   "main": [
+    "S4"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A for loop with range() runs the same lines again and again, once for each number. range(1, 6) gives 1, 2, 3, 4, 5: it starts at the first number and stops just before the second. So to go from 1 to N, write range(1, N + 1).",
+    "typed": "",
+    "example": "for n in range(1, 6):\n    print(n * 10)",
+    "out": "10\n20\n30\n40\n50",
+    "mistake": "Writing range(1, 5) to go from 1 to 5. range stops before the end number, so 5 is never visited.",
+    "try_q": "Print the square of each number 0, 1, 2, 3 and 4, using a for loop with range(5).",
+    "try_typed": "",
+    "try_code": "for n in range(5):\n    print(n * n)",
+    "try_out": "0\n1\n4\n9\n16",
+    "tips": [
+     {
+      "name": "Include the end number of a range",
+      "idea": "range(A, B) stops just before B, so B itself is left out. When a question says 'from A to B', it usually means B is included. Write range(A, B + 1) so the loop reaches B too.",
+      "typed": "",
+      "example": "a = 3\nb = 6\nfor n in range(a, b + 1):\n    print(n)",
+      "out": "3\n4\n5\n6"
+     }
+    ]
+   }
+  },
+  {
+   "id": "S28",
+   "name": "Repeat while a condition holds",
+   "group": "G5",
+   "cp": "C2",
+   "check": "keep halving a number until it is 1",
+   "req": [
+    [
+     "S18"
+    ],
+    [
+     "S4"
+    ]
+   ],
+   "main": [
+    "S18",
+    "S4"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A while loop keeps repeating its body as long as a condition is True. It checks the condition before every repeat and stops the moment it becomes False. Use it when you don't know in advance how many repeats you need, like 'keep doubling until the number passes 100'. Something inside the loop must change, or it will never stop.",
+    "typed": "",
+    "example": "n = 1\nwhile n < 100:\n    n = n * 2\nprint(n)",
+    "out": "128",
+    "mistake": "Forgetting to change the value inside the loop, like writing while n > 1: with no n = n // 2. The condition stays True forever and the program never ends.",
+    "try_q": "Start with n = 40 and keep halving it with // until it is 1. Print n after the loop.",
+    "try_typed": "",
+    "try_code": "n = 40\nwhile n > 1:\n    n = n // 2\nprint(n)",
+    "try_out": "1"
+   }
+  },
+  {
+   "id": "S29",
+   "name": "Put a loop inside a loop",
+   "group": "G5",
+   "cp": "C2",
+   "check": "print every (row, column) pair of a 3 by 3 grid, one pair per line",
+   "req": [
+    [
+     "S26",
+     "S32",
+     "S33",
+     "S28"
+    ]
+   ],
+   "main": [
+    "S26"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "You can put one loop inside another. The inner loop runs completely, from start to end, for every single repeat of the outer loop. Think of a clock: the minute hand goes all the way round for each step of the hour hand. For a grid, the outer loop picks the row and the inner loop visits every column of that row.",
+    "typed": "",
+    "example": "for row in range(2):\n    for col in range(3):\n        print(row, col)",
+    "out": "0 0\n0 1\n0 2\n1 0\n1 1\n1 2",
+    "mistake": "Forgetting to indent the inner loop's body. If print is lined up with the inner for, Python gives an error; if it is lined up with the outer for, it runs only once at the end.",
+    "try_q": "Print every (row, column) pair of a 3 by 3 grid, one pair per line, rows and columns numbered 1 to 3.",
+    "try_typed": "",
+    "try_code": "for row in range(1, 4):\n    for col in range(1, 4):\n        print(row, col)",
+    "try_out": "1 1\n1 2\n1 3\n2 1\n2 2\n2 3\n3 1\n3 2\n3 3"
+   }
+  },
+  {
+   "id": "S30",
+   "name": "Read many lines in a loop",
+   "group": "G5",
+   "cp": "C2",
+   "check": "read T lines, one per repeat of a loop",
+   "req": [
+    [
+     "S6"
+    ],
+    [
+     "S5"
+    ],
+    [
+     "S26",
+     "S28"
+    ]
+   ],
+   "main": [
+    "S6",
+    "S5",
+    "S26"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "Many questions first give a number T, then T more lines. Read T and turn it into a number, then loop T times and call input() once inside the loop, so each repeat reads the next line.",
+    "typed": "3\nRavi\nAnu\nKiran",
+    "example": "t = int(input())\nfor i in range(t):\n    name = input()\n    print(\"Hello\", name)",
+    "out": "Hello Ravi\nHello Anu\nHello Kiran",
+    "mistake": "Calling input() once before the loop and then looping. Every repeat then uses that same first line instead of reading a new one.",
+    "try_q": "The input is 2, then the lines Tea and Coffee. Read T, then read T lines in a loop and print 'Order:' before each one.",
+    "try_typed": "2\nTea\nCoffee",
+    "try_code": "t = int(input())\nfor i in range(t):\n    item = input()\n    print(\"Order:\", item)",
+    "try_out": "Order: Tea\nOrder: Coffee"
+   }
+  },
+  {
+   "id": "S31",
+   "name": "Print one result per line in a loop",
+   "group": "G5",
+   "cp": "C2",
+   "check": "print the square of every number in a list, each on its own line",
+   "req": [
+    [
+     "S10"
+    ],
+    [
+     "S26",
+     "S32",
+     "S33",
+     "S28"
+    ]
+   ],
+   "main": [
+    "S10",
+    "S26"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "When print() sits inside a loop, it runs once every time round, so each result appears on its own line. Put the print line inside the loop (indented) to get one line per repeat.",
+    "typed": "",
+    "example": "for i in range(1, 4):\n    print(\"Table\", i)",
+    "out": "Table 1\nTable 2\nTable 3",
+    "mistake": "Forgetting to indent the print line. Then it is outside the loop and prints only once, after the loop has finished.",
+    "try_q": "Print the square of every number from 2 to 4, each on its own line.",
+    "try_typed": "",
+    "try_code": "for n in range(2, 5):\n    print(n * n)",
+    "try_out": "4\n9\n16"
+   }
+  },
+  {
+   "id": "S32",
+   "name": "Go through every item of a list or string",
+   "group": "G8",
+   "cp": "C3",
+   "check": "visit every number in a list, or every letter in a word",
+   "req": [
+    [
+     "S3",
+     "S2"
+    ],
+    [
+     "S26"
+    ]
+   ],
+   "main": [
+    "S3",
+    "S26"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A for loop can walk through a list or a string directly. Each time round, the loop variable holds the next item, or the next letter. You don't need positions for this; Python hands you each item in turn.",
+    "typed": "",
+    "example": "prices = [20, 35, 50]\nfor p in prices:\n    print(p + 5)\nfor ch in \"Hi!\":\n    print(ch)",
+    "out": "25\n40\n55\nH\ni\n!",
+    "mistake": "Forgetting the colon at the end of the for line, or not indenting the lines below it. Only indented lines repeat; without the colon Python gives a SyntaxError.",
+    "try_q": "Go through the list [3, 6, 9] and print each number doubled.",
+    "try_typed": "",
+    "try_code": "for x in [3, 6, 9]:\n    print(x * 2)",
+    "try_out": "6\n12\n18"
+   }
+  },
+  {
+   "id": "S33",
+   "name": "Go through the positions of a list",
+   "group": "G8",
+   "cp": "C3",
+   "check": "visit i = 0, 1, 2 … and use nums[i] at each one",
+   "req": [
+    [
+     "S26"
+    ],
+    [
+     "S9",
+     "S5"
+    ],
+    [
+     "S8"
+    ]
+   ],
+   "main": [
+    "S26",
+    "S9",
+    "S8"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "Sometimes you need to know where you are in a list, not just the item. Loop over the positions with for i in range(len(nums)). Then i is 0, 1, 2 and so on, and nums[i] is the item at that position. This lets you use the position too, or look at a neighbour like nums[i - 1].",
+    "typed": "",
+    "example": "nums = [5, 8, 2]\nfor i in range(len(nums)):\n    print(\"position\", i, \"holds\", nums[i])",
+    "out": "position 0 holds 5\nposition 1 holds 8\nposition 2 holds 2",
+    "mistake": "Writing range(nums) or range(len(nums) + 1). The first is an error, and the second goes one step too far and gives an IndexError.",
+    "try_q": "For the list [7, 3, 9, 4], print each position and its item multiplied by that position.",
+    "try_typed": "",
+    "try_code": "nums = [7, 3, 9, 4]\nfor i in range(len(nums)):\n    print(i, nums[i] * i)",
+    "try_out": "0 0\n1 3\n2 18\n3 12"
+   }
+  },
+  {
+   "id": "S34",
+   "name": "Build a list by adding items",
+   "group": "G8",
+   "cp": "C3",
+   "check": "start from [] and add numbers one by one",
+   "req": [
+    [
+     "S3"
+    ]
+   ],
+   "main": [
+    "S3"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "You can start with an empty list, [], and add items one at a time with append(). Each append() puts the new item at the end. This is how you collect values as you go.",
+    "typed": "",
+    "example": "scores = []\nscores.append(70)\nscores.append(85)\nscores.append(60)\nprint(scores)",
+    "out": "[70, 85, 60]",
+    "mistake": "Writing scores = scores.append(70). append() changes the list and gives back nothing, so scores becomes None.",
+    "try_q": "Start from an empty list and add the numbers 5, 10 and 15 one by one. Print the list.",
+    "try_typed": "",
+    "try_code": "nums = []\nnums.append(5)\nnums.append(10)\nnums.append(15)\nprint(nums)",
+    "try_out": "[5, 10, 15]"
+   }
+  },
+  {
+   "id": "S35",
+   "name": "Keep a running total or product",
+   "group": "G7",
+   "cp": "C2",
+   "check": "add up, or multiply together, the numbers in a list one at a time inside a loop",
+   "req": [
+    [
+     "S13"
+    ],
+    [
+     "S26",
+     "S32",
+     "S33",
+     "S28"
+    ]
+   ],
+   "main": [
+    "S13",
+    "S26"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "To add up numbers one at a time, start a variable at 0 before the loop. Inside the loop, add each number to it: total = total + n. When the loop ends, total holds the sum. For a product, start at 1 instead and multiply.",
+    "typed": "4\n7\n2\n5",
+    "example": "total = 0\nfor i in range(4):\n    n = int(input())\n    total = total + n\nprint(total)",
+    "out": "18",
+    "mistake": "Putting total = 0 inside the loop. It resets to 0 every time round, so at the end total holds only the last number.",
+    "try_q": "A shopper buys 4 items. Read each cost on its own line, add them one at a time in a loop, and print the total bill.",
+    "try_typed": "120\n45\n60\n15",
+    "try_code": "bill = 0\nfor i in range(4):\n    cost = int(input())\n    bill = bill + cost\nprint(bill)",
+    "try_out": "240"
+   }
+  },
+  {
+   "id": "S36",
+   "name": "Count items that pass a test",
+   "group": "G7",
+   "cp": "C2",
+   "check": "count how many numbers in a list are even",
+   "req": [
+    [
+     "S21"
+    ],
+    [
+     "S26",
+     "S32",
+     "S33",
+     "S28"
+    ]
+   ],
+   "main": [
+    "S21",
+    "S26"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "To count items that pass a test, start a counter at 0, since nothing is counted yet. Look at each value; if it passes, add 1. For marks 35, 60, 72 and the test 'at least 40': 35 fails (count stays 0), 60 passes (1), 72 passes (2). After the loop every value has been checked once, so the counter holds exactly how many passed.",
+    "typed": "35\n60\n72",
+    "example": "count = 0\nfor i in range(3):\n    m = int(input())\n    if m >= 40:\n        count = count + 1\nprint(count)",
+    "out": "2",
+    "mistake": "Putting count = 0 inside the loop. The counter is reset for every value, so at the end it is only 0 or 1.",
+    "try_q": "Count how many numbers from 1 to 20 are divisible by 3, and print the count.",
+    "try_typed": "",
+    "try_code": "count = 0\nfor n in range(1, 21):\n    if n % 3 == 0:\n        count = count + 1\nprint(count)",
+    "try_out": "6"
+   }
+  },
+  {
+   "id": "S37",
+   "name": "Remember the best value so far",
+   "group": "G7",
+   "cp": "C2",
+   "check": "find the highest score one at a time, and decide what happens when two scores are equal",
+   "req": [
+    [
+     "S21"
+    ],
+    [
+     "S26",
+     "S32",
+     "S33",
+     "S28"
+    ]
+   ],
+   "main": [
+    "S21",
+    "S26"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "To find the highest value, call the first value the best. Then look at the rest one at a time: if one beats the best, it becomes the new best. This works because after each step, best is the highest of everything seen so far; once every value is seen, it is the highest of all. Like a 'winner stays' game: each new player challenges the current winner.",
+    "typed": "40\n75\n60\n90",
+    "example": "best = int(input())\nfor i in range(3):\n    s = int(input())\n    if s > best:\n        best = s\n    print(\"saw\", s, \"best so far\", best)\nprint(best)",
+    "out": "saw 75 best so far 75\nsaw 60 best so far 75\nsaw 90 best so far 90\n90",
+    "mistake": "Starting with best = 0. If every score is negative, like -5, -2, -9, no score beats 0 and the answer wrongly comes out as 0.",
+    "try_q": "A quiz with negative marking gives 3 scores, one per line: -4, -1, -6. Find the highest score one at a time and print it.",
+    "try_typed": "-4\n-1\n-6",
+    "try_code": "best = int(input())\nfor i in range(2):\n    s = int(input())\n    if s > best:\n        best = s\nprint(best)",
+    "try_out": "-1",
+    "tips": [
+     {
+      "name": "Break ties with a second rule",
+      "idea": "When two values are equally good, the question decides which one wins, often 'the one that came first'. With best-so-far, replace the best only when a new value is strictly better, using > not >=. A tie fails the > test, so the earlier one stays. With scores 70, 90, 85, 90, round 2 becomes best and the second 90 doesn't replace it.",
+      "typed": "70\n90\n85\n90",
+      "example": "best = -1\nbest_round = 0\nfor r in range(1, 5):\n    s = int(input())\n    if s > best:\n        best = s\n        best_round = r\nprint(best_round)",
+      "out": "2"
+     }
+    ]
+   }
+  },
+  {
+   "id": "S39",
+   "name": "Start with a 'not found' answer",
+   "group": "G7",
+   "cp": "C2",
+   "check": "start the answer at -1 and change it only if a match turns up",
+   "req": [
+    [
+     "S21"
+    ],
+    [
+     "S26",
+     "S32",
+     "S33",
+     "S28"
+    ]
+   ],
+   "main": [
+    "S21",
+    "S26"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "Before searching, set the answer to what it should be if nothing is found, often -1. Then change it only when a match turns up. This works because if the loop never finds a match, the answer already holds the right 'not found' value. -1 is a good choice when every real answer is 0 or more.",
+    "typed": "40\n60\n30",
+    "example": "answer = -1\nfor i in range(3):\n    p = int(input())\n    if p > 100:\n        answer = p\nprint(answer)",
+    "out": "-1",
+    "mistake": "Starting with answer = 0. If nothing matches, the program prints 0, which looks like a real answer.",
+    "try_q": "Find a number from 30 to 40 that divides 210 with no remainder, keeping the last one found. If there is none, print -1.",
+    "try_typed": "",
+    "try_code": "answer = -1\nfor d in range(30, 41):\n    if 210 % d == 0:\n        answer = d\nprint(answer)",
+    "try_out": "35"
+   }
+  },
+  {
+   "id": "S40",
+   "name": "Stop a loop as soon as the answer is known",
+   "group": "G7",
+   "cp": "C2",
+   "check": "stop searching once the first negative number is found",
+   "req": [
+    [
+     "S26",
+     "S32",
+     "S33",
+     "S28"
+    ],
+    [
+     "S21"
+    ]
+   ],
+   "main": [
+    "S26",
+    "S21"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "Sometimes the answer is known before the loop ends, like finding the first number that divides another. Once it is found, the numbers after it can't change the answer, so checking them wastes time. break leaves the loop at once. Looking for the first number from 2 up that divides 91, the loop stops at 7 and never tries 8, 9 and so on.",
+    "typed": "",
+    "example": "n = 91\nfor d in range(2, n):\n    print(\"trying\", d)\n    if n % d == 0:\n        print(\"first divisor is\", d)\n        break",
+    "out": "trying 2\ntrying 3\ntrying 4\ntrying 5\ntrying 6\ntrying 7\nfirst divisor is 7",
+    "mistake": "Lining break up with the if instead of putting it inside. Then the loop stops after the very first try, whether it matched or not.",
+    "try_q": "Find the first number from 1 upwards whose square is more than 50, and stop once it is found. Print it.",
+    "try_typed": "",
+    "try_code": "for x in range(1, 100):\n    if x * x > 50:\n        print(x)\n        break",
+    "try_out": "8"
+   }
+  },
+  {
+   "id": "S41",
+   "name": "Return as soon as the answer is found",
+   "group": "G7",
+   "cp": "C2",
+   "check": "return True from inside the loop as soon as a match is found",
+   "req": [
+    [
+     "S25"
+    ],
+    [
+     "S40"
+    ]
+   ],
+   "main": [
+    "S25",
+    "S40"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 2 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "Inside a function, return ends the function straight away, even in the middle of a loop. So when you find a match, return True right there. If the loop finishes without a match, then nothing matched, and the return False after the loop runs. This works because return False is only reached once every value has been checked.",
+    "typed": "",
+    "example": "def has_factor(n):\n    for d in range(2, n):\n        if n % d == 0:\n            return True\n    return False\n\nprint(has_factor(91))\nprint(has_factor(13))",
+    "out": "True\nFalse",
+    "mistake": "Writing else: return False inside the loop. The function then returns after trying only the first number, so has_factor(91) wrongly gives False.",
+    "try_q": "Write a function has_multiple(a, b, k) that returns True as soon as it finds a number from a to b that is divisible by k, and False otherwise. Test it with (10, 15, 7), then (10, 13, 7).",
+    "try_typed": "",
+    "try_code": "def has_multiple(a, b, k):\n    for n in range(a, b + 1):\n        if n % k == 0:\n            return True\n    return False\n\nprint(has_multiple(10, 15, 7))\nprint(has_multiple(10, 13, 7))",
+    "try_out": "True\nFalse"
+   }
+  },
+  {
+   "id": "S42",
+   "name": "Take a slice or reverse",
+   "group": "G10",
+   "cp": "C3",
+   "check": "get the middle part s[1:4], and reverse a list or word with s[::-1]",
+   "req": [
+    [
+     "S8"
+    ]
+   ],
+   "main": [
+    "S8"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A slice takes a part of a list or string. s[start:end] gives the items from position start up to, but not including, position end. Leave out start to begin at 0, or leave out end to go to the very end. Think of end as the place where you stop, not the last item you take.",
+    "typed": "",
+    "example": "word = \"python\"\nprint(word[0:2])\nprint(word[2:])\nnums = [10, 20, 30, 40, 50]\nprint(nums[:3])",
+    "out": "py\nthon\n[10, 20, 30]",
+    "mistake": "Expecting the end position to be included. word[0:2] gives 'py', only positions 0 and 1, not 'pyt'.",
+    "try_q": "Take s = 'planet' and print the middle part s[1:4].",
+    "try_typed": "",
+    "try_code": "s = \"planet\"\nprint(s[1:4])",
+    "try_out": "lan",
+    "tips": [
+     {
+      "name": "Reverse a list or string",
+      "idea": "To reverse a string, write word[::-1]; it reads the text from the end back to the start. The same works for a list. A list also has reverse(), which flips the list itself.",
+      "typed": "",
+      "example": "word = \"abc\"\nprint(word[::-1])\nnums = [1, 2, 3, 4]\nprint(nums[::-1])\nnums.reverse()\nprint(nums)",
+      "out": "cba\n[4, 3, 2, 1]\n[4, 3, 2, 1]"
+     }
+    ]
+   }
+  },
+  {
+   "id": "S45",
+   "name": "Check whether a value is in a collection",
+   "group": "G10",
+   "cp": "C3",
+   "check": "decide whether 'e' is one of the vowels",
+   "req": [
+    [
+     "S3",
+     "S2",
+     "S59",
+     "S54"
+    ],
+    [
+     "S18"
+    ]
+   ],
+   "main": [
+    "S3",
+    "S18"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "The word in asks: is this value inside that collection? It gives True or False. It works on strings (is this letter in the word?), lists, sets, and dictionaries, where it checks the keys.",
+    "typed": "",
+    "example": "vowels = \"aeiou\"\nprint(\"e\" in vowels)\nprint(\"z\" in vowels)\nfruits = [\"apple\", \"mango\"]\nprint(\"mango\" in fruits)\nprint(\"kiwi\" not in fruits)",
+    "out": "True\nFalse\nTrue\nTrue",
+    "mistake": "Forgetting that capitals are different letters. 'E' in 'aeiou' is False, because only lowercase vowels are in the string.",
+    "try_q": "Check whether the number 7 is in the list [2, 4, 7, 9] and print the answer.",
+    "try_typed": "",
+    "try_code": "nums = [2, 4, 7, 9]\nprint(7 in nums)",
+    "try_out": "True"
+   }
+  },
+  {
+   "id": "S49",
+   "name": "Join pieces of text into one string",
+   "group": "G9",
+   "cp": "C3",
+   "check": "build 'a-b-c' from 'a', 'b' and 'c'",
+   "req": [
+    [
+     "S2"
+    ]
+   ],
+   "main": [
+    "S2"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "You can stick pieces of text together with +. When you have many pieces in a list, '-'.join(pieces) joins them with '-' between each pair. The text before .join is the glue that goes in between.",
+    "typed": "",
+    "example": "first = \"Ravi\"\nlast = \"Kumar\"\nprint(first + \" \" + last)\nparts = [\"a\", \"b\", \"c\"]\nprint(\"-\".join(parts))\nprint(\"\".join(parts))",
+    "out": "Ravi Kumar\na-b-c\nabc",
+    "mistake": "Joining text with a number, like \"Age: \" + 18. Python gives a TypeError; write \"Age: \" + str(18) instead.",
+    "try_q": "Join the words 'one', 'two' and 'three' with a comma between them and print the result.",
+    "try_typed": "",
+    "try_code": "words = [\"one\", \"two\", \"three\"]\nprint(\",\".join(words))",
+    "try_out": "one,two,three"
+   }
+  },
+  {
+   "id": "S51",
+   "name": "Change text: case, spaces, replace",
+   "group": "G9",
+   "cp": "C3",
+   "check": "turn ' Hi ' into 'HI', and 'I like tea' into 'I like coffee'",
+   "req": [
+    [
+     "S2"
+    ]
+   ],
+   "main": [
+    "S2"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "String methods give you a changed copy of some text. strip() removes spaces from both ends, upper() and lower() change the case, and replace(old, new) swaps one piece of text for another. You can chain them, like text.strip().upper().",
+    "typed": "",
+    "example": "text = \"  Hi  \"\nprint(text.strip().upper())\nprint(\"Good Night\".lower())\nprint(\"I like tea\".replace(\"tea\", \"coffee\"))",
+    "out": "HI\ngood night\nI like coffee",
+    "mistake": "Calling name.upper() and expecting name to change. Strings never change; you must store the copy, like name = name.upper().",
+    "try_q": "Turn the text '  hello world  ' into 'HELLO_WORLD' by removing the outer spaces, making it capitals and replacing the space with an underscore. Print it.",
+    "try_typed": "",
+    "try_code": "text = \"  hello world  \"\ntext = text.strip().upper()\ntext = text.replace(\" \", \"_\")\nprint(text)",
+    "try_out": "HELLO_WORLD"
+   }
+  },
+  {
+   "id": "S52",
+   "name": "Check every pair or every piece",
+   "group": "G11",
+   "cp": "C3",
+   "check": "look at every i < j pair in a list, or try every start and end of a piece of a list",
+   "req": [
+    [
+     "S29"
+    ],
+    [
+     "S33",
+     "S42"
+    ]
+   ],
+   "main": [
+    "S29",
+    "S33"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "Some questions ask about every pair of items, or every piece (a run of neighbours) of a list. Use two loops: the outer loop picks the first position i, and the inner loop picks the second position j, starting from i + 1 so each pair is seen once. For pieces, i is the start and j the end, and nums[i:j + 1] is the piece.",
+    "typed": "",
+    "example": "nums = [3, 1, 2]\nfor i in range(len(nums)):\n    for j in range(i + 1, len(nums)):\n        print(\"pair\", nums[i], nums[j])\nfor i in range(len(nums)):\n    for j in range(i, len(nums)):\n        print(\"piece\", nums[i:j + 1])",
+    "out": "pair 3 1\npair 3 2\npair 1 2\npiece [3]\npiece [3, 1]\npiece [3, 1, 2]\npiece [1]\npiece [1, 2]\npiece [2]",
+    "mistake": "Starting the inner loop at 0 instead of i + 1. Then each pair is checked twice, and an item is paired with itself.",
+    "try_q": "Count how many pairs in [4, 6, 2, 8] add up to 10.",
+    "try_typed": "",
+    "try_code": "nums = [4, 6, 2, 8]\ncount = 0\nfor i in range(len(nums)):\n    for j in range(i + 1, len(nums)):\n        if nums[i] + nums[j] == 10:\n            count = count + 1\nprint(count)",
+    "try_out": "2"
+   }
+  },
+  {
+   "id": "S53",
+   "name": "Update the answer instead of recomputing it",
+   "group": "G11",
+   "cp": "C3",
+   "check": "move a window of k numbers one step: add the new one, take away the old one",
+   "req": [
+    [
+     "S35"
+    ],
+    [
+     "S33"
+    ]
+   ],
+   "main": [
+    "S35",
+    "S33"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A window is a group of k neighbouring numbers. To move it one step, don't add all k again. Two neighbouring windows share every number except two: one leaves at the left, one joins at the right. In [2, 5, 1, 4] with k = 3, the first window is 2 + 5 + 1 = 8. Moving on, 2 leaves and 4 joins: 8 - 2 + 4 = 10, the same as 5 + 1 + 4.",
+    "typed": "",
+    "example": "nums = [2, 5, 1, 4, 3]\nk = 3\nwindow = nums[0] + nums[1] + nums[2]\nprint(window)\nfor i in range(k, len(nums)):\n    window = window + nums[i] - nums[i - k]\n    print(window)",
+    "out": "8\n10\n8",
+    "mistake": "Taking away the wrong number, like nums[i - k + 1] instead of nums[i - k]. That removes a number still in the window, so every sum after the first is wrong.",
+    "try_q": "For [4, 1, 6, 2] and k = 2, print the sum of each window of 2 neighbours by adding the new number and taking away the old one.",
+    "try_typed": "",
+    "try_code": "nums = [4, 1, 6, 2]\nk = 2\nwindow = nums[0] + nums[1]\nprint(window)\nfor i in range(k, len(nums)):\n    window = window + nums[i] - nums[i - k]\n    print(window)",
+    "try_out": "5\n7\n8"
+   }
+  },
+  {
+   "id": "S54",
+   "name": "Know what a dictionary is",
+   "group": "G12",
+   "cp": "C4",
+   "check": "say that {'tea': 10} links the key 'tea' to the value 10",
+   "req": [
+    [
+     "S1"
+    ]
+   ],
+   "main": [
+    "S1"
+   ],
+   "rmax": 2,
+   "foundation": true,
+   "starter": false,
+   "opens": "when Checkpoint 4 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A dictionary links keys to values, like a menu links each dish to its price. It is written in curly brackets: {'tea': 10} links the key 'tea' to the value 10. You find a value by its key, not by its position. Each key appears only once, but different keys can have the same value.",
+    "typed": "",
+    "example": "menu = {\"tea\": 10, \"coffee\": 25}\nprint(menu)\nprint(type(menu))\nprint(menu == {\"coffee\": 25, \"tea\": 10})",
+    "out": "{'tea': 10, 'coffee': 25}\n<class 'dict'>\nTrue",
+    "mistake": "Writing a dictionary with commas instead of colons, like {'tea', 10}. That makes a set of two separate values, not a key linked to a value.",
+    "try_q": "Make a dictionary that links 'Asha' to 91 and 'Ben' to 78. Print it.",
+    "try_typed": "",
+    "try_code": "marks = {\"Asha\": 91, \"Ben\": 78}\nprint(marks)",
+    "try_out": "{'Asha': 91, 'Ben': 78}"
+   }
+  },
+  {
+   "id": "S55",
+   "name": "Look up a value by key",
+   "group": "G12",
+   "cp": "C4",
+   "check": "find the price of 'tea' in a menu dictionary",
+   "req": [
+    [
+     "S54"
+    ]
+   ],
+   "main": [
+    "S54"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 4 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A dictionary stores pairs: a key and its value, like an item and its price on a menu. To find a value, put its key in square brackets: menu['tea'] gives the price of tea. You look things up by key, not by position.",
+    "typed": "",
+    "example": "menu = {\"tea\": 15, \"coffee\": 30, \"samosa\": 20}\nprint(menu[\"tea\"])\nprint(menu[\"samosa\"])\nbill = menu[\"coffee\"] * 2\nprint(bill)",
+    "out": "15\n20\n60",
+    "mistake": "Asking for a key that is not there, or spelled differently. menu[\"Tea\"] gives a KeyError, because 'Tea' and 'tea' are different keys.",
+    "try_q": "In the dictionary {'Delhi': 32, 'Pune': 27}, look up the temperature of Pune and print it.",
+    "try_typed": "",
+    "try_code": "temps = {\"Delhi\": 32, \"Pune\": 27}\nprint(temps[\"Pune\"])",
+    "try_out": "27"
+   }
+  },
+  {
+   "id": "S56",
+   "name": "Store a value under a key",
+   "group": "G12",
+   "cp": "C4",
+   "check": "add 'coffee': 30 to a menu dictionary",
+   "req": [
+    [
+     "S54"
+    ]
+   ],
+   "main": [
+    "S54"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 4 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "To put a new pair into a dictionary, write the key in square brackets and assign a value: menu['coffee'] = 30. If the key is new, the pair is added. If the key already exists, its old value is replaced.",
+    "typed": "",
+    "example": "menu = {\"tea\": 15}\nmenu[\"coffee\"] = 30\nprint(menu)\nmenu[\"tea\"] = 20\nprint(menu)",
+    "out": "{'tea': 15, 'coffee': 30}\n{'tea': 20, 'coffee': 30}",
+    "mistake": "Expecting a key to hold two values. Storing menu['tea'] = 20 after menu['tea'] = 15 does not add a second tea; it replaces 15 with 20.",
+    "try_q": "Start with the empty dictionary ages = {}. Store 19 under 'Asha' and 20 under 'Ravi', then print it.",
+    "try_typed": "",
+    "try_code": "ages = {}\nages[\"Asha\"] = 19\nages[\"Ravi\"] = 20\nprint(ages)",
+    "try_out": "{'Asha': 19, 'Ravi': 20}"
+   }
+  },
+  {
+   "id": "S57",
+   "name": "Go through a dictionary's keys",
+   "group": "G12",
+   "cp": "C4",
+   "check": "print every item and its price from a menu dictionary",
+   "req": [
+    [
+     "S32"
+    ],
+    [
+     "S55"
+    ]
+   ],
+   "main": [
+    "S32",
+    "S55"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 4 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A for loop over a dictionary gives you its keys, one at a time. Once you have a key, dictionary[key] gives its value. So one loop lets you visit every key and its value, like reading a menu line by line: the dish, then its price.",
+    "typed": "",
+    "example": "menu = {\"tea\": 10, \"coffee\": 25, \"samosa\": 15}\nfor item in menu:\n    print(item, menu[item])",
+    "out": "tea 10\ncoffee 25\nsamosa 15",
+    "mistake": "Expecting the loop variable to be the value. for item in menu gives 'tea', not 10, so printing only item prints names and no prices.",
+    "try_q": "marks = {'Asha': 91, 'Ben': 78}. Print each student and their mark on its own line.",
+    "try_typed": "",
+    "try_code": "marks = {\"Asha\": 91, \"Ben\": 78}\nfor name in marks:\n    print(name, marks[name])",
+    "try_out": "Asha 91\nBen 78"
+   }
+  },
+  {
+   "id": "S58",
+   "name": "Count every value",
+   "group": "G12",
+   "cp": "C4",
+   "check": "count how many times each digit 0 to 9 appears in a number, keeping one counter per digit",
+   "req": [
+    [
+     "S56",
+     "S8"
+    ],
+    [
+     "S32",
+     "S26",
+     "S33",
+     "S28"
+    ]
+   ],
+   "main": [
+    "S56",
+    "S32"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 4 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "To count how often each value appears, keep one counter per value and add 1 each time you see it. For digits 0 to 9, a list of ten zeros works: counts[d] is the counter for digit d. A dictionary works the same way, with the value as the key.",
+    "typed": "",
+    "example": "digits = [3, 1, 3, 0, 3, 1]\ncounts = [0] * 4\nfor d in digits:\n    counts[d] = counts[d] + 1\nprint(counts)",
+    "out": "[1, 2, 0, 3]",
+    "mistake": "Adding 1 to a word that is not in the dictionary yet, like counts[w] = counts[w] + 1 the first time. That gives a KeyError, because there is no count to add to.",
+    "try_q": "Count how many times each digit 0 to 9 appears in the number 40044 and print the list of 10 counts.",
+    "try_typed": "",
+    "try_code": "number = \"40044\"\ncounts = [0] * 10\nfor ch in number:\n    d = int(ch)\n    counts[d] = counts[d] + 1\nprint(counts)",
+    "try_out": "[2, 0, 0, 0, 3, 0, 0, 0, 0, 0]"
+   }
+  },
+  {
+   "id": "S59",
+   "name": "Keep unique values in a set",
+   "group": "G12",
+   "cp": "C4",
+   "check": "find the distinct numbers in a list",
+   "req": [
+    [
+     "S3",
+     "S2"
+    ]
+   ],
+   "main": [
+    "S3"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 4 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A set is a collection that keeps each value only once. set(nums) throws away the repeats and keeps one copy of every different value. A set has no fixed order, so you cannot ask for set[0].",
+    "typed": "",
+    "example": "nums = [3, 1, 3, 2, 1, 3]\nunique = set(nums)\nprint(unique)\nprint(len(unique))",
+    "out": "{1, 2, 3}\n3",
+    "mistake": "Writing {} to make an empty set. {} makes an empty dictionary; an empty set is set().",
+    "try_q": "Find how many different numbers are in [5, 5, 8, 2, 8, 5] and print that count.",
+    "try_typed": "",
+    "try_code": "nums = [5, 5, 8, 2, 8, 5]\nprint(len(set(nums)))",
+    "try_out": "3"
+   }
+  },
+  {
+   "id": "S60",
+   "name": "Read several values from one line",
+   "group": "G2",
+   "cp": "C1",
+   "check": "read the line 100 85 into two variables with n, m = input().split()",
+   "req": [
+    [
+     "S6"
+    ],
+    [
+     "S4"
+    ]
+   ],
+   "main": [
+    "S6",
+    "S4"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "Many questions put two or three values on one line, like 100 85. Write the same number of variable names on the left, separated by commas, and input().split() puts one value into each, in order. Each value is still text, so convert it before doing maths with it.",
+    "typed": "100 85",
+    "example": "total, taken = input().split()\nprint(total)\nprint(taken)",
+    "out": "100\n85",
+    "mistake": "Writing a different number of names than there are values. With a, b = input().split() and the line 4 5 6, Python stops with an error: too many values to unpack.",
+    "try_q": "The line Asha Pune holds a name and a city. Read both into their own variables and print the city.",
+    "try_typed": "Asha Pune",
+    "try_code": "name, city = input().split()\nprint(city)",
+    "try_out": "Pune"
+   }
+  },
+  {
+   "id": "S61",
+   "name": "Find the total, largest or smallest",
+   "group": "G10",
+   "cp": "C3",
+   "check": "find the total, the largest and the smallest of a list in one go with sum, max and min",
+   "req": [
+    [
+     "S3",
+     "S2"
+    ],
+    [
+     "S18"
+    ],
+    [
+     "S13"
+    ]
+   ],
+   "main": [
+    "S3",
+    "S18",
+    "S13"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "Python has ready-made tools for a whole list at once. sum() adds every item, and max() and min() find the largest and smallest. They save you writing a loop when you only need the answer.",
+    "typed": "",
+    "example": "marks = [72, 45, 90, 61]\nprint(sum(marks))\nprint(max(marks))\nprint(min(marks))",
+    "out": "268\n90\n45",
+    "mistake": "Using max() on numbers that are still text. max(['9', '10']) gives '9', because text is compared letter by letter. Convert the items to numbers first.",
+    "try_q": "For the prices [30, 5, 18], print the total, then the most expensive price.",
+    "try_typed": "",
+    "try_code": "prices = [30, 5, 18]\nprint(sum(prices))\nprint(max(prices))",
+    "try_out": "53\n30",
+    "tips": [
+     {
+      "name": "Find the largest or smallest in one go",
+      "idea": "max() gives the largest value in a list and min() gives the smallest, without writing a loop. You can also give them separate values, like max(8, 3), to pick the bigger of two.",
+      "typed": "",
+      "example": "marks = [72, 45, 90, 61]\nprint(max(marks))\nprint(min(marks))\nprint(min(8, 3))",
+      "out": "90\n45\n3"
+     },
+     {
+      "name": "Find the total of a list",
+      "idea": "sum() adds up every number in a list in one step and gives you the total. It is handy for things like total marks or a shopping bill.",
+      "typed": "",
+      "example": "marks = [72, 45, 90, 61]\nprint(sum(marks))\nbill = [120, 35, 80]\nprint(sum(bill))",
+      "out": "268\n235"
+     }
+    ]
+   }
+  },
+  {
+   "id": "S62",
+   "name": "Find the quotient and remainder",
+   "group": "G3",
+   "cp": "C1",
+   "check": "say that 17 // 5 is 3 and 17 % 5 is 2, e.g. 23 sweets for 4 children is 5 each and 3 left over",
+   "req": [
+    [
+     "S1"
+    ]
+   ],
+   "main": [
+    "S1"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 1 starts, the starter skills are done, and every skill it needs is done",
+   "lesson": {
+    "idea": "Sometimes you only want whole numbers. // gives how many whole times one number fits into another, called the quotient: 17 // 5 is 3. % gives what is left over, called the remainder: 17 % 5 is 2. Think of sharing sweets: // is how many each child gets, % is how many are left in the box.",
+    "typed": "",
+    "example": "print(17 // 5)\nprint(17 % 5)\nprint(20 % 5)\nprint(1234 % 10)\nprint(1234 // 10)",
+    "out": "3\n2\n0\n4\n123",
+    "mistake": "Thinking % means percent. 17 % 5 does not work out a percentage; it gives the remainder, 2.",
+    "try_q": "23 sweets are shared among 4 children equally. Print how many each child gets and how many are left over.",
+    "try_typed": "",
+    "try_code": "print(23 // 4)\nprint(23 % 4)",
+    "try_out": "5\n3"
+   }
+  },
+  {
+   "id": "S63",
+   "name": "Check what kind of character it is",
+   "group": "G9",
+   "cp": "C3",
+   "check": "decide whether a character is a digit, a letter or a capital",
+   "req": [
+    [
+     "S2"
+    ]
+   ],
+   "main": [
+    "S2"
+   ],
+   "rmax": 2,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "Strings have methods that answer yes-or-no questions about their characters. isdigit() checks for a digit 0-9, isalpha() for a letter, isupper() for a capital letter, islower() for a small letter and isspace() for a space. Each gives True or False.",
+    "typed": "",
+    "example": "print(\"7\".isdigit())\nprint(\"G\".isupper())\nprint(\"g\".isupper())\nprint(\" \".isspace())\nprint(\"k\".isalpha())",
+    "out": "True\nTrue\nFalse\nTrue\nTrue",
+    "mistake": "Expecting '-5'.isdigit() or '3.5'.isdigit() to be True. The minus sign and the dot are not digits, so both give False.",
+    "try_q": "For the characters 'Q', '4' and ' ', print whether each is a capital letter, a digit and a space, in that order.",
+    "try_typed": "",
+    "try_code": "print(\"Q\".isupper())\nprint(\"4\".isdigit())\nprint(\" \".isspace())",
+    "try_out": "True\nTrue\nTrue"
+   }
+  },
+  {
+   "id": "S64",
+   "name": "Sort a list",
+   "group": "G10",
+   "cp": "C3",
+   "check": "put [72, 45, 90] in order, smallest first or largest first",
+   "req": [
+    [
+     "S3",
+     "S2"
+    ],
+    [
+     "S18"
+    ]
+   ],
+   "main": [
+    "S3",
+    "S18"
+   ],
+   "rmax": 3,
+   "foundation": false,
+   "starter": false,
+   "opens": "when Checkpoint 3 starts and every skill it needs is done",
+   "lesson": {
+    "idea": "A list can be put in order with sort(). Smallest first is the default, and sort(reverse=True) puts the biggest first. sort() changes the list itself. If you want to keep the old list, sorted(nums) gives a new sorted list instead.",
+    "typed": "",
+    "example": "heights = [160, 152, 171, 148]\nheights.sort()\nprint(heights)\nwords = [\"mango\", \"apple\", \"kiwi\"]\nprint(sorted(words))",
+    "out": "[148, 152, 160, 171]\n['apple', 'kiwi', 'mango']",
+    "mistake": "Writing heights = heights.sort(). sort() changes the list and gives back nothing, so heights becomes None.",
+    "try_q": "Put the numbers [9, 2, 7, 4] in order, smallest first, and print the list.",
+    "try_typed": "",
+    "try_code": "nums = [9, 2, 7, 4]\nnums.sort()\nprint(nums)",
+    "try_out": "[2, 4, 7, 9]"
+   }
+  }
+ ]
+}

@@ -23,6 +23,10 @@ import { importRoster } from './roster.js';
 import { BinError, listBin, restoreItem, purgeItem } from './recycle.js';
 import { toCSV } from './sheets.js';
 import { R1Error, getState, saveState, ping, fame, logEvents, feedbackRows } from './r1.js';
+import { PathBankError, importBundle, setItemStatus, getItem } from './pathbank.js';
+import { PathError, pathView, startRun, getRun, answerRun, nextRun, lifelineRun, quitRun, bankSummary, listItems } from './path.js';
+import { fffStart as mathFffStart, fffSubmit as mathFffSubmit } from './fffmath.js';
+import { warm as warmPython } from './pyrun.js';
 
 const PUBLIC = path.join(ROOT, 'public');
 const app = express();
@@ -140,6 +144,17 @@ api.post('/r1/log', player, async (req, res) => {
   res.json(await logEvents(req.user.id, req.body && req.body.events));
 });
 
+// The skill path and hot seat (server-run, see path.js) and its Fastest Finger First (fffmath.js).
+api.get('/path', player, async (req, res) => { warmPython(); res.json(await pathView(req.user)); });
+api.post('/path/fff/start', player, moveLimit, async (req, res) => res.json(await mathFffStart(req.user, String((req.body && req.body.mode) || ''))));
+api.post('/path/fff/submit', player, moveLimit, async (req, res) => res.json(await mathFffSubmit(req.user, req.body && req.body.id, req.body && req.body.answer)));
+api.post('/path/run', player, moveLimit, async (req, res) => res.json(await startRun(req.user, { mode: req.body && req.body.mode, fffId: req.body && req.body.fffId })));
+api.get('/path/run/:id', player, async (req, res) => res.json(await getRun(req.user, req.params.id)));
+api.post('/path/run/:id/answer', player, moveLimit, async (req, res) => res.json(await answerRun(req.user, req.params.id, { itemId: req.body && req.body.itemId, given: req.body ? req.body.given : null })));
+api.post('/path/run/:id/next', player, moveLimit, async (req, res) => res.json(await nextRun(req.user, req.params.id)));
+api.post('/path/run/:id/lifeline', player, moveLimit, async (req, res) => res.json(await lifelineRun(req.user, req.params.id, String((req.body && req.body.k) || ''))));
+api.post('/path/run/:id/quit', player, moveLimit, async (req, res) => res.json(await quitRun(req.user, req.params.id)));
+
 api.get('/cron/cleanup', async (req, res) => {
   if (config.cronSecret && req.get('authorization') !== 'Bearer ' + config.cronSecret) return res.status(401).json({ error: 'AUTH' });
   await cleanupExpired();
@@ -197,7 +212,19 @@ adm.use(requireAdmin);
 const who = (req) => req.admin.email;
 
 // ---------- overview
-adm.get('/feedback', async (req, res) => res.json({ rows: await feedbackRows() }));
+adm.get('/feedback', async (req, res) => res.json({ rows: await feedbackRows(500) }));
+// ---------- skill-path bank (question-bank-format bundles)
+adm.get('/path/summary', async (req, res) => res.json(await bankSummary()));
+adm.get('/path/items', async (req, res) => res.json(await listItems({ skill: String(req.query.skill || ''), type: String(req.query.type || ''), status: String(req.query.status || ''), q: String(req.query.q || ''), page: req.query.page })));
+adm.get('/path/items/:id', async (req, res) => { const q = await getItem(req.params.id); if (!q) return res.status(404).json({ error: 'NOT_FOUND', message: 'Item not found.' }); res.json({ item: q }); });
+adm.post('/path/import', async (req, res) => {
+  const b = req.body || {};
+  if (!b.dry && !(req.admin.role === 'super_admin' || (await reviewersMayPublish()))) return res.status(403).json({ error: 'FORBIDDEN', message: 'Only a super admin can save a bundle to the live bank.' });
+  const out = await importBundle(b.bundle, { dry: !!b.dry, by: who(req), filename: String(b.filename || '') });
+  if (!b.dry) await audit(req, 'path.import', String(b.filename || ''), JSON.stringify({ added: out.added, updated: out.updated }));
+  res.json(out);
+});
+adm.post('/path/items/status', requireSuper, async (req, res) => { await setItemStatus(Array.isArray(req.body.ids) ? req.body.ids : [], String(req.body.status || '')); await audit(req, 'path.status', String(req.body.status), JSON.stringify(req.body.ids).slice(0, 500)); res.json({ ok: true }); });
 adm.get('/overview', async (req, res) => {
   const [o, events] = await Promise.all([overview(), listEvents()]);
   res.json({ ...o, events: events.filter((e) => e.phase !== 'ended').slice(0, 5) });
@@ -435,7 +462,7 @@ adm.patch('/admins/:id', requireSuper, async (req, res) => {
 
 // ===================================================================== errors
 api.use((req, res) => res.status(404).json({ error: 'NOT_FOUND', message: 'No such API route.' }));
-const KNOWN = [AuthError, BankError, GameError, EventError, FffError, LadderError, BinError, R1Error];
+const KNOWN = [AuthError, BankError, GameError, EventError, FffError, LadderError, BinError, R1Error, PathBankError, PathError];
 app.use((err, req, res, next) => {
   if (KNOWN.some((K) => err instanceof K)) return res.status(err.status).json({ error: err.code, message: err.message, ...(err.extra || {}) });
   if (err && err.type === 'entity.parse.failed') return res.status(400).json({ error: 'BAD_JSON', message: 'Invalid JSON.' });
