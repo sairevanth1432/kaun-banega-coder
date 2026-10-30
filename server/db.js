@@ -168,6 +168,55 @@ CREATE TABLE IF NOT EXISTS kbc_profiles (
   best_reached INTEGER NOT NULL DEFAULT 0, correct INTEGER NOT NULL DEFAULT 0, answered INTEGER NOT NULL DEFAULT 0,
   badges TEXT NOT NULL DEFAULT '[]', seen TEXT NOT NULL DEFAULT '[]', updated_at BIGINT NOT NULL
 );
+
+-- ---------------------------------------------------------------- student game (play.html): saved progress, Hall of Fame, live count
+CREATE TABLE IF NOT EXISTS kbc_r1_state (
+  user_id BIGINT PRIMARY KEY, data TEXT NOT NULL DEFAULT '{}',   -- the browser's progress object, as JSON
+  coins BIGINT NOT NULL DEFAULT 0, best INTEGER NOT NULL DEFAULT 0, correct INTEGER NOT NULL DEFAULT 0, answered INTEGER NOT NULL DEFAULT 0,
+  runs INTEGER NOT NULL DEFAULT 0, updated_at BIGINT NOT NULL, last_seen BIGINT NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS kbc_r1_state_fame ON kbc_r1_state(coins DESC, best DESC);
+CREATE INDEX IF NOT EXISTS kbc_r1_state_seen ON kbc_r1_state(last_seen);
+CREATE TABLE IF NOT EXISTS kbc_r1_log (id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL, kind TEXT NOT NULL, data TEXT NOT NULL, at BIGINT NOT NULL);
+CREATE INDEX IF NOT EXISTS kbc_r1_log_kind ON kbc_r1_log(kind, at);
+
+-- ---------------------------------------------------------------- skill-path bank (question-bank-format items) and the server-run path
+CREATE TABLE IF NOT EXISTS kbc_items (
+  id TEXT PRIMARY KEY,                       -- C1-G1-S1-L1-T1-R1-V1
+  skill TEXT NOT NULL, grp TEXT NOT NULL, cp TEXT NOT NULL, level INTEGER NOT NULL, type TEXT NOT NULL,
+  r INTEGER NOT NULL, variant INTEGER NOT NULL,
+  status TEXT NOT NULL DEFAULT 'live',       -- live | retired
+  version INTEGER NOT NULL DEFAULT 1, fingerprint TEXT NOT NULL DEFAULT '',
+  data TEXT NOT NULL,                        -- the whole item as uploaded, answers included; never sent before an answer
+  bank_version TEXT NOT NULL DEFAULT '', updated_by TEXT, updated_at BIGINT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS kbc_items_cell ON kbc_items(skill, level, r, type, variant);
+CREATE TABLE IF NOT EXISTS kbc_skill_meta (skill TEXT PRIMARY KEY, data TEXT NOT NULL, updated_at BIGINT NOT NULL);
+CREATE TABLE IF NOT EXISTS kbc_item_stats (id TEXT PRIMARY KEY, shown INTEGER NOT NULL DEFAULT 0, n INTEGER NOT NULL DEFAULT 0, ok INTEGER NOT NULL DEFAULT 0, total_ms BIGINT NOT NULL DEFAULT 0);
+-- each student's place on the path (engine state as JSON) and the totals the leaderboard ranks on
+CREATE TABLE IF NOT EXISTS kbc_path (
+  user_id BIGINT PRIMARY KEY, state TEXT NOT NULL DEFAULT '{}', coins BIGINT NOT NULL DEFAULT 0,
+  correct INTEGER NOT NULL DEFAULT 0, answered INTEGER NOT NULL DEFAULT 0, skills_done INTEGER NOT NULL DEFAULT 0,
+  groups_done INTEGER NOT NULL DEFAULT 0, runs INTEGER NOT NULL DEFAULT 0, updated_at BIGINT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS kbc_path_fame ON kbc_path(coins DESC, skills_done DESC);
+CREATE TABLE IF NOT EXISTS kbc_path_runs (
+  id TEXT PRIMARY KEY, user_id BIGINT NOT NULL, mode TEXT NOT NULL, state TEXT NOT NULL, reason TEXT,
+  energy INTEGER NOT NULL, combo INTEGER NOT NULL, answered INTEGER NOT NULL, correct INTEGER NOT NULL, earned BIGINT NOT NULL,
+  item_id TEXT, item_version INTEGER, shown_at BIGINT, deadline BIGINT, removed TEXT NOT NULL DEFAULT '[]', used TEXT NOT NULL DEFAULT '{}', hint TEXT,
+  fff_id TEXT, started_at BIGINT NOT NULL, ended_at BIGINT
+);
+CREATE INDEX IF NOT EXISTS kbc_path_runs_user ON kbc_path_runs(user_id, state);
+CREATE TABLE IF NOT EXISTS kbc_path_answers (
+  id BIGSERIAL PRIMARY KEY, run_id TEXT NOT NULL, user_id BIGINT NOT NULL, item_id TEXT NOT NULL, version INTEGER NOT NULL,
+  skill TEXT NOT NULL, level INTEGER NOT NULL, type TEXT NOT NULL, r INTEGER NOT NULL, mode TEXT NOT NULL,
+  ok INTEGER NOT NULL, ms INTEGER NOT NULL, given TEXT, at BIGINT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS kbc_path_answers_user ON kbc_path_answers(user_id, at);
+CREATE TABLE IF NOT EXISTS kbc_r1_fff (
+  id TEXT PRIMARY KEY, user_id BIGINT NOT NULL, mode TEXT NOT NULL, puzzle TEXT NOT NULL, started_at BIGINT NOT NULL,
+  done_at BIGINT, ok INTEGER NOT NULL DEFAULT 0, secs REAL, used INTEGER NOT NULL DEFAULT 0
+);
 `;
 
 // ---------- backend

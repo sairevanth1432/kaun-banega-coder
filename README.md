@@ -12,8 +12,9 @@ server/
   events.js       Saturday-Sprint-style events (time window, attempts, fixed or rule-based question sets)
   stats.js        question health (too easy/hard, dead options, slow), funnel, skill accuracy
   fff.js          Fastest Finger First puzzles
+  r1.js           the student game's saved progress, Hall of Fame (overall + per university), live player count, feedback
   auth.js, security.js, db.js, kv.js, recycle.js, roster.js   adapted from saturday-sprint
-  public/play.html    the game (the original single-file game, now talking to the server)
+  public/play.html    the student game: skill path, hot seat, maths Fastest Finger First, Hall of Fame, product tour
   public/admin.html   the admin portal, styled to match the game
   public/login.html   player login: NIAT ID + name from the roster
   content/        starter questions (from the original game) and FFF puzzles
@@ -42,6 +43,19 @@ No database or Redis is needed locally: PGlite stores data in `server/data/`. Fo
 - **Answers stay on the server.** Players receive only the question and the options, shuffled differently for each game. The correct option, the hint and the explanation arrive only after locking in an answer or using a lifeline. Timers, lifelines, coins and leaderboards are all worked out on the server.
 - **Fast at scale.** Pools are a cached index of published questions, refreshed when the bank changes. The audience poll reads one row of per-question counters instead of every vote. Leaderboards are cached for 5 seconds.
 - **No repeats.** Each player's last 200 questions are skipped while the pool still has others.
+
+## The student game (play.html) and the skill-path bank
+
+The hot seat plays questions from the **skill-path bank**: items in the question-bank-format (`C1-G1-S1-L1-T1-R1-V1`),
+mapped to skills by `content/skill-graph.json`. The server does everything that decides an outcome:
+
+- `pathbank.js` checks uploaded bundles (Admin → Skill-path bank, dry run first), stores every item, sends players a copy with the answer stripped out, and grades every answer. Fill the blank, Parsons and Code golf are graded by running the code (`pyrun.js`: Pyodide in a worker thread, safe builtins only, no imports, killed after 2.5 s).
+- `path.js` is the progression engine (the KBC Progression Engine rules): two right in a row moves up a level, a miss gives the next variant, two misses switch the question type. Skills open by checkpoint, starter skills and prerequisites; a skill with no questions yet shows as "coming soon" and blocks nothing. Clearing every playable skill in a group pays its prize (12 groups, 12 prizes up to 7 crore; checkpoints end at G4, G7, G11, G12). Energy, the timer and lifelines run on the server too.
+- `fffmath.js` makes and checks the Fastest Finger First maths puzzles. A win inside the time limit unlocks one hot-seat game.
+- The Hall of Fame (`r1.js`, overall and per university) ranks only those server-checked numbers: prize money, then topics cleared, then right answers.
+- Feedback from the game is at Admin → Feedback (every account, including test accounts).
+
+Load a bundle locally with `npm run seed -- --path-bank ../question-bank-format/G1/upload-G1.json`, and check that the server grades every item in the bank correctly with `node scripts/check-path-bank.js`.
 
 ## Admin portal
 
